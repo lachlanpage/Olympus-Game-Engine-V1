@@ -7,13 +7,13 @@
 #include "../core/Shader.h"
 #include "../utilities/Settings.h"
 #include "../utilities/Camera.h"
+
 class CubeGraphicsComponent : public GraphicsComponent {
 public:
 	CubeGraphicsComponent();
 
 	virtual void update(Entity& entity);
 	void draw(Entity& entity);
-
 
 private:
 
