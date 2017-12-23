@@ -69,13 +69,20 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Users\lachlan\Desktop\GLFW\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Users\lachlan\Desktop\GLFW\lib;</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,6 +118,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
+    <ClCompile Include="src\core\Entity.cpp" />
+    <ClCompile Include="src\core\ResourceManager.cpp" />
+    <ClCompile Include="src\core\Shader.cpp" />
+    <ClCompile Include="src\core\Window.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\scene.cpp" />
+    <ClCompile Include="src\Source.cpp" />
+    <ClCompile Include="src\utilities\Camera.cpp" />
+    <ClCompile Include="src\utilities\Logger.cpp" />
+    <ClCompile Include="src\utilities\MessageBus.cpp" />
+    <ClCompile Include="src\utilities\Settings.cpp" />
+    <ClCompile Include="src\utilities\stb_image.cpp" />
+    <ClCompile Include="src\utilities\Time.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\components\CubeGraphicsComponent.h" />
+    <ClInclude Include="src\components\GraphicsComponent.h" />
+    <ClInclude Include="src\core\Entity.h" />
+    <ClInclude Include="src\core\ResourceManager.h" />
+    <ClInclude Include="src\core\Shader.h" />
+    <ClInclude Include="src\core\Window.h" />
+    <ClInclude Include="src\utilities\BusNode.h" />
+    <ClInclude Include="src\utilities\Camera.h" />
+    <ClInclude Include="src\utilities\Logger.h" />
+    <ClInclude Include="src\utilities\Message.h" />
+    <ClInclude Include="src\utilities\MessageBus.h" />
+    <ClInclude Include="src\utilities\Settings.h" />
+    <ClInclude Include="src\utilities\stb_image.h" />
+    <ClInclude Include="src\utilities\Time.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\shaders\basic.fs" />
+    <None Include="src\shaders\basic.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
