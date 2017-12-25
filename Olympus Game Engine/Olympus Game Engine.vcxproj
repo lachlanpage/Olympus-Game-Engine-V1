@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
+    <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
     <ClCompile Include="src\core\Renderer.cpp" />
     <ClCompile Include="src\core\ResourceManager.cpp" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h" />
     <ClInclude Include="src\components\GraphicsComponent.h" />
+    <ClInclude Include="src\components\QuadGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
     <ClInclude Include="src\core\Renderer.h" />
     <ClInclude Include="src\core\ResourceManager.h" />
@@ -154,6 +156,8 @@
   <ItemGroup>
     <None Include="src\shaders\basic.fs" />
     <None Include="src\shaders\basic.vs" />
+    <None Include="src\shaders\cube.fs" />
+    <None Include="src\shaders\cube.vs" />
     <None Include="src\shaders\passThrough.vs" />
     <None Include="src\shaders\simpleTexture.fs" />
   </ItemGroup>
