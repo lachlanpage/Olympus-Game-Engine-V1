@@ -1,6 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 #include <glad/glad.h>
+#include "Shader.h"
 #include <iostream>
 class Renderer {
 public:
@@ -9,6 +10,7 @@ public:
 	void start();
 	void stop();
 	void render(GLenum, GLint, GLsizei);
+	void updateQuadShader(Shader *);
 	
 private:
 	unsigned int m_fbo;
@@ -18,7 +20,12 @@ private:
 	GLuint m_textures[4];
 	GLuint m_depthTexture;
 	GLuint renderedTexture;
+	GLuint renderedTexture1;
+	GLuint renderedTexture2;
+	GLuint renderedTexture3;
 	GLuint depthrenderbuffer;
+	GLuint renderbuffer;
+	GLuint framebuffer, texture, texture2;
 
 	enum GBUFFER_TEXTURE_TYPE {
 		GBUFFER_TEXTURE_TYPE_POSITION,

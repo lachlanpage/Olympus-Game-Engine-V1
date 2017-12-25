@@ -9,7 +9,7 @@ in vec3 vs_normalData;
 
 void main()
 {
-    color = vec4(0.5f, 1.0f, 1.0f, 1.0f);
+    color = vec4(sin(vs_textureCoordinates.x), 1.0f, 1.0f, 1.0f);
 	textureCoordinates = vs_textureCoordinates;
 	//noramlData = vs_normalData;
 } 

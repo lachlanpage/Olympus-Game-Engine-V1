@@ -18,6 +18,7 @@
 
 #include "components\CubeGraphicsComponent.h"
 #include "components\QuadGraphicsComponent.h"
+#include "components\SphereGraphicsComponent.h"
 #include "core\Shader.h"
 #include "core\ResourceManager.h"
 
@@ -59,21 +60,25 @@ int main(int argc, char* argv[]) {
 	std::vector<Entity*> entityList;
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
-			entityList.push_back(new Entity(glm::vec3(i, 15, j), new QuadGraphicsComponent()));
+			entityList.push_back(new Entity(glm::vec3(i, 15, j), new CubeGraphicsComponent()));
 		}
 	}
 
+	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 
+	Entity *sphere = new Entity(glm::vec3(0, 0, 0), new SphereGraphicsComponent());
 
 	//ResourceManager::Instance()->loadTexture("textures/grass.png");
 	//ResourceManager::Instance()->loadTexture("textures/grass.png");
 
 	//std::cout << ResourceManager::Instance()->loadShader("src/shaders/basic.vs", "src/shaders/basic.fs") << std::endl;
-
+	glEnable(GL_DEPTH_TEST);
 
 	while (mainWindow->isRunning()) {
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		mouse_callback();
 		mainWindow->handleInput();
 
@@ -81,8 +86,9 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
-
+		sphere->update();
 		Renderer::Instance()->stop();
+		quad->update();
 		//Process Lights 
 
 

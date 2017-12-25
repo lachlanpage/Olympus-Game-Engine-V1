@@ -1,7 +1,7 @@
 #include "QuadGraphicsComponent.h"
 
 QuadGraphicsComponent::QuadGraphicsComponent() {
-	m_shader = ResourceManager::Instance()->loadShader("src/shaders/cube.vs", "src/shaders/cube.fs");
+	m_shader = ResourceManager::Instance()->loadShader("src/shaders/passthrough.vs", "src/shaders/simpleTexture.fs");
 
 	//Create the appropriate buffers for the cube
 	glGenVertexArrays(1, &VAO);
@@ -27,5 +27,11 @@ void QuadGraphicsComponent::update(Entity& entity) {
 	model = glm::translate(model, entity.getPosition());
 	m_shader->setMat4("model", model);
 	glBindVertexArray(VAO);
-	sendToRenderer(GL_TRIANGLES, 0, 6);
+	updateQuadShader(m_shader);
+	//sendToRenderer(GL_TRIANGLES, 0, 6);
+}
+
+
+void QuadGraphicsComponent::updateQuadShader(Shader * shader) {
+	Renderer::Instance()->updateQuadShader(shader);
 }

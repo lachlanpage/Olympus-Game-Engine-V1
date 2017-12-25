@@ -63,6 +63,9 @@
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\components\SphereGraphicsComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h">
@@ -111,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\components\QuadGraphicsComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\SphereGraphicsComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

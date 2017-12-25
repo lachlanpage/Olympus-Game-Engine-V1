@@ -99,4 +99,6 @@ Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
+Shader CREATED: vert - src/shaders/passthrough.vs frag - src/shaders/simpleTexture.fs
+Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 TERMINATED SUCCESSFULLY

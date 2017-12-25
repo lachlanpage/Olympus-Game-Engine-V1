@@ -2,11 +2,13 @@
 
 in vec2 UV;
 
-out vec3 frag_color;
+layout (location = 0) out vec3 color;
 
 uniform sampler2D renderedTexture;
-uniform float time;
+uniform sampler2D normalTexture;
+
 
 void main(){
-	color = texture(renderedTexture, UV);
+	color =texture(renderedTexture, UV).xyz;
 }
+

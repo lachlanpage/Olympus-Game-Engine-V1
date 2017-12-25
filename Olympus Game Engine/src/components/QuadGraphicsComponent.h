@@ -13,8 +13,7 @@ public:
 	QuadGraphicsComponent();
 
 	virtual void update(Entity& entity);
-	void draw(Entity& entity);
-
+	void updateQuadShader(Shader*);
 private:
 
 	unsigned int VAO, VBO;
