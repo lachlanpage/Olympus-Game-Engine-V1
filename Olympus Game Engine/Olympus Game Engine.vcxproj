@@ -160,6 +160,8 @@
     <None Include="src\shaders\basic.vs" />
     <None Include="src\shaders\cube.fs" />
     <None Include="src\shaders\cube.vs" />
+    <None Include="src\shaders\light.fs" />
+    <None Include="src\shaders\light.vs" />
     <None Include="src\shaders\passThrough.vs" />
     <None Include="src\shaders\simpleTexture.fs" />
   </ItemGroup>

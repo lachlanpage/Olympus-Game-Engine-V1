@@ -25,7 +25,14 @@ private:
 	GLuint renderedTexture3;
 	GLuint depthrenderbuffer;
 	GLuint renderbuffer;
-	GLuint framebuffer, texture, texture2;
+	GLuint framebuffer;
+
+
+	unsigned int colorTexture;
+	unsigned int normalTexture;
+	unsigned int positionTexture;
+
+	unsigned int texture, texture2;
 
 	enum GBUFFER_TEXTURE_TYPE {
 		GBUFFER_TEXTURE_TYPE_POSITION,

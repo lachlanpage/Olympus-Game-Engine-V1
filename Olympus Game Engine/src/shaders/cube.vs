@@ -9,10 +9,11 @@ uniform mat4 projection;
 
 out vec2 vs_textureCoordinates;
 out vec3 vs_normalData;
+out vec3 vs_pos;
 void main()
 {
     gl_Position = projection * view * model *vec4(aPos.x,aPos.y, aPos.z, 1.0);
-
+	vs_pos = aPos;
 	vs_normalData = normalData;
 	vs_textureCoordinates = textureCoordinates;
 

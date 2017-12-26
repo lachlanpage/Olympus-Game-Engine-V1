@@ -2,13 +2,25 @@
 
 in vec2 UV;
 
-layout (location = 0) out vec3 color;
+layout (location = 0) out vec4 color;
 
-uniform sampler2D renderedTexture;
+uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
+uniform sampler2D positionTexture;
 
+uniform float textureSelector;
 
 void main(){
-	color =texture(renderedTexture, UV).xyz;
+	if(textureSelector == 0){
+		color =texture(colorTexture, UV);
+	} 
+	
+	if(textureSelector == 1){
+		color =texture(normalTexture, UV);
+	}
+
+	if(textureSelector == 2){
+		color =texture(positionTexture, UV);
+	}
 }
 
