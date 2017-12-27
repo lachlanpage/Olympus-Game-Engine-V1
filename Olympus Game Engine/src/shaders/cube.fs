@@ -10,7 +10,7 @@ in vec3 vs_pos;
 
 void main()
 {
-    color = vec4(sin(vs_textureCoordinates.x), 1.0f, 1.0f, 1.0f);
+    color = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 	//textureCoordinates = vec4(vs_textureCoordinates, 0.0,1.0);
 	normalData = vec4(vs_normalData, 1.0);
 	positionData = vec4(vs_pos, 1.0);

@@ -30,11 +30,27 @@ void Renderer::stop() {
 	//glEnable(GL_TEXTURE_2D);
 }
 
+void Renderer::updateLightShader(Shader* shader) {
+	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
+	shader->setInt("colorTexture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, colorTexture);
+
+	shader->setInt("normalTexture", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normalTexture);
+
+	shader->setInt("positionTexture", 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, positionTexture);
+
+}
+
 void Renderer::updateQuadShader(Shader* shader) {
 	//this is to update textures for quad shader
 	//int ID = shader->ID;
 
-	shader->setFloat("textureSelector", 0);
+	shader->setFloat("textureSelector", 3);
 
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -47,6 +63,8 @@ void Renderer::updateQuadShader(Shader* shader) {
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
+
+	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	//glUniform1i(glGetUniformLocation(ID, "renderedTexture"), 0);
 	//shader->use();
 	//shader->setInt("renderedTexture", 0);

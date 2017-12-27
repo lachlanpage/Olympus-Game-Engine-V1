@@ -1,5 +1,5 @@
-#ifndef SPHEREGRAPHICS_H
-#define SPHEREGRAPHICS_H
+#ifndef POINTLIGHTGRAPHICS_H
+#define POINTLIGHTGRAPHICS_H
 
 #include "../utilities/Logger.h"
 #include "GraphicsComponent.h"
@@ -8,19 +8,21 @@
 #include "../utilities/Settings.h"
 #include "../utilities/Camera.h"
 
-class SphereGraphicsComponent : public GraphicsComponent {
+class PointLightGraphicsComponent : public GraphicsComponent {
 public:
-	SphereGraphicsComponent();
+	PointLightGraphicsComponent();
 
 	virtual void update(Entity& entity);
 	void draw(Entity& entity);
 
 private:
-	int m_stacks, m_slices;
+	int m_radius;
 	unsigned int VAO, VBO;
 
 	Shader* m_shader;
 	std::vector<GLfloat> vertices;
+
+
 
 };
 

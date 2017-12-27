@@ -2,6 +2,7 @@
 #define RENDERER_H
 #include <glad/glad.h>
 #include "Shader.h"
+#include "../utilities/Camera.h"
 #include <iostream>
 class Renderer {
 public:
@@ -11,6 +12,7 @@ public:
 	void stop();
 	void render(GLenum, GLint, GLsizei);
 	void updateQuadShader(Shader *);
+	void updateLightShader(Shader *);
 	
 private:
 	unsigned int m_fbo;

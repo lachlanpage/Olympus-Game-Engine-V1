@@ -119,6 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
+    <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
     <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h" />
     <ClInclude Include="src\components\GraphicsComponent.h" />
+    <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
     <ClInclude Include="src\components\SphereGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
@@ -163,6 +165,8 @@
     <None Include="src\shaders\light.fs" />
     <None Include="src\shaders\light.vs" />
     <None Include="src\shaders\passThrough.vs" />
+    <None Include="src\shaders\pointLight.fs" />
+    <None Include="src\shaders\pointLight.vs" />
     <None Include="src\shaders\simpleTexture.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

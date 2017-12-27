@@ -19,6 +19,7 @@
 #include "components\CubeGraphicsComponent.h"
 #include "components\QuadGraphicsComponent.h"
 #include "components\SphereGraphicsComponent.h"
+#include "components\PointLightGraphicsComponent.h"
 #include "core\Shader.h"
 #include "core\ResourceManager.h"
 
@@ -58,15 +59,21 @@ int main(int argc, char* argv[]) {
 
 	Entity *ent = new Entity(glm::vec3(10,44,400),new CubeGraphicsComponent());
 	std::vector<Entity*> entityList;
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			entityList.push_back(new Entity(glm::vec3(i, 15, j), new CubeGraphicsComponent()));
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			entityList.push_back(new Entity(glm::vec3(i, 0, j), new CubeGraphicsComponent()));
 		}
 	}
 
+	entityList.push_back(new Entity(glm::vec3(5, 1, 5), new CubeGraphicsComponent()));
+
+	entityList.push_back(new Entity(glm::vec3(5, 2, 5), new CubeGraphicsComponent()));
+
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 
-	Entity *sphere = new Entity(glm::vec3(0, 0, 0), new SphereGraphicsComponent());
+	Entity *sphere = new Entity(glm::vec3(12,5, 12), new SphereGraphicsComponent());
+
+	Entity *light = new Entity(glm::vec3(12, 5, 12), new PointLightGraphicsComponent());
 
 	//ResourceManager::Instance()->loadTexture("textures/grass.png");
 	//ResourceManager::Instance()->loadTexture("textures/grass.png");
@@ -82,13 +89,20 @@ int main(int argc, char* argv[]) {
 		mouse_callback();
 		mainWindow->handleInput();
 
-		//Deferred Rendering
+		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
 		sphere->update();
+		//end geometry pass
 		Renderer::Instance()->stop();
+
+		//glDisable(GL_DEPTH_TEST);
+		//glEnable(GL_BLEND);
+		//glBlendFunc(GL_ONE, GL_ONE);
+
 		quad->update();
+		light->update();
 		//Process Lights 
 
 
