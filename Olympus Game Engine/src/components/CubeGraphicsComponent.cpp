@@ -1,7 +1,7 @@
 #include "CubeGraphicsComponent.h"
 
 CubeGraphicsComponent::CubeGraphicsComponent() {
-	m_shader = ResourceManager::Instance()->loadShader("src/shaders/basic.vs", "src/shaders/basic.fs");
+	m_shader = ResourceManager::Instance()->loadShader("src/shaders/cube.vs", "src/shaders/cube.fs");
 
 	//Create the appropriate buffers for the cube
 	glGenVertexArrays(1, &cubeVAO);
@@ -26,17 +26,14 @@ CubeGraphicsComponent::CubeGraphicsComponent() {
 
 }
 void CubeGraphicsComponent::update(Entity& entity) {
-	draw(entity);
-
-
-}
-
-void CubeGraphicsComponent::draw(Entity& entity) {
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
 	m_shader->setMat4("model", model);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(cubeVAO);
+	sendToRenderer(GL_TRIANGLES, 0, 36);
+
+
 }

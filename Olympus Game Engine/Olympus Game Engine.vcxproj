@@ -119,7 +119,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
+    <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
+    <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
+    <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
+    <ClCompile Include="src\core\Renderer.cpp" />
     <ClCompile Include="src\core\ResourceManager.cpp" />
     <ClCompile Include="src\core\Shader.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
@@ -136,7 +140,11 @@
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h" />
     <ClInclude Include="src\components\GraphicsComponent.h" />
+    <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
+    <ClInclude Include="src\components\QuadGraphicsComponent.h" />
+    <ClInclude Include="src\components\SphereGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
+    <ClInclude Include="src\core\Renderer.h" />
     <ClInclude Include="src\core\ResourceManager.h" />
     <ClInclude Include="src\core\Shader.h" />
     <ClInclude Include="src\core\Window.h" />
@@ -152,6 +160,14 @@
   <ItemGroup>
     <None Include="src\shaders\basic.fs" />
     <None Include="src\shaders\basic.vs" />
+    <None Include="src\shaders\cube.fs" />
+    <None Include="src\shaders\cube.vs" />
+    <None Include="src\shaders\light.fs" />
+    <None Include="src\shaders\light.vs" />
+    <None Include="src\shaders\passThrough.vs" />
+    <None Include="src\shaders\pointLight.fs" />
+    <None Include="src\shaders\pointLight.vs" />
+    <None Include="src\shaders\simpleTexture.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

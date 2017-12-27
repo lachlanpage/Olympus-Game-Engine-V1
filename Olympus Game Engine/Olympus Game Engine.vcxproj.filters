@@ -57,6 +57,18 @@
     <ClCompile Include="src\scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\core\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\QuadGraphicsComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\SphereGraphicsComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\PointLightGraphicsComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h">
@@ -101,9 +113,29 @@
     <ClInclude Include="src\utilities\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\QuadGraphicsComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\SphereGraphicsComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\PointLightGraphicsComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\basic.fs" />
     <None Include="src\shaders\basic.vs" />
+    <None Include="src\shaders\passThrough.vs" />
+    <None Include="src\shaders\simpleTexture.fs" />
+    <None Include="src\shaders\cube.vs" />
+    <None Include="src\shaders\cube.fs" />
+    <None Include="src\shaders\light.vs" />
+    <None Include="src\shaders\light.fs" />
+    <None Include="src\shaders\pointLight.fs" />
+    <None Include="src\shaders\pointLight.vs" />
   </ItemGroup>
 </Project>
