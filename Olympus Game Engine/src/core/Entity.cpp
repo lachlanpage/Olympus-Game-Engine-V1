@@ -14,6 +14,10 @@ Entity::Entity(glm::vec3 position, GraphicsComponent* graphics) {
 	uniqueIDCounter++;	
 }
 
+Entity::Entity(glm::vec3 position) {
+	m_position = position;
+}
+
 Entity::Entity(GraphicsComponent* graphics) {
 	m_graphics = graphics;
 	m_ID = uniqueIDCounter;
@@ -26,4 +30,15 @@ void Entity::update(){
 	if (m_graphics != nullptr) {
 		m_graphics->update(*this);
 	}
+
+	for (auto component : m_components)
+		component->update(*this);
+}
+
+
+void Entity::addComponent(Component* component) {
+	//work around to send important init data instead of using constructors
+	component->postInit(*this);
+	m_components.push_back(component);
+	
 }

@@ -15,6 +15,7 @@ void Renderer::render(GLenum mode, GLint first, GLsizei count) {
 }
 
 void Renderer::start() {
+	glDisable(GL_BLEND);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, 800, 600);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -43,14 +44,34 @@ void Renderer::updateLightShader(Shader* shader) {
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
+}
+
+void Renderer::lightingPassStart() {
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, lightingbuffer);
+	glViewport(0, 0, 800, 600);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 }
+
+void Renderer::lightingPassStop() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 800, 600);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+}
+
+int temp = 3;
 
 void Renderer::updateQuadShader(Shader* shader) {
 	//this is to update textures for quad shader
 	//int ID = shader->ID;
+	shader->setFloat("textureSelector", 5);
 
-	shader->setFloat("textureSelector", 3);
 
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -63,6 +84,10 @@ void Renderer::updateQuadShader(Shader* shader) {
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
+
+	shader->setInt("lightTexture", 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, lightingTexture);
 
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	//glUniform1i(glGetUniformLocation(ID, "renderedTexture"), 0);
@@ -151,7 +176,25 @@ Renderer::Renderer() {
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "FRAME BUFFER DID NOT WORK " << std::endl;
 
+	//generate lighting framebuffer 
+	glGenFramebuffers(1, &lightingbuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER,lightingbuffer);
 
+	glGenTextures(1, &lightingTexture);
+	glBindTexture(GL_TEXTURE_2D, lightingTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 800, 600, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, lightingTexture, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	GLuint attachments2[1] = { GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, attachments2);
+
+	//check for errors 
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "FRAME BUFFER DID NOT WORK " << std::endl;
 	/*
 	glGenFramebuffers(1, &m_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);

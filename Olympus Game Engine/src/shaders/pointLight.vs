@@ -6,12 +6,13 @@ uniform mat4 view;
 uniform mat4 projection;
 
 out vec4 vs_pos;
-
-float lightRad = 10;
+out mat4 inverseProjView;
+float lightRad = 5;
 
 void main()
 {
-	vec4 pos = projection * view * model *(lightRad*vec4(aPos.x,aPos.y, aPos.z, 1.0));
+	vec4 pos = projection * view * model * vec4(aPos,1.0);
     gl_Position = pos;
 	vs_pos = pos;
+	inverseProjView = inverse(projection*view);
 }

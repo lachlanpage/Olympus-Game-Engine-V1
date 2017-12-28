@@ -10,12 +10,15 @@ public:
 	static Renderer* Instance();
 	void start();
 	void stop();
+	void lightingPassStart();
+	void lightingPassStop();
 	void render(GLenum, GLint, GLsizei);
 	void updateQuadShader(Shader *);
 	void updateLightShader(Shader *);
 	
 private:
 	unsigned int m_fbo;
+
 	Renderer();
 
 	//normal, diffuse, position, tex
@@ -28,8 +31,9 @@ private:
 	GLuint depthrenderbuffer;
 	GLuint renderbuffer;
 	GLuint framebuffer;
+	GLuint lightingbuffer;
 
-
+	unsigned int lightingTexture;
 	unsigned int colorTexture;
 	unsigned int normalTexture;
 	unsigned int positionTexture;

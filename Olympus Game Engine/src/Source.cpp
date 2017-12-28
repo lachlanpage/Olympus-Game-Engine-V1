@@ -23,6 +23,8 @@
 #include "core\Shader.h"
 #include "core\ResourceManager.h"
 
+#include "components\LightComponent.h"
+
 #include <iostream>
 
 float xoffset = 0;
@@ -68,12 +70,33 @@ int main(int argc, char* argv[]) {
 	entityList.push_back(new Entity(glm::vec3(5, 1, 5), new CubeGraphicsComponent()));
 
 	entityList.push_back(new Entity(glm::vec3(5, 2, 5), new CubeGraphicsComponent()));
+	entityList.push_back(new Entity(glm::vec3(2, -5, 10), new CubeGraphicsComponent()));
+	entityList.push_back(new Entity(glm::vec3(-5, 10, 20), new CubeGraphicsComponent()));
+	entityList.push_back(new Entity(glm::vec3(11, 11, 11), new CubeGraphicsComponent()));
+	entityList.push_back(new Entity(glm::vec3(0, 10, 50), new CubeGraphicsComponent()));
 
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 
 	Entity *sphere = new Entity(glm::vec3(12,5, 12), new SphereGraphicsComponent());
 
 	Entity *light = new Entity(glm::vec3(12, 5, 12), new PointLightGraphicsComponent());
+
+
+	Entity *newEntity = new Entity(glm::vec3(2,2,2));
+	newEntity->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
+
+	Entity *newEnt2 = new Entity(glm::vec3(9, 10, 9));
+	newEnt2->addComponent(new LightComponent(10, glm::vec3(5, 0.0, 0.0)));
+
+	std::vector<Entity*> lightList;
+
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			Entity *entity = new Entity(glm::vec3(i, i + j, j));
+			entity->addComponent(new LightComponent(i, glm::vec3(i/ 5, 0.1, 0.3)));
+			lightList.push_back(entity);
+		}
+	}
 
 	//ResourceManager::Instance()->loadTexture("textures/grass.png");
 	//ResourceManager::Instance()->loadTexture("textures/grass.png");
@@ -93,16 +116,29 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
-		sphere->update();
+		//sphere->update();
+		//light->update();
 		//end geometry pass
 		Renderer::Instance()->stop();
-
+		Renderer::Instance()->lightingPassStart();
+		newEntity->update();
+		newEnt2->update();
+		Renderer::Instance()->lightingPassStop();
 		//glDisable(GL_DEPTH_TEST);
 		//glEnable(GL_BLEND);
 		//glBlendFunc(GL_ONE, GL_ONE);
-
+		//glEnable(GL_BLEND);
+		//glBlendEquation(GL_FUNC_ADD);
+		//glBlendFunc(GL_ONE, GL_ONE);
+		//glClear(GL_COLOR_BUFFER_BIT);
+		//glClear(GL_DEPTH_BUFFER_BIT);
+		//newEntity->update();
+		//newEnt2->update();
+		//light->update();
+		//quad->update();
+		//light->update();
 		quad->update();
-		light->update();
+		//light->update();
 		//Process Lights 
 
 

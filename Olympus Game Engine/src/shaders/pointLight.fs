@@ -7,6 +7,7 @@ uniform sampler2D positionTexture;
 out vec4 outputColor;
 
 in vec4 vs_pos;
+in mat4 inverseProjView;
 
 uniform float lightRadius;
 uniform vec3 lightPosition;
@@ -17,6 +18,12 @@ uniform vec3 cameraPosition;
 void main() {
 
 	vec2 uv = (vs_pos.xy / vs_pos.w) * 0.5 + 0.5;
+	vec3 FragPos = texture(positionTexture, uv).rgb;
+	vec3 Normal = texture(normalTexture, uv).rgb;
+	vec3 Albedo = texture(colorTexture, uv).rgb;
+
+	//lighting calcs
+
 
 	//textures 
 	vec3 albedo = texture(colorTexture, uv).xyz;
@@ -39,6 +46,6 @@ void main() {
 	vec3 color = lightColor * albedo.xyz * max(0.0, dot(n.xyz, vec3(1,1,1))) + lightColor * 0.4 * pow(max(0.0, dot(h,n)), 12.0);
 
 	//z test and attenuation 
-	//color *= ztest * attenuation;
-	outputColor = vec4(1.0,1.0,1.0, 1.0);
+	//outputColor *= ztest * attenuation;
+	outputColor = vec4(color,1.0);
 }
