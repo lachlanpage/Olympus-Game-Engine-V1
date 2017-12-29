@@ -1,6 +1,7 @@
 #version 430 core 
 
-in vec2 UV;
+
+in vec4 vs_pos;
 
 layout (location = 0) out vec4 color;
 layout (location = 1) out vec4 specular;
@@ -18,38 +19,37 @@ uniform vec3 Position;
 uniform vec3 Color;
 uniform float Radius;
 
+in vec4 fsPos;
+
 void main(){
+	vec2 UV = (vs_pos.xy / vs_pos.w) * 0.5 + 0.5; //transform from clip space [-1,1] to texture space [0,1]
 
-	//vec3 Position = vec3(2,3,0);
-	//vec3 Color = vec3(0.0,1.0,0.0);
+	color = texture(colorTexture, UV);
 
-	float Linear = 0.7; 
-	float Quadratic = 1.8; 
+	vec3 albedo = texture(colorTexture,UV).xyz;
+	vec3 normal = normalize(texture(normalTexture, UV).xyz);
+	vec3 pos = texture(positionTexture, UV).xyz;
 
-	vec3 FragPos = texture(positionTexture, UV).rgb;
-	vec3 Normal = texture(normalTexture, UV).rgb;
-	vec3 Diffuse = texture(colorTexture, UV).rgb;
-	float Specular = texture(colorTexture, UV).a;
+	vec3 lightToPositionVector = pos.xyz - Position;
+	float lightDist = length(lightToPositionVector);
+	vec3 l = -lightToPositionVector / (lightDist);
 
-	//calculate lighting like usual 
-	vec3 lighting = Diffuse; //hard coded ambient 
-	vec3 viewDir = normalize(cameraPosition - FragPos);
+	//fake z test 
+	float ztest = step(0.0, Radius-lightDist);
 
-	//calc distance between light source and current fragment 
-	float distance = length(Position - FragPos);
-	if(distance < Radius){
-		vec3 lightDir = normalize(Position - FragPos);
-		vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * Color; 
-		//specular 
-		vec3 halfwayDir = normalize(lightDir + viewDir);
-		float spec = pow(max(dot(Normal, halfwayDir),0.0), 16.0);
-		vec3 specular = Color * spec * Specular;
-		//attenuation
-		float attenuation = 1.0 / (1.0 + Linear * distance + Quadratic * distance * distance);
-		diffuse *= attenuation;
-		specular *= attenuation;
-		lighting += diffuse + specular;
-	}
-	color = vec4(lighting, 1.0);
+	//light attenuation 
+	float d = lightDist / Radius; 
+	float attenuation = 1.0 - d; 
+	vec3 v = normalize(Position - pos); 
+	vec3 h = normalize(1+v);
+
+	vec3 color2 = Color * albedo.xyz * max(0.0, dot(normal.xyz,vec3(1.0,1.0,1.0))) + Color * 0.4 * pow(max(0.0, dot(h,normal)), 12.0);
+	color2 *= ztest * attenuation;
+
+	color2 *= ztest * attenuation;
+	color = vec4(color2, 1.0);
+
+	//vec3 lightToPosVector
+	//color = vec4(1.0,1.0,1.0, 1.0);
 }
 

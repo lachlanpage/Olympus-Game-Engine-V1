@@ -59,55 +59,66 @@ int main(int argc, char* argv[]) {
 
 	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 
-	Entity *ent = new Entity(glm::vec3(10,44,400),new CubeGraphicsComponent());
 	std::vector<Entity*> entityList;
+	//test floor and wall 
 	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j < 20; j++) {
+		for (int j = 0; j <20; j++) {
 			entityList.push_back(new Entity(glm::vec3(i, 0, j), new CubeGraphicsComponent()));
+
+		}
+	}
+	//test wall
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			entityList.push_back(new Entity(glm::vec3(0, j, i), new CubeGraphicsComponent()));
+			entityList.push_back(new Entity(glm::vec3(i, j, 0), new CubeGraphicsComponent()));
 		}
 	}
 
 	entityList.push_back(new Entity(glm::vec3(5, 1, 5), new CubeGraphicsComponent()));
 
 	entityList.push_back(new Entity(glm::vec3(5, 2, 5), new CubeGraphicsComponent()));
-	entityList.push_back(new Entity(glm::vec3(2, -5, 10), new CubeGraphicsComponent()));
-	entityList.push_back(new Entity(glm::vec3(-5, 10, 20), new CubeGraphicsComponent()));
-	entityList.push_back(new Entity(glm::vec3(11, 11, 11), new CubeGraphicsComponent()));
-	entityList.push_back(new Entity(glm::vec3(0, 10, 50), new CubeGraphicsComponent()));
 
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 
-	Entity *sphere = new Entity(glm::vec3(12,5, 12), new SphereGraphicsComponent());
-
-	Entity *light = new Entity(glm::vec3(12, 5, 12), new PointLightGraphicsComponent());
-
-
-	Entity *newEntity = new Entity(glm::vec3(2,2,2));
-	newEntity->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
-
-	Entity *newEnt2 = new Entity(glm::vec3(9, 10, 9));
-	newEnt2->addComponent(new LightComponent(10, glm::vec3(5, 0.0, 0.0)));
-
 	std::vector<Entity*> lightList;
+	Entity *light = new Entity(glm::vec3(2,2,2));
+	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
+	lightList.push_back(light);
 
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			Entity *entity = new Entity(glm::vec3(i, i + j, j));
-			entity->addComponent(new LightComponent(i, glm::vec3(i/ 5, 0.1, 0.3)));
-			lightList.push_back(entity);
-		}
-	}
+	Entity *light2 = new Entity(glm::vec3(14, 4, 9));
+	light2->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
+	lightList.push_back(light2);
 
-	//ResourceManager::Instance()->loadTexture("textures/grass.png");
-	//ResourceManager::Instance()->loadTexture("textures/grass.png");
+	Entity *light4 = new Entity(glm::vec3(19, 7, 12));
+	light4->addComponent(new LightComponent(8, glm::vec3(1.0, 1.0, 0.0)));
+	lightList.push_back(light4);
 
-	//std::cout << ResourceManager::Instance()->loadShader("src/shaders/basic.vs", "src/shaders/basic.fs") << std::endl;
+	Entity *light5 = new Entity(glm::vec3(0, 3, 12));
+	light5->addComponent(new LightComponent(10, glm::vec3(0.4, 0.1, 0.8)));
+	lightList.push_back(light5);
+
+	Entity *light6 = new Entity(glm::vec3(13, 5, 18));
+	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
+	lightList.push_back(light6);
+
+
 	glEnable(GL_DEPTH_TEST);
 
-	while (mainWindow->isRunning()) {
+	double lastTime = SDL_GetTicks();
+	int nbFrames = 0;
 
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	while (mainWindow->isRunning()) {
+		nbFrames += 1;
+
+		double currentTime = SDL_GetTicks();
+		if (currentTime - lastTime > 1000) {
+			//a second has passed 
+			std::cout << " FPS: " << nbFrames <<  std::endl;
+			lastTime = currentTime;
+			nbFrames = 0;
+		}
+
 
 		mouse_callback();
 		mainWindow->handleInput();
@@ -116,37 +127,28 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
-		//sphere->update();
-		//light->update();
+		//debug to draw light spheres bounding
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//newEnt2->update();
+		//newEntity->update();
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 		//end geometry pass
 		Renderer::Instance()->stop();
 		Renderer::Instance()->lightingPassStart();
-		newEntity->update();
-		newEnt2->update();
-		Renderer::Instance()->lightingPassStop();
-		//glDisable(GL_DEPTH_TEST);
-		//glEnable(GL_BLEND);
-		//glBlendFunc(GL_ONE, GL_ONE);
-		//glEnable(GL_BLEND);
-		//glBlendEquation(GL_FUNC_ADD);
-		//glBlendFunc(GL_ONE, GL_ONE);
-		//glClear(GL_COLOR_BUFFER_BIT);
-		//glClear(GL_DEPTH_BUFFER_BIT);
-		//newEntity->update();
-		//newEnt2->update();
-		//light->update();
-		//quad->update();
-		//light->update();
-		quad->update();
-		//light->update();
-		//Process Lights 
+		//all lights are rendered here
+		for (auto light : lightList) {
+			light->update();
+		}
 
+		Renderer::Instance()->lightingPassStop();
+		//draw screen quad with final texture
+		quad->update();
 
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
 	}
-
 	return 0;
 }

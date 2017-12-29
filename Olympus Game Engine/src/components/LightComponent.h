@@ -18,29 +18,14 @@ private:
 
 	void updateLightShader();
 
-	unsigned int VAO, VBO;
+	unsigned int VAO, VBO, m_vboIndex;
+	int m_stacks, m_slices;
 	float m_radius;
 	glm::vec3 m_color;
 
 	Shader* m_shader;
-	float vertices[18] = {
-
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		-1.0f,  1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		1.0f,  1.0f, 0.0f
-	};
-
-	float textureCoordinates[12] = {
-		0.0f,0.0f,
-		1.0f,0.0f,
-		0.0f,1.0f,
-		0.0f,1.0f,
-		1.0f,0.0f,
-		1.0f,1.0f
-	};
+	std::vector<GLfloat> vertices;
+	std::vector<GLuint> indices;
 };
 
 #endif
