@@ -15,6 +15,7 @@ public:
 	void render(GLenum, GLint, GLsizei);
 	void updateQuadShader(Shader *);
 	void updateLightShader(Shader *);
+	void getBufferTextures(Shader *);
 	
 private:
 	unsigned int m_fbo;

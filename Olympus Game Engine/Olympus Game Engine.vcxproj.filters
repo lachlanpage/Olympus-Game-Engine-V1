@@ -72,6 +72,9 @@
     <ClCompile Include="src\components\LightComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\components\DirectionalLightComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h">
@@ -134,6 +137,9 @@
     <ClInclude Include="src\components\LightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\DirectionalLightComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\basic.fs" />
@@ -146,5 +152,7 @@
     <None Include="src\shaders\light.fs" />
     <None Include="src\shaders\pointLight.fs" />
     <None Include="src\shaders\pointLight.vs" />
+    <None Include="src\shaders\directional_light.fs" />
+    <None Include="src\shaders\directional_light.vs" />
   </ItemGroup>
 </Project>

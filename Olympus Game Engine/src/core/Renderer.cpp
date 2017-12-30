@@ -15,6 +15,7 @@ void Renderer::render(GLenum mode, GLint first, GLsizei count) {
 }
 
 void Renderer::start() {
+	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, 800, 600);
@@ -29,6 +30,21 @@ void Renderer::stop() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//glEnable(GL_TEXTURE_2D);
+}
+
+void Renderer::getBufferTextures(Shader *shader) {
+	shader->setInt("colorTexture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, colorTexture);
+
+	shader->setInt("normalTexture", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normalTexture);
+
+	shader->setInt("positionTexture", 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, positionTexture);
+
 }
 
 void Renderer::updateLightShader(Shader* shader) {
@@ -47,16 +63,12 @@ void Renderer::updateLightShader(Shader* shader) {
 }
 
 void Renderer::lightingPassStart() {
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LEQUAL);
+	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
-
-
 	glBlendEquation(GL_FUNC_ADD);
-	glDepthFunc(GL_LEQUAL);
 	glBlendFunc(GL_ONE, GL_ONE);
+
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, lightingbuffer);
 	glViewport(0, 0, 800, 600);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

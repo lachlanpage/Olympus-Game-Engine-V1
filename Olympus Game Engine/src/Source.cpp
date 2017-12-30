@@ -24,6 +24,7 @@
 #include "core\ResourceManager.h"
 
 #include "components\LightComponent.h"
+#include "components\DirectionalLightComponent.h"
 
 #include <iostream>
 
@@ -80,7 +81,7 @@ int main(int argc, char* argv[]) {
 	entityList.push_back(new Entity(glm::vec3(5, 2, 5), new CubeGraphicsComponent()));
 
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
-
+	Entity *sphere = new Entity(glm::vec3(5, 5, 5), new SphereGraphicsComponent());
 	std::vector<Entity*> lightList;
 	Entity *light = new Entity(glm::vec3(2,2,2));
 	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
@@ -103,7 +104,11 @@ int main(int argc, char* argv[]) {
 	lightList.push_back(light6);
 
 
+	Entity *sun = new Entity(glm::vec3(10, 10, 10));
+	sun->addComponent(new DirectionalLightComponent());
+
 	glEnable(GL_DEPTH_TEST);
+
 
 	double lastTime = SDL_GetTicks();
 	int nbFrames = 0;
@@ -127,10 +132,16 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
+
+		sphere->update();
+
 		//debug to draw light spheres bounding
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//newEnt2->update();
 		//newEntity->update();
+		//for (auto light : lightList) {
+		//	light->update();
+		//}
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		//end geometry pass
@@ -140,6 +151,7 @@ int main(int argc, char* argv[]) {
 		for (auto light : lightList) {
 			light->update();
 		}
+		sun->update();
 
 		Renderer::Instance()->lightingPassStop();
 		//draw screen quad with final texture

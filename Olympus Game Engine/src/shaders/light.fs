@@ -43,7 +43,9 @@ void main(){
 	vec3 v = normalize(Position - pos); 
 	vec3 h = normalize(1+v);
 
-	vec3 color2 = Color * albedo.xyz * max(0.0, dot(normal.xyz,vec3(1.0,1.0,1.0))) + Color * 0.4 * pow(max(0.0, dot(h,normal)), 12.0);
+	vec3 temp = vec3(1.0);
+
+	vec3 color2 = Color * albedo.xyz * max(0.0, dot(normal.xyz,temp)) + Color * 0.4 * pow(max(0.0, dot(h,normal)), 12.0);
 	color2 *= ztest * attenuation;
 
 	color2 *= ztest * attenuation;
