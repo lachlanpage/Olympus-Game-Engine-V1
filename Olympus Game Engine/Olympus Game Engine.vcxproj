@@ -119,6 +119,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
+    <ClCompile Include="src\components\DirectionalLightComponent.cpp" />
+    <ClCompile Include="src\components\LightComponent.cpp" />
     <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
     <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
@@ -138,8 +140,11 @@
     <ClCompile Include="src\utilities\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\Component.h" />
     <ClInclude Include="src\components\CubeGraphicsComponent.h" />
+    <ClInclude Include="src\components\DirectionalLightComponent.h" />
     <ClInclude Include="src\components\GraphicsComponent.h" />
+    <ClInclude Include="src\components\LightComponent.h" />
     <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
     <ClInclude Include="src\components\SphereGraphicsComponent.h" />
@@ -162,6 +167,8 @@
     <None Include="src\shaders\basic.vs" />
     <None Include="src\shaders\cube.fs" />
     <None Include="src\shaders\cube.vs" />
+    <None Include="src\shaders\directional_light.fs" />
+    <None Include="src\shaders\directional_light.vs" />
     <None Include="src\shaders\light.fs" />
     <None Include="src\shaders\light.vs" />
     <None Include="src\shaders\passThrough.vs" />

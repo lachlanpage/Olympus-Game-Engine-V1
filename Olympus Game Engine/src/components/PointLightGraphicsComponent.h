@@ -16,7 +16,7 @@ public:
 	void draw(Entity& entity);
 
 private:
-	int m_radius;
+	int m_radius, m_stacks, m_slices;
 	unsigned int VAO, VBO;
 
 	Shader* m_shader;

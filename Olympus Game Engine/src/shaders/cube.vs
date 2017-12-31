@@ -13,7 +13,7 @@ out vec3 vs_pos;
 void main()
 {
     gl_Position = projection * view * model *vec4(aPos.x,aPos.y, aPos.z, 1.0);
-	vs_pos = aPos;
+	vs_pos = vec3(model* vec4(aPos,1.0));
 	vs_normalData = normalData;
 	vs_textureCoordinates = textureCoordinates;
 
