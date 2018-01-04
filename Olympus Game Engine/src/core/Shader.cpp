@@ -4,7 +4,7 @@
 Shader::Shader() {}
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* tessControlPath, const char* tessEvalPath) {
-	//Retrieve vertex/fragment source from from teh filepath
+	//Retrieve vertex/fragment source from from filepath
 	std::string vertexCode;
 	std::string tessControlCode;
 	std::string tessEvalCode;
@@ -21,24 +21,24 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* tes
 	tessEvalShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
 	try {
-		//openfiles
 		vShaderFile.open(vertexPath);
 		fShaderFile.open(fragmentPath);
 		tessCShaderFile.open(tessControlPath);
 		tessEvalShaderFile.open(tessEvalPath);
 
 		std::stringstream vShaderStream, fShaderStream, tessCShaderStream, tessEvalShaderStream;
-		// read file’s buffer contents into streams
+		// read file’s buffer contents into streams 
 		vShaderStream << vShaderFile.rdbuf();
 		fShaderStream << fShaderFile.rdbuf();
 		tessCShaderStream << tessCShaderFile.rdbuf();
 		tessEvalShaderStream << tessEvalShaderFile.rdbuf();
-		// close file handlers
+
 		vShaderFile.close();
 		fShaderFile.close();
 		tessCShaderFile.close();
 		tessEvalShaderFile.close();
-		// convert stream into string
+
+		// convert stream into string for parsing
 		vertexCode = vShaderStream.str();
 		fragmentCode = fShaderStream.str();
 		tessControlCode = tessCShaderStream.str();

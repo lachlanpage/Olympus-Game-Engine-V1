@@ -12,6 +12,9 @@ public:
 	void stop();
 	void lightingPassStart();
 	void lightingPassStop();
+
+	void startShadowMap();
+	void stopShadowMap();
 	void render(GLenum, GLint, GLsizei);
 	void updateQuadShader(Shader *);
 	void updateLightShader(Shader *);
@@ -33,11 +36,14 @@ private:
 	GLuint renderbuffer;
 	GLuint framebuffer;
 	GLuint lightingbuffer;
+	GLuint shadowBuffer;
 
 	unsigned int lightingTexture;
 	unsigned int colorTexture;
 	unsigned int normalTexture;
 	unsigned int positionTexture;
+
+	unsigned int shadowDepthTexture;
 
 	unsigned int texture, texture2;
 

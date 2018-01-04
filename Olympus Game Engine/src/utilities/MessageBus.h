@@ -8,7 +8,6 @@
 
 class MessageBus {
 public: 
-	
 	static MessageBus* Instance();
 
 	void addReceiver(std::function<void(Message)> messageReceiver) {
@@ -24,7 +23,6 @@ public:
 			for (auto iter = recievers.begin(); iter != recievers.end();iter++) {
 				(*iter)(messages.front());
 			}
-
 			messages.pop();
 		}
 	}

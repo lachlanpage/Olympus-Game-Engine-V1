@@ -1,6 +1,7 @@
 #version 430 core 
 
 in vec2 UV;
+in vec4 shadowCoord;
 
 layout (location = 0) out vec4 color;
 
@@ -8,6 +9,7 @@ uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
 uniform sampler2D lightTexture;
+uniform sampler2D shadowTexture;
 
 uniform float textureSelector;
 
@@ -27,7 +29,11 @@ void main(){
 	}
 
 	if(textureSelector == 5){
-		color = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV); //hardcoded ambience
+		float visibility = 1.0;
+		if(texture(shadowTexture, shadowCoord.xy).z < shadowCoord.z){
+			visibility = 0.5;
+		}
+		color = visibility* texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV); //hardcoded ambience
 	}
 
 	if(textureSelector == 3){
@@ -102,6 +108,10 @@ void main(){
 			lighting += diffuse + specular;
 		}
 		color = vec4(lighting, 1.0);
+	}
+
+	if(textureSelector == 6){
+		color =texture(shadowTexture, UV);
 	}
 }
 

@@ -5,42 +5,40 @@ Window::Window(const char* title, int width, int height, MessageBus* messageBus)
 
 	window = SDL_CreateWindow(title, 0, 0, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL)
-		Logger::Instance()->write("Error opening window");
+		Logger::Instance()->write("SDL_CREATE_WINDOW_ERROR");
 
-	//SDL context creation 
 	context = SDL_GL_CreateContext(window);
 	if (context == NULL)
-		Logger::Instance()->write("SDL Context could not be created");
+		Logger::Instance()->write("SDL_CREATE_CONTEXT_ERROR");
 
+	//OPENGL 4.3
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	SDL_GL_SetSwapInterval(1);
-
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 
 	glViewport(0, 0, 800, 600);
-
 	running = true;
 }
 
 SDL_Window *Window::getWindow() { return window; }
 
-bool Window::isRunning() {
-	return running;
-}
+bool Window::isRunning() { return running; }
 
 void Window::onNotify(Message message) {}
-
-
 
 void Window::handleInput() {
 	SDL_Event event;
 	
+	while (SDL_PollEvent(&event)) {
+
+	}
+
 	Message aMessage;
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 	if (state[SDL_SCANCODE_A] && state[SDL_SCANCODE_W]) {

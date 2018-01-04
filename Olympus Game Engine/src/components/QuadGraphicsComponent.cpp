@@ -21,8 +21,8 @@ QuadGraphicsComponent::QuadGraphicsComponent() {
 }
 void QuadGraphicsComponent::update(Entity& entity) {
 	m_shader->use();
-	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
-	m_shader->setMat4("projection", Settings::Instance()->projection);
+	m_shader->setMat4("view", Settings::Instance()->depthViewMatrix);
+	m_shader->setMat4("projection", Settings::Instance()->projectionMatrix);
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
 	m_shader->setMat4("model", model);

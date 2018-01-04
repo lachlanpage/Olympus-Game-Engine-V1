@@ -22,6 +22,7 @@ public:
 	void addComponent(Component*);
 	void setPosition(glm::vec3);
 	void update();
+	void updateShadow();
 
 private:
 	std::vector<Component*> m_components;

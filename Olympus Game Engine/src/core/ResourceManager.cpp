@@ -35,7 +35,14 @@ unsigned int ResourceManager::loadImage(std::string filename) {
 		Logger::Instance()->write("Failed to load Image: " + filename);
 	}
 	else {
-		//glGenTextures etc..
+		unsigned int texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		Logger::Instance()->write("LOADED IMAGE: " + filename);
+		stbi_image_free(data);
+		return texture;
 	}
 	return -1;
 }

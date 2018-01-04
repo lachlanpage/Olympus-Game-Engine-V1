@@ -21,6 +21,10 @@ void Time::update() {
 }
 
 float Time::getDeltaTime() {
-	return deltaTime / 1000;
+	//divide by 1000 to convert from miliseconds to seconds
+	return deltaTime / 1000; 
+}
 
+float Time::getRuntime() {
+	return SDL_GetTicks() / 1000;
 }

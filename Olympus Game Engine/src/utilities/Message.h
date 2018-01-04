@@ -21,5 +21,4 @@ public:
 private:
 	std::string messageEvent;
 };
-
 #endif

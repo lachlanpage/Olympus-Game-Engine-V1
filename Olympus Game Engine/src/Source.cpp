@@ -24,34 +24,18 @@
 #include "core\ResourceManager.h"
 
 #include "components\LightComponent.h"
+#include "components\ModelComponent.h"
 #include "components\DirectionalLightComponent.h"
 
 #include <iostream>
 
+#include "core/Mouse.h"
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
+
 float xoffset = 0;
 float yoffset = 0;
-void mouse_callback() {
-	SDL_Event event;
-	if (SDL_PollEvent(&event) == 0) {
-		xoffset = event.motion.xrel;
-		yoffset = event.motion.yrel;
-		if (xoffset < 0.0001 && yoffset < 0.0001) {
-			xoffset = 0;
-			yoffset = 0;
-		}
-	}
-	while (SDL_PollEvent(&event) != 0) {
-		if (event.type == SDL_MOUSEMOTION) {
-			xoffset = event.motion.xrel;
-			yoffset = event.motion.yrel;
-		}
-
-		if (event.type == SDL_MOUSEBUTTONDOWN) {
-			std::cout << "BUTTON PRESS" << std::endl;
-		}
-	}
-	Camera::Instance()->processMouseMovement(xoffset, -yoffset, true);
-}
 
 
 int main(int argc, char* argv[]) {
@@ -60,14 +44,38 @@ int main(int argc, char* argv[]) {
 
 	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 
+	auto raycast = Mouse::Instance();
+
 	std::vector<Entity*> entityList;
 	//test floor and wall 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {
-			entityList.push_back(new Entity(glm::vec3(i, 0, j), new CubeGraphicsComponent()));
+			Entity *ent = new Entity(glm::vec3(i, 0, j));
+			ent->addComponent(new CubeGraphicsComponent());
 
+			Entity *ent2 = new Entity(glm::vec3(i, i, 0));
+			ent2->addComponent(new CubeGraphicsComponent());
+
+			entityList.push_back(ent);
+			entityList.push_back(ent2);
 		}
 	}
+
+	Entity *ent = new Entity(glm::vec3(10, 1, 10));
+	ent->addComponent(new CubeGraphicsComponent());
+	entityList.push_back(ent);
+
+	Entity *ent2 = new Entity(glm::vec3(10, 2, 10));
+	ent2->addComponent(new CubeGraphicsComponent());
+	entityList.push_back(ent2);
+
+	Entity *ent3 = new Entity(glm::vec3(10, 3, 10));
+	ent3->addComponent(new CubeGraphicsComponent());
+	entityList.push_back(ent3);
+
+
+
+	/*
 	//test wall
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j < 10; j++) {
@@ -79,9 +87,10 @@ int main(int argc, char* argv[]) {
 	entityList.push_back(new Entity(glm::vec3(5, 1, 5), new CubeGraphicsComponent()));
 
 	entityList.push_back(new Entity(glm::vec3(5, 2, 5), new CubeGraphicsComponent()));
-
+	*/
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 	Entity *sphere = new Entity(glm::vec3(5, 5, 5), new SphereGraphicsComponent());
+
 	std::vector<Entity*> lightList;
 	Entity *light = new Entity(glm::vec3(2,2,2));
 	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
@@ -107,7 +116,11 @@ int main(int argc, char* argv[]) {
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent());
 
+
+
 	glEnable(GL_DEPTH_TEST);
+
+
 
 
 	double lastTime = SDL_GetTicks();
@@ -115,6 +128,9 @@ int main(int argc, char* argv[]) {
 
 	while (mainWindow->isRunning()) {
 		nbFrames += 1;
+
+		//mouse picking
+		//raycast->update(Camera::Instance()->getViewMatrix());
 
 		double currentTime = SDL_GetTicks();
 		if (currentTime - lastTime > 1000) {
@@ -124,15 +140,13 @@ int main(int argc, char* argv[]) {
 			nbFrames = 0;
 		}
 
-
-		mouse_callback();
+		Camera::Instance()->processMouseMovement();
 		mainWindow->handleInput();
 
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
-
 		sphere->update();
 
 		//debug to draw light spheres bounding
@@ -146,17 +160,21 @@ int main(int argc, char* argv[]) {
 
 		//end geometry pass
 		Renderer::Instance()->stop();
+
+		//Shadow Pass 
+		Renderer::Instance()->startShadowMap();
+		for (auto x : entityList)
+			x->updateShadow();
+		Renderer::Instance()->stopShadowMap();
+
+
 		Renderer::Instance()->lightingPassStart();
-		//all lights are rendered here
-		for (auto light : lightList) {
-			light->update();
-		}
 		sun->update();
 
 		Renderer::Instance()->lightingPassStop();
 		//draw screen quad with final texture
 		quad->update();
-
+	
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();

@@ -2,6 +2,7 @@
 
 CubeGraphicsComponent::CubeGraphicsComponent() {
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/cube.vs", "src/shaders/cube.fs");
+	m_shadowShader = ResourceManager::Instance()->loadShader("src/shaders/shadow.vs", "src/shaders/shadow.fs");
 
 	//Create the appropriate buffers for the cube
 	glGenVertexArrays(1, &cubeVAO);
@@ -22,18 +23,37 @@ CubeGraphicsComponent::CubeGraphicsComponent() {
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
+	albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
+}
 
+void CubeGraphicsComponent::postInit(Entity& entity) {
 
 }
+
+
+void CubeGraphicsComponent::renderShadow(Entity& entity) {
+	//std::cout << "CALLED FROM CUBE CLASS" << std::endl;
+	m_shadowShader->use();
+	m_shadowShader->setMat4("view", Settings::Instance()->depthViewMatrix);
+	m_shadowShader->setMat4("projection", Settings::Instance()->projectionMatrix);
+	glm::mat4 model;
+	model = glm::translate(model, entity.getPosition());
+	m_shadowShader->setMat4("model", model);
+	glBindVertexArray(cubeVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+
+}
+
 void CubeGraphicsComponent::update(Entity& entity) {
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, albedo_texture);
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
 	m_shader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
-	sendToRenderer(GL_TRIANGLES, 0, 36);
-
-
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	//sendToRenderer(GL_TRIANGLES, 0, 36);
 }
