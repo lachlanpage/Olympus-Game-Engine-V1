@@ -121,10 +121,12 @@
     <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
     <ClCompile Include="src\components\DirectionalLightComponent.cpp" />
     <ClCompile Include="src\components\LightComponent.cpp" />
+    <ClCompile Include="src\components\ModelComponent.cpp" />
     <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
     <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
+    <ClCompile Include="src\core\Mouse.cpp" />
     <ClCompile Include="src\core\Renderer.cpp" />
     <ClCompile Include="src\core\ResourceManager.cpp" />
     <ClCompile Include="src\core\Shader.cpp" />
@@ -145,14 +147,17 @@
     <ClInclude Include="src\components\DirectionalLightComponent.h" />
     <ClInclude Include="src\components\GraphicsComponent.h" />
     <ClInclude Include="src\components\LightComponent.h" />
+    <ClInclude Include="src\components\ModelComponent.h" />
     <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
     <ClInclude Include="src\components\SphereGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
+    <ClInclude Include="src\core\Mouse.h" />
     <ClInclude Include="src\core\Renderer.h" />
     <ClInclude Include="src\core\ResourceManager.h" />
     <ClInclude Include="src\core\Shader.h" />
     <ClInclude Include="src\core\Window.h" />
+    <ClInclude Include="src\tiny_obj_loader.h" />
     <ClInclude Include="src\utilities\BusNode.h" />
     <ClInclude Include="src\utilities\Camera.h" />
     <ClInclude Include="src\utilities\Logger.h" />
@@ -171,9 +176,13 @@
     <None Include="src\shaders\directional_light.vs" />
     <None Include="src\shaders\light.fs" />
     <None Include="src\shaders\light.vs" />
+    <None Include="src\shaders\model.fs" />
+    <None Include="src\shaders\model.vs" />
     <None Include="src\shaders\passThrough.vs" />
     <None Include="src\shaders\pointLight.fs" />
     <None Include="src\shaders\pointLight.vs" />
+    <None Include="src\shaders\shadow.fs" />
+    <None Include="src\shaders\shadow.vs" />
     <None Include="src\shaders\simpleTexture.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

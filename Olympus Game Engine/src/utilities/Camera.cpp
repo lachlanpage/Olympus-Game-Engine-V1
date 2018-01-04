@@ -28,7 +28,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, MessageBus* me
 	m_yaw = -90.0f;
 	m_pitch = 0.0f;
 	m_movementSpeed = 10;
-	m_mouseSensitivity = 0.5f;
+	m_mouseSensitivity = 0.25f;
 	m_zoom;
 
 	update();
@@ -82,12 +82,20 @@ void Camera::handleInput(std::string movement) {
 	}
 }
 
-void Camera::processMouseMovement(float xoffset, float yoffset, bool constrainPitch = true) {
-	xoffset *= m_mouseSensitivity;
-	yoffset *= m_mouseSensitivity;
+void Camera::processMouseMovement() {
 
-	m_yaw += xoffset;
-	m_pitch += yoffset;
+	bool constrainPitch = true;
+
+	int window_height = Settings::Instance()->window_height;
+	int window_width = Settings::Instance()->window_width;
+	SDL_ShowCursor(SDL_DISABLE);
+
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+
+	m_yaw -= m_mouseSensitivity * (0.5 * window_width - x);
+	m_pitch += m_mouseSensitivity * (0.5 * window_height - y);
+
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (constrainPitch)
@@ -99,6 +107,7 @@ void Camera::processMouseMovement(float xoffset, float yoffset, bool constrainPi
 	}
 
 	update();
+	SDL_WarpMouseGlobal(window_width / 2, window_height / 2);
 }
 
 void Camera::update_time(float delta) {

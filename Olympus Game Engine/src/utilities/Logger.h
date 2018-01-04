@@ -2,7 +2,8 @@
 #define LOGGER_H
 #include <string>
 class Logger {
-	//general singleton logger class used to output/troubleshoot if iostream is unreasonable
+	//General singleton logger class used to output/troubleshoot if iostream is unreasonable 
+	//P.S - first time I ever learnt about/introduced to singleton classes :) 
 public:
 	static Logger* Instance();
 	void write(std::string message);

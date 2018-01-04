@@ -20,7 +20,7 @@ public:
 	Shader(const char* vertexPath, const char* fragmentPath);
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath);
 	Shader(const char* vertexPath, const char* fragmentPath, const char* tessControlPath, const char* tessEvalPath);
-	// use/activate the shader
+	//active the shader before setting uniforms
 	void use();
 	// utility uniform functions
 	void setBool(const std::string &name, bool value) const;
@@ -28,6 +28,5 @@ public:
 	void setFloat(const std::string &name, float value) const;
 	void setVec3(const std::string &name, const glm::vec3 &value) const;
 	void setMat4(const std::string &name, const glm::mat4 &mat) const;
-	//void setMat4(const std::string &name, glm::mat4 value) const;
 };
 #endif

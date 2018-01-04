@@ -36,6 +36,7 @@ PointLightGraphicsComponent::PointLightGraphicsComponent(){
 }
 void PointLightGraphicsComponent::update(Entity& entity) {
 
+
 	m_shader->use();
 
 	//lightradius, lightpoisiton, lightcolor 

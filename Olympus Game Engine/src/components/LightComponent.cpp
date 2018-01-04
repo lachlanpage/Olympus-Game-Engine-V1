@@ -61,6 +61,10 @@ LightComponent::LightComponent(float radius, glm::vec3 color) {
 }
 
 void LightComponent::update(Entity& entity) {
+	glm::vec3 currentPosition = entity.getPosition();
+	glm::vec3 newPosition = glm::vec3(currentPosition.x, currentPosition.y, cos(Time::Instance()->getDeltaTime()));
+	entity.setPosition(newPosition);
+
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);

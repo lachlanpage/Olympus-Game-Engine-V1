@@ -10,14 +10,11 @@ Logger* Logger::Instance() {
 }
 
 Logger::Logger() {
-	//clear file upon initiallisation
+	//trunc file upon start to clear log from previous run
 	std::ofstream logFile;
 	logFile.open(fileName, std::ios::trunc);
 }
-//create file and delete contents
-//std::ofstream logFile;
-//logFile.open(fileName, std::ios::trunc);
-//logFile.close();
+
 void Logger::write(std::string message) {
 	std::ofstream logFile;
 	logFile.open(fileName, std::ios::app);

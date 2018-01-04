@@ -6,6 +6,9 @@
 #include "BusNode.h"
 #include "Logger.h"
 #include "Time.h"
+#include "Settings.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_main.h>
 class Camera : public BusNode {
 public:
 	static Camera* m_Instance;
@@ -31,7 +34,7 @@ public:
 	void onNotify(Message message);
 	void handleInput(std::string movement);
 
-	void processMouseMovement(float xoffset, float yoffset, bool constrainPitch);
+	void processMouseMovement();
 
 	void update_time(float delta);
 

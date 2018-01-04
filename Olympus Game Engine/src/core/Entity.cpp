@@ -35,6 +35,11 @@ void Entity::update(){
 		component->update(*this);
 }
 
+void Entity::updateShadow() {
+	for (auto component : m_components)
+		component->renderShadow(*this);
+}
+
 
 void Entity::addComponent(Component* component) {
 	//work around to send important init data instead of using constructors

@@ -84,12 +84,30 @@ void Renderer::lightingPassStop() {
 
 }
 
+void Renderer::startShadowMap() {
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowBuffer);
+	glViewport(0, 0, 800, 600);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::stopShadowMap() {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 800, 600);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 int temp = 3;
 
 void Renderer::updateQuadShader(Shader* shader) {
 	//this is to update textures for quad shader
 	//int ID = shader->ID;
 	shader->setFloat("textureSelector", 5);
+
+	//need to delete
+	//teseting for shadow stuff 
+	shader->setMat4("biasMatrix", Settings::Instance()->biasMatrix);
+
 
 
 	shader->setInt("colorTexture", 0);
@@ -107,6 +125,10 @@ void Renderer::updateQuadShader(Shader* shader) {
 	shader->setInt("lightTexture", 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, lightingTexture);
+
+	shader->setInt("shadowTexture", 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
 
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -184,6 +206,27 @@ Renderer::Renderer() {
 	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "FRAME BUFFER DID NOT WORK " << std::endl;
+
+	//Framebuffer for shadow mapping 
+	glGenFramebuffers(1, &shadowBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowBuffer);
+
+	//use depth texture to make life simpler 
+	glGenTextures(1, &shadowDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 800, 600, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepthTexture, 0);
+	glDrawBuffer(GL_NONE); //dont need no colour buffer boiiiiii :) 
+
+	status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "FRAME BUFFER DID NOT WORK " << std::endl;
+
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
