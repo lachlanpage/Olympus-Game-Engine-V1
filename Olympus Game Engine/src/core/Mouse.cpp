@@ -17,17 +17,63 @@ void Mouse::checkIntersection(glm::vec3 position) {
 
 }
 
-void Mouse::update(glm::mat4 view) {
-	viewMatrix = view;
+void Mouse::update(std::vector<Entity*> entityList) {
+	viewMatrix = Camera::Instance()->getViewMatrix();
 	currentRay = calculateMouseRay();
 
 	glm::vec3 camPos = Camera::Instance()->getPosition();
-	int RANGE = 600; 
+	int RANGE = 13; 
 
 	glm::vec3 start = camPos + glm::vec3(currentRay.x * RANGE, currentRay.y * RANGE, currentRay.z * RANGE);
 
+	glm::vec3 startOfRay = getPointOnRay(currentRay, 0);
+	glm::vec3 endOfRay = getPointOnRay(currentRay, 10);
 
-	std::cout << currentRay.x << " " << currentRay.y << " " <<  currentRay.z << " " << std::endl;
+	bool blockIntersection = false;
+	float rayLength = 0;
+	float step_size = 1;
+	while (rayLength < RANGE && blockIntersection == false) {
+		glm::vec3 testRayPoint = getPointOnRay(currentRay, rayLength);
+		testRayPoint = glm::vec3(round(testRayPoint.x), round(testRayPoint.y), round(testRayPoint.z));
+		//std::cout << round(testRayPoint.x) << " " << round(testRayPoint.y) << " " << round(testRayPoint.z) << std::endl;
+		//if (testRayPoint.y == 0) {
+		//	std::cout << "NEG ZERO?" << std::endl;
+		//}
+		for (auto entity : entityList) {
+			//if (entity->getPosition().x <= 2 && entity->getPosition().z <= 2) {
+			//	std::cout << entity->getPosition().x << " " << entity->getPosition().y << " " << entity->getPosition().z << std::endl;
+			//}
+			glm::vec3 entityPosition = entity->getPosition();
+			if (testRayPoint.x == entityPosition.x && testRayPoint.y == entityPosition.y && testRayPoint.z == entityPosition.z) {
+				std::cout << "collision at: " << entityPosition.x << " " << entityPosition.y << " " << entityPosition.z << std::endl;
+				m_currentPoint = glm::vec3(entityPosition);
+				blockIntersection = true;
+				break;
+			}
+		}
+		rayLength = rayLength + step_size;
+	}
+	//m_currentPoint = endOfRay;
+	
+	//check intersection need to move to own function if tests complete 
+
+
+	//std::cout << startOfRay.x << " " << startOfRay.y << " " << startOfRay.z << std::endl;
+	//std::cout << endOfRay.x << " " << endOfRay.y << " " << endOfRay.z << std::endl;
+	//std::cout << currentRay.x << " " << currentRay.y << " " <<  currentRay.z << " " << std::endl;
+}
+
+glm::vec3 Mouse::getCurrentPoint() {
+	return m_currentPoint;
+}
+
+glm::vec3 Mouse::getPointOnRay(glm::vec3 ray, float distance) {
+	//returns the beginning point and end points of ray governed by distanced
+	glm::vec3 cameraPosition = Camera::Instance()->getPosition();
+	glm::vec3 startofRay = cameraPosition;
+	glm::vec3 scaledRay = glm::vec3(ray.x * distance, ray.y * distance, ray.z*distance);
+	glm::vec3 finalRay = startofRay + scaledRay;
+	return finalRay;
 }
 
 glm::vec3 Mouse::calculateMouseRay() {

@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 
 	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 
-	auto raycast = Mouse::Instance();
+	Mouse *raycast = Mouse::Instance();
 
 	std::vector<Entity*> entityList;
 	//test floor and wall 
@@ -101,9 +101,9 @@ int main(int argc, char* argv[]) {
 	Entity *sphere = new Entity(glm::vec3(5, 5, 5), new SphereGraphicsComponent());
 
 	std::vector<Entity*> lightList;
-	Entity *light = new Entity(glm::vec3(2,2,2));
+	Entity *light = new Entity(glm::vec3(0,2,10));
 	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
-	lightList.push_back(light);
+	//lightList.push_back(light);
 
 	Entity *light2 = new Entity(glm::vec3(14, 4, 9));
 	light2->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
@@ -134,8 +134,11 @@ int main(int argc, char* argv[]) {
 
 
 		//mouse picking
-		//raycast->update(Camera::Instance()->getViewMatrix());
-
+		raycast->update(entityList);
+		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
+		light->setPosition(raycast->getCurrentPoint());
+		
+		//std::cout << light->getPosition().x << " " << light->getPosition().y << " " << light->getPosition().z << std::endl;
 		double currentTime = SDL_GetTicks();
 		if (currentTime - lastTime > 1000) {
 			//a second has passed 
@@ -161,8 +164,9 @@ int main(int argc, char* argv[]) {
 			x->updateShadow();
 		Renderer::Instance()->stopShadowMap();
 
-
+		//lighting pass
 		Renderer::Instance()->lightingPassStart();
+		light->update();
 		sun->update();
 
 		Renderer::Instance()->lightingPassStop();
