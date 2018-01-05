@@ -10,7 +10,7 @@
 
 class DirectionalLightComponent : public Component {
 public:
-	DirectionalLightComponent();
+	DirectionalLightComponent(glm::vec3 direction);
 
 	virtual void update(Entity& entity);
 	void getBufferTextures();
@@ -18,7 +18,7 @@ public:
 private:
 
 	unsigned int VAO, VBO;
-
+	glm::vec3 m_direction;
 	Shader* m_shader;
 	float vertices[18] = {
 

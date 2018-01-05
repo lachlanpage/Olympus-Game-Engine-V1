@@ -29,11 +29,8 @@ void main(){
 	}
 
 	if(textureSelector == 5){
-		float visibility = 1.0;
-		if(texture(shadowTexture, shadowCoord.xy).z < shadowCoord.z){
-			visibility = 0.5;
-		}
-		color = visibility* texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV); //hardcoded ambience
+
+		color = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV); //hardcoded ambience
 	}
 
 	if(textureSelector == 3){

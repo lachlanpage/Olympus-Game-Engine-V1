@@ -36,7 +36,19 @@ void Window::handleInput() {
 	SDL_Event event;
 	
 	while (SDL_PollEvent(&event)) {
-
+		switch (event.type) {
+		case SDL_KEYDOWN:
+			switch (event.key.keysym.sym) {
+			case SDLK_q:
+				SDL_Surface * image = SDL_CreateRGBSurface(SDL_SWSURFACE, 800, 600, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+				glReadBuffer(GL_FRONT);
+				glReadPixels(0, 0, 800, 600, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+				std::string filename = "screenshot_" + std::to_string(Time::Instance()->getRuntime()) + ".bmp";
+				SDL_SaveBMP(image, filename.c_str());
+				SDL_FreeSurface(image);
+			}
+			
+		}
 	}
 
 	Message aMessage;
@@ -93,6 +105,10 @@ void Window::handleInput() {
 	else if (state[SDL_SCANCODE_P]) {
 		aMessage.setEvent("CAMERA_GET_POSITION");
 		send(aMessage);
+	}
+
+	else if (state[SDL_SCANCODE_O]) {
+
 	}
 }
 

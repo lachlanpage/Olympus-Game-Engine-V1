@@ -11,11 +11,14 @@ public:
 	int window_width;
 	glm::vec3 lightDir;
 
+	void setLightDirection(glm::vec3);
+
 	glm::mat4 projectionMatrix;
 	glm::mat4 depthViewMatrix;
 	glm::mat4 depthModelMatrix;
 	glm::mat4 depthMVP;
 	glm::mat4 biasMatrix;
+	glm::mat4 lightSpaceMatrix;
 private:
 	Settings();
 	Settings(Settings const&) {};

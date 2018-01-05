@@ -45,9 +45,15 @@ void Renderer::getBufferTextures(Shader *shader) {
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
 
+	shader->setInt("shadowTexture", 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+
 }
 
 void Renderer::updateLightShader(Shader* shader) {
+
+
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -60,6 +66,10 @@ void Renderer::updateLightShader(Shader* shader) {
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, positionTexture);
+
+	shader->setInt("shadowTexture", 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
 }
 
 void Renderer::lightingPassStart() {
@@ -107,8 +117,6 @@ void Renderer::updateQuadShader(Shader* shader) {
 	//need to delete
 	//teseting for shadow stuff 
 	shader->setMat4("biasMatrix", Settings::Instance()->biasMatrix);
-
-
 
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);

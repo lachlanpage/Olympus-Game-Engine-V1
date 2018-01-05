@@ -8,6 +8,7 @@
 #include "../utilities/MessageBus.h"
 #include "../utilities/Message.h"
 #include "../utilities/BusNode.h"
+#include "../utilities/Time.h"
 
 class Window : public BusNode {
 public:
