@@ -52,12 +52,8 @@ int main(int argc, char* argv[]) {
 		for (int j = 0; j <20; j++) {
 			Entity *ent = new Entity(glm::vec3(i, 0, j));
 			ent->addComponent(new CubeGraphicsComponent());
-
-			Entity *ent2 = new Entity(glm::vec3(i, i, 0));
-			ent2->addComponent(new CubeGraphicsComponent());
-
+		
 			entityList.push_back(ent);
-			entityList.push_back(ent2);
 		}
 	}
 
@@ -72,6 +68,19 @@ int main(int argc, char* argv[]) {
 	Entity *ent3 = new Entity(glm::vec3(10, 3, 10));
 	ent3->addComponent(new CubeGraphicsComponent());
 	entityList.push_back(ent3);
+
+	ent3 = new Entity(glm::vec3(11, 1, 8));
+	ent3->addComponent(new CubeGraphicsComponent());
+	entityList.push_back(ent3);
+
+	ent3 = new Entity(glm::vec3(4, 2, 1));
+	ent3->addComponent(new CubeGraphicsComponent());
+	entityList.push_back(ent3);
+
+	ent3 = new Entity(glm::vec3(4, 1, 1));
+	ent3->addComponent(new CubeGraphicsComponent());
+	entityList.push_back(ent3);
+
 
 
 
@@ -114,13 +123,7 @@ int main(int argc, char* argv[]) {
 
 
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
-	sun->addComponent(new DirectionalLightComponent());
-
-
-
-	glEnable(GL_DEPTH_TEST);
-
-
+	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 
 
 	double lastTime = SDL_GetTicks();
@@ -128,6 +131,7 @@ int main(int argc, char* argv[]) {
 
 	while (mainWindow->isRunning()) {
 		nbFrames += 1;
+
 
 		//mouse picking
 		//raycast->update(Camera::Instance()->getViewMatrix());
@@ -147,16 +151,6 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
-		sphere->update();
-
-		//debug to draw light spheres bounding
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//newEnt2->update();
-		//newEntity->update();
-		//for (auto light : lightList) {
-		//	light->update();
-		//}
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		//end geometry pass
 		Renderer::Instance()->stop();
