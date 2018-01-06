@@ -9,17 +9,22 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_main.h>
 #include <iostream>
-class Mouse {
+class Mouse : public BusNode {
 public:
 	static Mouse* Instance();
+	static Mouse* Instance(MessageBus* messageBus);
 	void update(std::vector<Entity*>);
 	void checkIntersection(glm::vec3 position);
 	glm::vec3 getCurrentPoint();
 	glm::vec3 m_currentPoint;
 
+	int m_blockIntersectionID;
+	int blockClickID;
+
 protected:
 private:
-	Mouse();
+	Mouse(MessageBus* messageBus);
+	void onNotify(Message message);
 
 
 	glm::vec3 getPointOnRay(glm::vec3 ray, float distance);

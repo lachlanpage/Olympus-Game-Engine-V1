@@ -16,6 +16,8 @@ Entity::Entity(glm::vec3 position, GraphicsComponent* graphics) {
 
 Entity::Entity(glm::vec3 position) {
 	m_position = position;
+	m_ID = uniqueIDCounter;
+	uniqueIDCounter++;
 }
 
 Entity::Entity(GraphicsComponent* graphics) {

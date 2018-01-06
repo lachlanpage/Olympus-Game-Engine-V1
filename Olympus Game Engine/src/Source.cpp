@@ -31,6 +31,11 @@
 
 #include "core/Mouse.h"
 
+//lua bridge must be after lua
+#include <Lua\lua.hpp>
+#include <LuaBridge\LuaBridge.h>
+
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
@@ -38,13 +43,36 @@ float xoffset = 0;
 float yoffset = 0;
 
 
+
+
 int main(int argc, char* argv[]) {
+
+	//Test lua
+	lua_State *L = luaL_newstate();
+	luaL_openlibs(L);
+
+	if (luaL_dofile(L, "src/scripts/test.lua")) {
+		const char* err = lua_tostring(L, -1);
+		std::cout << err << std::endl;
+	}
+	lua_pcall(L, 0, 0, 0);
+	luabridge::LuaRef s = luabridge::getGlobal(L, "something");
+	std::string luaString = s.cast<std::string>();
+	std::cout << luaString << std::endl;
+
+	//lua_state *L;
+	//lua_State *L = luaL_newstate();
+	//luaL_openlibs(L);
+
+
+
+
 
 	Window *mainWindow = new Window("Olympus Game Engine", 800, 600, MessageBus::Instance());
 
 	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 
-	Mouse *raycast = Mouse::Instance();
+	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	std::vector<Entity*> entityList;
 	//test floor and wall 
@@ -132,11 +160,21 @@ int main(int argc, char* argv[]) {
 	while (mainWindow->isRunning()) {
 		nbFrames += 1;
 
-
 		//mouse picking
 		raycast->update(entityList);
 		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
 		light->setPosition(raycast->getCurrentPoint());
+
+		//check block selections will move to entity manager class ? 
+		int blockID = raycast->blockClickID;
+		for (auto entity : entityList) {
+			if (entity->m_ID == blockID) {
+				entity->is_selected = true;
+			}
+			else {
+				entity->is_selected = false;
+			}
+		}
 		
 		//std::cout << light->getPosition().x << " " << light->getPosition().y << " " << light->getPosition().z << std::endl;
 		double currentTime = SDL_GetTicks();
@@ -172,11 +210,14 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->lightingPassStop();
 		//draw screen quad with final texture
 		quad->update();
+
+		//render crosshair
 	
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
 	}
+	lua_close(L);
 	return 0;
 }

@@ -4,17 +4,29 @@ Mouse* Mouse::m_Instance = 0;
 
 Mouse* Mouse::Instance() {
 	if (m_Instance == 0)
-		m_Instance = new Mouse;
+		Logger::Instance()->write("INVALID MOUSE ACCESS");
 	return m_Instance;
 }
 
-Mouse::Mouse() {
+Mouse* Mouse::Instance(MessageBus* messageBus) {
+	if (m_Instance == 0)
+		m_Instance = new Mouse(messageBus);
+	return m_Instance;
+
+}
+
+Mouse::Mouse( MessageBus* messageBus) : BusNode(messageBus) {
 	projectionMatrix = Settings::Instance()->projection;
 }
 
 void Mouse::checkIntersection(glm::vec3 position) {
+}
 
-
+void Mouse::onNotify(Message message) {
+	if (message.getEvent() == "MOUSE_LEFT_CLICK") {
+		blockClickID = m_blockIntersectionID;
+		
+	}
 }
 
 void Mouse::update(std::vector<Entity*> entityList) {
@@ -48,11 +60,16 @@ void Mouse::update(std::vector<Entity*> entityList) {
 			glm::vec3 entityPosition = entity->getPosition();
 			entity->is_selected = false;
 			if (testRayPoint.x == entityPosition.x && testRayPoint.y == entityPosition.y && testRayPoint.z == entityPosition.z) {
-				std::cout << "collision at: " << entityPosition.x << " " << entityPosition.y << " " << entityPosition.z << std::endl;
+				//std::cout << "collision at: " << entityPosition.x << " " << entityPosition.y << " " << entityPosition.z << std::endl;
 				m_currentPoint = glm::vec3(entityPosition);
 				entity->is_selected = true;
 				blockIntersection = true;
+				//std::cout << entity->m_ID << std::endl;
+				m_blockIntersectionID = entity->m_ID;
 				break;
+			}
+			else {
+				m_blockIntersectionID = -1;
 			}
 		}
 		rayLength = rayLength + step_size;
