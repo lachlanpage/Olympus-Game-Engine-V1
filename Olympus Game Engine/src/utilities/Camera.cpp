@@ -107,6 +107,7 @@ void Camera::processMouseMovement() {
 	}
 
 	update();
+	SDL_ShowCursor(SDL_TRUE);
 	SDL_WarpMouseGlobal(window_width / 2, window_height / 2);
 }
 

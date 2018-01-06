@@ -134,6 +134,10 @@
     <ClCompile Include="src\core\Shader.cpp" />
     <ClCompile Include="src\core\Window.cpp" />
     <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\imgui.cpp" />
+    <ClCompile Include="src\imgui_demo.cpp" />
+    <ClCompile Include="src\imgui_draw.cpp" />
+    <ClCompile Include="src\imgui_impl_sdl_gl3.cpp" />
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\utilities\Camera.cpp" />
@@ -159,6 +163,7 @@
     <ClInclude Include="src\core\ResourceManager.h" />
     <ClInclude Include="src\core\Shader.h" />
     <ClInclude Include="src\core\Window.h" />
+    <ClInclude Include="src\imgui_impl_sdl_gl3.h" />
     <ClInclude Include="src\tiny_obj_loader.h" />
     <ClInclude Include="src\utilities\BusNode.h" />
     <ClInclude Include="src\utilities\Camera.h" />
@@ -186,7 +191,6 @@
     <None Include="src\shaders\shadow.fs" />
     <None Include="src\shaders\shadow.vs" />
     <None Include="src\shaders\simpleTexture.fs" />
-    <None Include="test.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
