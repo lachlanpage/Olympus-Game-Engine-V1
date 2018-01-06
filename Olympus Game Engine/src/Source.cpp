@@ -46,13 +46,19 @@
 float xoffset = 0;
 float yoffset = 0;
 
+void ImGui_ImplSdl_CharCallback(unsigned int c) {
 
+}
 
 
 int main(int argc, char* argv[]) {
 
+	static float value = 10;
+	char buffer[50] = {};
+	std::vector<char> buffman;
+	static float buf1[64] = { 0 };
 
-
+	/*
 	//Test lua
 	lua_State *L = luaL_newstate();
 	luaL_openlibs(L);
@@ -70,7 +76,7 @@ int main(int argc, char* argv[]) {
 	//lua_State *L = luaL_newstate();
 	//luaL_openlibs(L);
 
-
+	*/
 
 
 
@@ -167,60 +173,14 @@ int main(int argc, char* argv[]) {
 	int nbFrames = 0;
 
 	//Imgui styling 
+	ImGui::StyleColorsDark();
 
-	ImGuiStyle& style = ImGui::GetStyle();
-	style.WindowRounding = 5.3f;
-	style.FrameRounding = 2.3f;
-	style.ScrollbarRounding = 0;
-
-	style.Colors[ImGuiCol_Text] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-	style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.09f, 0.09f, 0.15f, 1.00f);
-	style.Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_PopupBg] = ImVec4(0.05f, 0.05f, 0.10f, 0.85f);
-	style.Colors[ImGuiCol_Border] = ImVec4(0.70f, 0.70f, 0.70f, 0.65f);
-	style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_FrameBg] = ImVec4(0.00f, 0.00f, 0.01f, 1.00f);
-	style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.90f, 0.80f, 0.80f, 0.40f);
-	style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.90f, 0.65f, 0.65f, 0.45f);
-	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.83f);
-	style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.40f, 0.40f, 0.80f, 0.20f);
-	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.00f, 0.00f, 0.00f, 0.87f);
-	style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.01f, 0.01f, 0.02f, 0.80f);
-	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.20f, 0.25f, 0.30f, 0.60f);
-	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.55f, 0.53f, 0.55f, 0.51f);
-	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.56f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.56f, 0.56f, 0.56f, 0.91f);
-	style.Colors[ImGuiCol_ComboBg] = ImVec4(0.1f, 0.1f, 0.1f, 0.99f);
-	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.90f, 0.90f, 0.90f, 0.83f);
-	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.70f, 0.70f, 0.70f, 0.62f);
-	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.30f, 0.30f, 0.30f, 0.84f);
-	style.Colors[ImGuiCol_Button] = ImVec4(0.48f, 0.72f, 0.89f, 0.49f);
-	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.50f, 0.69f, 0.99f, 0.68f);
-	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.80f, 0.50f, 0.50f, 1.00f);
-	style.Colors[ImGuiCol_Header] = ImVec4(0.30f, 0.69f, 1.00f, 0.53f);
-	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.44f, 0.61f, 0.86f, 1.00f);
-	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.38f, 0.62f, 0.83f, 1.00f);
-	//style.Colors[ImGuiCol_Column] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
-	//style.Colors[ImGuiCol_ColumnHovered] = ImVec4(0.70f, 0.60f, 0.60f, 1.00f);
-	//style.Colors[ImGuiCol_ColumnActive] = ImVec4(0.90f, 0.70f, 0.70f, 1.00f);
-	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(1.00f, 1.00f, 1.00f, 0.85f);
-	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(1.00f, 1.00f, 1.00f, 0.60f);
-	style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(1.00f, 1.00f, 1.00f, 0.90f);
-	style.Colors[ImGuiCol_CloseButton] = ImVec4(0.50f, 0.50f, 0.90f, 0.50f);
-	style.Colors[ImGuiCol_CloseButtonHovered] = ImVec4(0.70f, 0.70f, 0.90f, 0.60f);
-	style.Colors[ImGuiCol_CloseButtonActive] = ImVec4(0.70f, 0.70f, 0.70f, 1.00f);
-	style.Colors[ImGuiCol_PlotLines] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-	style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.00f, 0.00f, 1.00f, 0.35f);
-	style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+	bool renderIMGUI = true;
 
 	while (mainWindow->isRunning()) {
 
-		ImGuiIO& io = ImGui::GetIO();
-		io.WantCaptureKeyboard = false;
+		//ImGuiIO& io = ImGui::GetIO();
+		//io.WantCaptureKeyboard = false;
 
 		//testing of creating gui 
 		//create gui 
@@ -231,7 +191,11 @@ int main(int argc, char* argv[]) {
 		ImGui::Begin("Entity Inspector");
 		ImGui::Spacing();
 		if (ImGui::CollapsingHeader("Transform")) {
-			static float buf1[64] = { 0 };
+			if (ImGui::InputText("label", buffer, 50, ImGuiInputTextFlags_AlwaysInsertMode)) {
+				ImGui::SetKeyboardFocusHere(-1);
+
+			}
+			/*
 			ImGui::Text("Position");
 			ImGui::NewLine();
 			ImGui::PushItemWidth(100);
@@ -256,12 +220,13 @@ int main(int argc, char* argv[]) {
 			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3);
 			ImGui::PopItemWidth();
 			ImGui::NewLine();
+
+			*/
+			//ImGui::SliderFloat("label", &value, 0, 100);
 		}
 		ImGui::End();
 
 
-		//io.WantCaptureKeyboard = true;
-		//io.WantCaptureMouse = true;
 
 		nbFrames += 1;
 
@@ -269,6 +234,14 @@ int main(int argc, char* argv[]) {
 		raycast->update(entityList);
 		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
 		light->setPosition(raycast->getCurrentPoint());
+
+
+		if (raycast->blockClickID == -1) {
+			renderIMGUI = false;	
+		}
+		else {
+			renderIMGUI = true;
+		}
 
 		//check block selections will move to entity manager class ? 
 		int blockID = raycast->blockClickID;
@@ -290,8 +263,28 @@ int main(int argc, char* argv[]) {
 			nbFrames = 0;
 		}
 
-		Camera::Instance()->processMouseMovement();
-		mainWindow->handleInput();
+		if (renderIMGUI == true && ImGui::IsMouseHoveringAnyWindow() == true) {
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				ImGui_ImplSdlGL3_ProcessEvent(&event);
+			}
+			//ImGuiIO& io = ImGui::GetIO();
+			//io.WantCaptureKeyboard = true;
+			//io.WantCaptureMouse = true;
+			
+			//std::cout << io.WantCaptureKeyboard << std::endl;
+
+		
+
+		}
+		else {
+			//std::cout << "THIS SHOULD NOT BE CALLED" << std::endl;
+			ImGuiIO& io = ImGui::GetIO();
+			std::cout << io.WantCaptureKeyboard << std::endl;
+			Camera::Instance()->processMouseMovement();
+			mainWindow->handleInput();
+		}
 
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
@@ -318,13 +311,16 @@ int main(int argc, char* argv[]) {
 
 		//render crosshair
 
-		ImGui::Render();
-	
+		//render GUI 
+		if (renderIMGUI)
+			ImGui::Render();
+		ImGui::EndFrame();
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
 	}
-	lua_close(L);
+	ImGui_ImplSdlGL3_Shutdown();
+	//lua_close(L);
 	return 0;
 }

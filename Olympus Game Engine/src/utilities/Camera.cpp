@@ -31,6 +31,8 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, MessageBus* me
 	m_mouseSensitivity = 0.25f;
 	m_zoom;
 
+	m_updateCamera = true;
+
 	update();
 }
 
@@ -79,36 +81,49 @@ void Camera::handleInput(std::string movement) {
 		m_position += m_right * velocity;
 	else if (movement == "CAMERA_GET_POSITION") {
 		std::cout << m_position.x << " " << m_position.y << " " << m_position.z << std::endl;
+	} 
+	else if (movement == "CAMERA_STOP") {
+		if (m_updateCamera == true) {
+			m_updateCamera = false;
+		}
+		else {
+			SDL_WarpMouseGlobal(Settings::Instance()->window_width / 2, Settings::Instance()->window_height / 2);
+			m_updateCamera = true;
+		}
 	}
 }
 
 void Camera::processMouseMovement() {
+	if (m_updateCamera) {
+		bool constrainPitch = true;
 
-	bool constrainPitch = true;
+		int window_height = Settings::Instance()->window_height;
+		int window_width = Settings::Instance()->window_width;
+		SDL_ShowCursor(SDL_DISABLE);
 
-	int window_height = Settings::Instance()->window_height;
-	int window_width = Settings::Instance()->window_width;
-	SDL_ShowCursor(SDL_DISABLE);
+		int x, y;
+		SDL_GetMouseState(&x, &y);
 
-	int x, y;
-	SDL_GetMouseState(&x, &y);
-
-	m_yaw -= m_mouseSensitivity * (0.5 * window_width - x);
-	m_pitch += m_mouseSensitivity * (0.5 * window_height - y);
+		m_yaw -= m_mouseSensitivity * (0.5 * window_width - x);
+		m_pitch += m_mouseSensitivity * (0.5 * window_height - y);
 
 
-	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (m_pitch > 89.0f)
-			m_pitch = 89.0f;
-		if (m_pitch < -89.0f)
-			m_pitch = -89.0f;
+		// Make sure that when pitch is out of bounds, screen doesn't get flipped
+		if (constrainPitch)
+		{
+			if (m_pitch > 89.0f)
+				m_pitch = 89.0f;
+			if (m_pitch < -89.0f)
+				m_pitch = -89.0f;
+		}
+
+		update();
+		SDL_WarpMouseGlobal(window_width / 2, window_height / 2);
+		SDL_ShowCursor(SDL_FALSE);
 	}
-
-	update();
-	SDL_ShowCursor(SDL_TRUE);
-	SDL_WarpMouseGlobal(window_width / 2, window_height / 2);
+	else {
+		SDL_ShowCursor(SDL_TRUE);
+	}
 }
 
 void Camera::update_time(float delta) {

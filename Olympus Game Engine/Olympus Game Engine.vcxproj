@@ -163,7 +163,6 @@
     <ClInclude Include="src\core\ResourceManager.h" />
     <ClInclude Include="src\core\Shader.h" />
     <ClInclude Include="src\core\Window.h" />
-    <ClInclude Include="src\imgui_impl_sdl_gl3.h" />
     <ClInclude Include="src\tiny_obj_loader.h" />
     <ClInclude Include="src\utilities\BusNode.h" />
     <ClInclude Include="src\utilities\Camera.h" />

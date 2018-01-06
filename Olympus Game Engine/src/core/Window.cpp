@@ -46,6 +46,10 @@ void Window::handleInput() {
 			break;
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
+			case SDLK_c:
+				aMessage.setEvent("CAMERA_STOP");
+				send(aMessage);
+				break;
 			case SDLK_q:
 				SDL_Surface * image = SDL_CreateRGBSurface(SDL_SWSURFACE, 800, 600, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
 				glReadBuffer(GL_FRONT);
@@ -53,8 +57,8 @@ void Window::handleInput() {
 				std::string filename = "screenshot_" + std::to_string(Time::Instance()->getRuntime()) + ".bmp";
 				SDL_SaveBMP(image, filename.c_str());
 				SDL_FreeSurface(image);
+				break;
 			}
-			
 		}
 	}
 
