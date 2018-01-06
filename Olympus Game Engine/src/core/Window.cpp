@@ -34,11 +34,22 @@ void Window::onNotify(Message message) {}
 
 void Window::handleInput() {
 	SDL_Event event;
-	
+	Message aMessage;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
+		case SDL_MOUSEBUTTONDOWN:
+			if (event.button.button == SDL_BUTTON_LEFT) {
+				aMessage.setEvent("MOUSE_LEFT_CLICK");
+				send(aMessage);
+
+			}
+			break;
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
+			case SDLK_c:
+				aMessage.setEvent("CAMERA_STOP");
+				send(aMessage);
+				break;
 			case SDLK_q:
 				SDL_Surface * image = SDL_CreateRGBSurface(SDL_SWSURFACE, 800, 600, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
 				glReadBuffer(GL_FRONT);
@@ -46,12 +57,11 @@ void Window::handleInput() {
 				std::string filename = "screenshot_" + std::to_string(Time::Instance()->getRuntime()) + ".bmp";
 				SDL_SaveBMP(image, filename.c_str());
 				SDL_FreeSurface(image);
+				break;
 			}
-			
 		}
 	}
 
-	Message aMessage;
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 	if (state[SDL_SCANCODE_A] && state[SDL_SCANCODE_W]) {
 		aMessage.setEvent("CAMERA_W_A");

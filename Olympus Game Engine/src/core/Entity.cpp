@@ -16,6 +16,8 @@ Entity::Entity(glm::vec3 position, GraphicsComponent* graphics) {
 
 Entity::Entity(glm::vec3 position) {
 	m_position = position;
+	m_ID = uniqueIDCounter;
+	uniqueIDCounter++;
 }
 
 Entity::Entity(GraphicsComponent* graphics) {
@@ -27,12 +29,15 @@ Entity::~Entity(){}
 glm::vec3 Entity::getPosition() { return m_position; }
 void Entity::setPosition(glm::vec3 position) { m_position = position; }
 void Entity::update(){
+
 	if (m_graphics != nullptr) {
 		m_graphics->update(*this);
 	}
 
 	for (auto component : m_components)
 		component->update(*this);
+
+	is_selected = false;
 }
 
 void Entity::updateShadow() {

@@ -48,6 +48,7 @@ void CubeGraphicsComponent::update(Entity& entity) {
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
+	m_shader->setBool("isSelected", entity.is_selected);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, albedo_texture);
 	glm::mat4 model;

@@ -21,7 +21,7 @@ DirectionalLightComponent::DirectionalLightComponent(glm::vec3 direction) {
 }
 void DirectionalLightComponent::update(Entity& entity) {
 	//update light direction in settings which will affect shadows 
-	m_direction = glm::vec3(cos(SDL_GetTicks() / 100000.0), m_direction.y, m_direction.z);
+	m_direction = glm::vec3(cos(SDL_GetTicks() / 10000.0), m_direction.y, m_direction.z);
 	Settings::Instance()->setLightDirection(m_direction);
 
 	m_shader->use();

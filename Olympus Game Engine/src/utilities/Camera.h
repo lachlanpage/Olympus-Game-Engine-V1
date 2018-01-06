@@ -27,6 +27,8 @@ public:
 	float m_mouseSensitivity;
 	float m_zoom;
 
+	bool m_updateCamera;
+
 	float deltaTime;
 
 	glm::mat4 Camera::getViewMatrix();

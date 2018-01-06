@@ -31,20 +31,63 @@
 
 #include "core/Mouse.h"
 
+//lua bridge must be after lua
+#include <Lua\lua.hpp>
+#include <LuaBridge\LuaBridge.h>
+
+//iMGUI
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl_gl3.h>
+
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
 float xoffset = 0;
 float yoffset = 0;
 
+void ImGui_ImplSdl_CharCallback(unsigned int c) {
+
+}
+
 
 int main(int argc, char* argv[]) {
 
+	static float value = 10;
+	char buffer[50] = {};
+	std::vector<char> buffman;
+	static float buf1[64] = { 0 };
+
+	/*
+	//Test lua
+	lua_State *L = luaL_newstate();
+	luaL_openlibs(L);
+
+	if (luaL_dofile(L, "src/scripts/test.lua")) {
+		const char* err = lua_tostring(L, -1);
+		std::cout << err << std::endl;
+	}
+	lua_pcall(L, 0, 0, 0);
+	luabridge::LuaRef s = luabridge::getGlobal(L, "something");
+	std::string luaString = s.cast<std::string>();
+	std::cout << luaString << std::endl;
+
+	//lua_state *L;
+	//lua_State *L = luaL_newstate();
+	//luaL_openlibs(L);
+
+	*/
+
+
+
 	Window *mainWindow = new Window("Olympus Game Engine", 800, 600, MessageBus::Instance());
+
+
+
 
 	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 
-	auto raycast = Mouse::Instance();
+	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	std::vector<Entity*> entityList;
 	//test floor and wall 
@@ -101,9 +144,9 @@ int main(int argc, char* argv[]) {
 	Entity *sphere = new Entity(glm::vec3(5, 5, 5), new SphereGraphicsComponent());
 
 	std::vector<Entity*> lightList;
-	Entity *light = new Entity(glm::vec3(2,2,2));
+	Entity *light = new Entity(glm::vec3(0,2,10));
 	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
-	lightList.push_back(light);
+	//lightList.push_back(light);
 
 	Entity *light2 = new Entity(glm::vec3(14, 4, 9));
 	light2->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
@@ -129,13 +172,89 @@ int main(int argc, char* argv[]) {
 	double lastTime = SDL_GetTicks();
 	int nbFrames = 0;
 
+	//Imgui styling 
+	ImGui::StyleColorsDark();
+
+	bool renderIMGUI = true;
+
 	while (mainWindow->isRunning()) {
+
+		//ImGuiIO& io = ImGui::GetIO();
+		//io.WantCaptureKeyboard = false;
+
+		//testing of creating gui 
+		//create gui 
+		ImGui_ImplSdlGL3_Init(mainWindow->getWindow());
+
+		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
+
+		ImGui::Begin("Entity Inspector");
+		ImGui::Spacing();
+		if (ImGui::CollapsingHeader("Transform")) {
+			if (ImGui::InputText("label", buffer, 50, ImGuiInputTextFlags_AlwaysInsertMode)) {
+				ImGui::SetKeyboardFocusHere(-1);
+
+			}
+			/*
+			ImGui::Text("Position");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine();  ImGui::InputFloat("", buf1, 0,0,3);  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0,0,3); ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0,0,3);
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+			ImGui::Text("Rotation");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine();  ImGui::InputFloat("", buf1, 0, 0, 3);  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3); ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3);
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+			ImGui::Text("Scale");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine();  ImGui::InputFloat("", buf1, 0, 0, 3);  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3); ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3);
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+
+			*/
+			//ImGui::SliderFloat("label", &value, 0, 100);
+		}
+		ImGui::End();
+
+
+
 		nbFrames += 1;
 
-
 		//mouse picking
-		//raycast->update(Camera::Instance()->getViewMatrix());
+		raycast->update(entityList);
+		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
+		light->setPosition(raycast->getCurrentPoint());
 
+
+		if (raycast->blockClickID == -1) {
+			renderIMGUI = false;	
+		}
+		else {
+			renderIMGUI = true;
+		}
+
+		//check block selections will move to entity manager class ? 
+		int blockID = raycast->blockClickID;
+		for (auto entity : entityList) {
+			if (entity->m_ID == blockID) {
+				entity->is_selected = true;
+			}
+			else {
+				entity->is_selected = false;
+			}
+		}
+		
+		//std::cout << light->getPosition().x << " " << light->getPosition().y << " " << light->getPosition().z << std::endl;
 		double currentTime = SDL_GetTicks();
 		if (currentTime - lastTime > 1000) {
 			//a second has passed 
@@ -144,8 +263,28 @@ int main(int argc, char* argv[]) {
 			nbFrames = 0;
 		}
 
-		Camera::Instance()->processMouseMovement();
-		mainWindow->handleInput();
+		if (renderIMGUI == true && ImGui::IsMouseHoveringAnyWindow() == true) {
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				ImGui_ImplSdlGL3_ProcessEvent(&event);
+			}
+			//ImGuiIO& io = ImGui::GetIO();
+			//io.WantCaptureKeyboard = true;
+			//io.WantCaptureMouse = true;
+			
+			//std::cout << io.WantCaptureKeyboard << std::endl;
+
+		
+
+		}
+		else {
+			//std::cout << "THIS SHOULD NOT BE CALLED" << std::endl;
+			ImGuiIO& io = ImGui::GetIO();
+			std::cout << io.WantCaptureKeyboard << std::endl;
+			Camera::Instance()->processMouseMovement();
+			mainWindow->handleInput();
+		}
 
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
@@ -161,18 +300,27 @@ int main(int argc, char* argv[]) {
 			x->updateShadow();
 		Renderer::Instance()->stopShadowMap();
 
-
+		//lighting pass
 		Renderer::Instance()->lightingPassStart();
+		light->update();
 		sun->update();
 
 		Renderer::Instance()->lightingPassStop();
 		//draw screen quad with final texture
 		quad->update();
-	
+
+		//render crosshair
+
+		//render GUI 
+		if (renderIMGUI)
+			ImGui::Render();
+		ImGui::EndFrame();
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
 	}
+	ImGui_ImplSdlGL3_Shutdown();
+	//lua_close(L);
 	return 0;
 }
