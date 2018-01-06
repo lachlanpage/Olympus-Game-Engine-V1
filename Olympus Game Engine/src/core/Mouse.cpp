@@ -43,10 +43,14 @@ void Mouse::update(std::vector<Entity*> entityList) {
 			//if (entity->getPosition().x <= 2 && entity->getPosition().z <= 2) {
 			//	std::cout << entity->getPosition().x << " " << entity->getPosition().y << " " << entity->getPosition().z << std::endl;
 			//}
+			//is slected could cause problems if loops exists early before setting state for all entitys back to not selected
+			//maybe update each entity to is selected is false each update?
 			glm::vec3 entityPosition = entity->getPosition();
+			entity->is_selected = false;
 			if (testRayPoint.x == entityPosition.x && testRayPoint.y == entityPosition.y && testRayPoint.z == entityPosition.z) {
 				std::cout << "collision at: " << entityPosition.x << " " << entityPosition.y << " " << entityPosition.z << std::endl;
 				m_currentPoint = glm::vec3(entityPosition);
+				entity->is_selected = true;
 				blockIntersection = true;
 				break;
 			}

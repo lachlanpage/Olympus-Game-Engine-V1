@@ -13,6 +13,8 @@ public:
 	static int uniqueIDCounter;
 	int m_ID;
 
+	int is_selected;
+
 	Entity();
 	Entity(GraphicsComponent*);
 	Entity(glm::vec3);
