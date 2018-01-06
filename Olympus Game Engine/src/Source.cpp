@@ -54,7 +54,7 @@ void ImGui_ImplSdl_CharCallback(unsigned int c) {
 int main(int argc, char* argv[]) {
 
 	static float value = 10;
-	char buffer[50] = {};
+	static char buffer[50] = {};
 	std::vector<char> buffman;
 	static float buf1[64] = { 0 };
 
@@ -177,56 +177,14 @@ int main(int argc, char* argv[]) {
 
 	bool renderIMGUI = true;
 
+	ImGui_ImplSdlGL3_Init(mainWindow->getWindow());
+
 	while (mainWindow->isRunning()) {
 
 		//ImGuiIO& io = ImGui::GetIO();
 		//io.WantCaptureKeyboard = false;
 
 		//testing of creating gui 
-		//create gui 
-		ImGui_ImplSdlGL3_Init(mainWindow->getWindow());
-
-		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
-
-		ImGui::Begin("Entity Inspector");
-		ImGui::Spacing();
-		if (ImGui::CollapsingHeader("Transform")) {
-			if (ImGui::InputText("label", buffer, 50, ImGuiInputTextFlags_AlwaysInsertMode)) {
-				ImGui::SetKeyboardFocusHere(-1);
-
-			}
-			/*
-			ImGui::Text("Position");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  ImGui::InputFloat("", buf1, 0,0,3);  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0,0,3); ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0,0,3);
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-			ImGui::Text("Rotation");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  ImGui::InputFloat("", buf1, 0, 0, 3);  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3); ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3);
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-			ImGui::Text("Scale");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  ImGui::InputFloat("", buf1, 0, 0, 3);  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3); ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); ImGui::InputFloat("", buf1, 0, 0, 3);
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-
-			*/
-			//ImGui::SliderFloat("label", &value, 0, 100);
-		}
-		ImGui::End();
-
-
 
 		nbFrames += 1;
 
@@ -263,6 +221,7 @@ int main(int argc, char* argv[]) {
 			nbFrames = 0;
 		}
 
+		/*
 		if (renderIMGUI == true && ImGui::IsMouseHoveringAnyWindow() == true) {
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
@@ -285,6 +244,72 @@ int main(int argc, char* argv[]) {
 			Camera::Instance()->processMouseMovement();
 			mainWindow->handleInput();
 		}
+
+		*/
+
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureKeyboard == 1 || io.WantCaptureMouse == 1) {
+			SDL_Event event;
+			while (SDL_PollEvent(&event))
+			{
+				ImGui_ImplSdlGL3_ProcessEvent(&event);
+			}
+
+		}
+		
+		else {
+			Camera::Instance()->processMouseMovement();
+			mainWindow->handleInput();
+		}
+
+
+
+		//create gui 
+		//create gui 
+
+		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
+
+		ImGui::Begin("Entity Inspector");
+		ImGui::Spacing();
+		ImGui::Text("Entity");
+		if (ImGui::CollapsingHeader("Transform")) {
+			if (ImGui::InputText("label", buffer, 50, ImGuiInputTextFlags_AlwaysInsertMode)) {
+				ImGui::SetKeyboardFocusHere(-1);
+			}
+			
+			ImGui::Text("Position");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine();  if(ImGui::InputFloat("a", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); if(ImGui::InputFloat("b", buf1, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); if(ImGui::InputFloat("c", buf1, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); }
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+			ImGui::Text("Rotation");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine();  if (ImGui::InputFloat("a2", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); if (ImGui::InputFloat("b2", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); if (ImGui::InputFloat("c43", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+			ImGui::Text("Scale");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine(); if (ImGui::InputFloat("ad", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); if (ImGui::InputFloat("df", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); if (ImGui::InputFloat("dfs", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+			//ImGui::SliderFloat("label", &value, 0, 100);
+		}
+		ImGui::End();
+
+
+
+		//if (io.WantCaptureKeyboard == 1) {
+
+		//}
 
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
@@ -312,9 +337,9 @@ int main(int argc, char* argv[]) {
 		//render crosshair
 
 		//render GUI 
-		if (renderIMGUI)
-			ImGui::Render();
-		ImGui::EndFrame();
+		//if (renderIMGUI)
+		ImGui::Render();
+		//ImGui::EndFrame();
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
