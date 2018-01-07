@@ -122,7 +122,7 @@ void Camera::processMouseMovement() {
 		SDL_ShowCursor(SDL_FALSE);
 	}
 	else {
-		SDL_ShowCursor(SDL_TRUE);
+		//SDL_ShowCursor(SDL_TRUE);
 	}
 }
 

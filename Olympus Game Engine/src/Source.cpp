@@ -53,10 +53,7 @@ void ImGui_ImplSdl_CharCallback(unsigned int c) {
 
 int main(int argc, char* argv[]) {
 
-	static float value = 10;
-	static char buffer[50] = {};
-	std::vector<char> buffman;
-	static float buf1[64] = { 0 };
+
 
 	/*
 	//Test lua
@@ -268,21 +265,43 @@ int main(int argc, char* argv[]) {
 		//create gui 
 
 		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
+		//Creation of imgui entity frame
+		int ID;
+		glm::vec3 blockPos;
+		Entity *entityAdd = nullptr;
+		if (raycast->blockClickID != -1) {
+			for (auto entity : entityList) {
+				if (raycast->blockClickID == entity->m_ID) {
+					ID = entity->m_ID;
+					blockPos = entity->getPosition();
+					entityAdd = entity;
+				}
+			}
+		}
+		static float value = 10;
+		static char buffer[50] = {};
+		std::vector<char> buffman;
+		static float buf1[64] = { 0 };
+
+
 
 		ImGui::Begin("Entity Inspector");
 		ImGui::Spacing();
-		ImGui::Text("Entity");
+		ImGui::PushItemWidth(100);
+		//ImGui::Text("Entity");  ImGui::SameLine(); ImGui::Text((const char*) raycast->blockClickID);
+		ImGui::PopItemWidth();
+
 		if (ImGui::CollapsingHeader("Transform")) {
-			if (ImGui::InputText("label", buffer, 50, ImGuiInputTextFlags_AlwaysInsertMode)) {
+			if (ImGui::InputText("label", buffer, 50)) {
 				ImGui::SetKeyboardFocusHere(-1);
 			}
 			
 			ImGui::Text("Position");
 			ImGui::NewLine();
 			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  if(ImGui::InputFloat("a", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); if(ImGui::InputFloat("b", buf1, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); if(ImGui::InputFloat("c", buf1, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); }
+			ImGui::Text("X"); ImGui::SameLine();  if(ImGui::InputFloat("1", &blockPos.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); if(ImGui::InputFloat("2", &blockPos.y, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); if(ImGui::InputFloat("3", &blockPos.z, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); }
 			ImGui::PopItemWidth();
 			ImGui::NewLine();
 			ImGui::Text("Rotation");
@@ -302,6 +321,11 @@ int main(int argc, char* argv[]) {
 			ImGui::PopItemWidth();
 			ImGui::NewLine();
 			//ImGui::SliderFloat("label", &value, 0, 100);
+
+			//if gui updates values we gotta set them here 
+			if(entityAdd != nullptr){}
+				entityAdd->setPosition(blockPos);
+
 		}
 		ImGui::End();
 
@@ -337,9 +361,10 @@ int main(int argc, char* argv[]) {
 		//render crosshair
 
 		//render GUI 
-		//if (renderIMGUI)
-		ImGui::Render();
-		//ImGui::EndFrame();
+		if (renderIMGUI)
+			ImGui::Render();
+		else
+			ImGui::EndFrame();
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
