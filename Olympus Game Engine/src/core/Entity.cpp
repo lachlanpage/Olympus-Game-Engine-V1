@@ -9,6 +9,8 @@ Entity::Entity(){
 
 Entity::Entity(glm::vec3 position, GraphicsComponent* graphics) {
 	m_position = position;
+	m_scale = glm::vec3(1, 1, 1);
+	m_rotation = glm::vec3(0, 0, 0);
 	m_graphics = graphics;
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;	
@@ -16,18 +18,26 @@ Entity::Entity(glm::vec3 position, GraphicsComponent* graphics) {
 
 Entity::Entity(glm::vec3 position) {
 	m_position = position;
+	m_scale = glm::vec3(1, 1, 1);
+	m_rotation = glm::vec3(0, 0, 0);
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;
 }
 
 Entity::Entity(GraphicsComponent* graphics) {
 	m_graphics = graphics;
+	m_scale = glm::vec3(1, 1, 1);
+	m_rotation = glm::vec3(0, 0, 0);
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;
 }
 Entity::~Entity(){}
 glm::vec3 Entity::getPosition() { return m_position; }
+glm::vec3 Entity::getRotation() { return m_rotation; }
+glm::vec3 Entity::getScale() {return m_scale;}
 void Entity::setPosition(glm::vec3 position) { m_position = position; }
+void Entity::setScale(glm::vec3 scale) { m_scale = scale; }
+void Entity::setRotation(glm::vec3 rotation) { m_rotation = rotation; }
 void Entity::update(){
 
 	if (m_graphics != nullptr) {

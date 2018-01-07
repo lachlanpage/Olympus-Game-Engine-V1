@@ -115,7 +115,7 @@ glm::vec4 Mouse::toEyeCoords(glm::vec4 clipCoords) {
 }
 
 glm::vec2 Mouse::normDeviceCoords(int x, int y) {
-	float xnorm = (2 * x) / 800 - 1;
-	float ynorm = (2 * y) / 600 - 1;
+	float xnorm = (2 * x) / Settings::Instance()->window_width - 1;
+	float ynorm = (2 * y) / Settings::Instance()->window_height - 1;
 	return glm::vec2(xnorm, ynorm);
 }

@@ -94,6 +94,7 @@ void Camera::handleInput(std::string movement) {
 }
 
 void Camera::processMouseMovement() {
+
 	if (m_updateCamera) {
 		bool constrainPitch = true;
 
@@ -119,7 +120,7 @@ void Camera::processMouseMovement() {
 
 		update();
 		SDL_WarpMouseGlobal(window_width / 2, window_height / 2);
-		SDL_ShowCursor(SDL_FALSE);
+		SDL_ShowCursor(SDL_DISABLE);
 	}
 	else {
 		//SDL_ShowCursor(SDL_TRUE);

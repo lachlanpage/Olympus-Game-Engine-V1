@@ -38,6 +38,13 @@ void CubeGraphicsComponent::renderShadow(Entity& entity) {
 	m_shadowShader->setMat4("projection", Settings::Instance()->projectionMatrix);
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
+	model = glm::scale(model, entity.getScale());
+	//x rotation
+	model = glm::rotate(model, glm::radians(entity.getRotation().x), glm::vec3(1, 0, 0));
+	//y rotation 
+	model = glm::rotate(model, glm::radians(entity.getRotation().y), glm::vec3(0,1, 0));
+	//z rotation
+	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0,0,1));
 	m_shadowShader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -53,6 +60,13 @@ void CubeGraphicsComponent::update(Entity& entity) {
 	glBindTexture(GL_TEXTURE_2D, albedo_texture);
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
+	model = glm::scale(model, entity.getScale());
+	//x rotation
+	model = glm::rotate(model, glm::radians(entity.getRotation().x), glm::vec3(1, 0, 0));
+	//y rotation 
+	model = glm::rotate(model, glm::radians(entity.getRotation().y), glm::vec3(0, 1, 0));
+	//z rotation
+	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0, 0, 1));
 	m_shader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -16,7 +16,9 @@ void main()
     color = texture(albedo_texture, vs_textureCoordinates);//vec4(0.5f, 0.5f, 0.5f, 1.0f);
 	//textureCoordinates = vec4(vs_textureCoordinates, 0.0,1.0);
 	if(isSelected){
-		color = vec4(1.0,1.0,1.0,1.0);
+		vec4 color1 = vec4(1.0,1.0,1.0,1.0) ;
+		vec4 color2 = texture(albedo_texture, vs_textureCoordinates);
+		color = mix(color1,color2,0.5);
 	}
 	normalData = vec4(vs_normalData, 1.0);
 	positionData = vec4(vs_pos, 1.0);
