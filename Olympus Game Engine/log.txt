@@ -1224,4 +1224,5 @@ Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader CREATED: vert - src/shaders/directional_light.vs frag - src/shaders/directional_light.fs
+Texture: textures/albedo_container.png already exists
 TERMINATED SUCCESSFULLY

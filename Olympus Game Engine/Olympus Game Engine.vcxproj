@@ -174,6 +174,8 @@
     <ClInclude Include="src\utilities\Time.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="scripts\test.lua" />
+    <None Include="src\scripts\test.lua" />
     <None Include="src\shaders\basic.fs" />
     <None Include="src\shaders\basic.vs" />
     <None Include="src\shaders\cube.fs" />

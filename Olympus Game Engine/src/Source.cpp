@@ -28,7 +28,7 @@
 #include "components\DirectionalLightComponent.h"
 
 #include <iostream>
-
+#include <Windows.h>
 #include "core/Mouse.h"
 
 //lua bridge must be after lua
@@ -46,16 +46,14 @@
 float xoffset = 0;
 float yoffset = 0;
 
-void ImGui_ImplSdl_CharCallback(unsigned int c) {
 
-}
 
 
 int main(int argc, char* argv[]) {
 
 
 
-	/*
+
 	//Test lua
 	lua_State *L = luaL_newstate();
 	luaL_openlibs(L);
@@ -64,16 +62,20 @@ int main(int argc, char* argv[]) {
 		const char* err = lua_tostring(L, -1);
 		std::cout << err << std::endl;
 	}
-	lua_pcall(L, 0, 0, 0);
-	luabridge::LuaRef s = luabridge::getGlobal(L, "something");
-	std::string luaString = s.cast<std::string>();
-	std::cout << luaString << std::endl;
+	luabridge::LuaRef sumNumbers = luabridge::getGlobal(L, "sumNumbers");
+	int result = sumNumbers(5, 4);
+
+	std::cout << result << std::endl;
+	//lua_pcall(L, 0, 0, 0);
+	//luabridge::LuaRef s = luabridge::getGlobal(L, "something");
+	//std::string luaString = s.cast<std::string>();
+	//std::cout << luaString << std::endl;
 
 	//lua_state *L;
 	//lua_State *L = luaL_newstate();
 	//luaL_openlibs(L);
 
-	*/
+
 
 
 
@@ -175,6 +177,9 @@ int main(int argc, char* argv[]) {
 	bool renderIMGUI = true;
 
 	ImGui_ImplSdlGL3_Init(mainWindow->getWindow());
+
+	//sample texture
+	unsigned int albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
 
 	while (mainWindow->isRunning()) {
 
@@ -332,6 +337,17 @@ int main(int argc, char* argv[]) {
 				entityAdd->setRotation(blockRotation);
 			}
 
+		}
+
+		if (ImGui::CollapsingHeader("Textures")) {
+			static char buf[100] = "";
+			ImGui::Text("Albedo");
+			ImGui::PushItemWidth(100);
+			ImGui::Image((void*)albedo_texture, ImVec2(100, 100)); ImGui::SameLine();
+			ImGui::InputText("filename", buf, 100);
+			ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), buf);
+			ImGui::PopItemWidth();
+			
 		}
 		ImGui::End();
 
