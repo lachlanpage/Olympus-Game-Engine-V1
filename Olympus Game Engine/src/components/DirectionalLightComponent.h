@@ -16,10 +16,10 @@ public:
 	void getBufferTextures();
 	virtual void postInit(Entity& entity);
 private:
-
 	unsigned int VAO, VBO;
 	glm::vec3 m_direction;
 	Shader* m_shader;
+
 	float vertices[18] = {
 
 		-1.0f, -1.0f, 0.0f,
@@ -28,7 +28,6 @@ private:
 		-1.0f,  1.0f, 0.0f,
 		1.0f, -1.0f, 0.0f,
 		1.0f,  1.0f, 0.0f
-
 	};
 	float textureCoordinates[12] = {
 		0.0f,0.0f,

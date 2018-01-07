@@ -34,12 +34,13 @@ Entity::Entity(GraphicsComponent* graphics) {
 Entity::~Entity(){}
 glm::vec3 Entity::getPosition() { return m_position; }
 glm::vec3 Entity::getRotation() { return m_rotation; }
-glm::vec3 Entity::getScale() {return m_scale;}
-void Entity::setPosition(glm::vec3 position) { m_position = position; }
-void Entity::setScale(glm::vec3 scale) { m_scale = scale; }
-void Entity::setRotation(glm::vec3 rotation) { m_rotation = rotation; }
-void Entity::update(){
+glm::vec3 Entity::getScale()    {return m_scale;}
 
+void Entity::setPosition(glm::vec3 position) { m_position = position; }
+void Entity::setScale(glm::vec3 scale)       { m_scale = scale; }
+void Entity::setRotation(glm::vec3 rotation) { m_rotation = rotation; }
+
+void Entity::update(){
 	if (m_graphics != nullptr) {
 		m_graphics->update(*this);
 	}
@@ -59,6 +60,5 @@ void Entity::updateShadow() {
 void Entity::addComponent(Component* component) {
 	//work around to send important init data instead of using constructors
 	component->postInit(*this);
-	m_components.push_back(component);
-	
+	m_components.push_back(component);	
 }

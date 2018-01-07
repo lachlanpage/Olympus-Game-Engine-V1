@@ -2,8 +2,6 @@
 
 Renderer* Renderer::m_Instance = nullptr;
 
-int i = 0;
-
 Renderer* Renderer::Instance() {
 	if (m_Instance == nullptr)
 		m_Instance = new Renderer();
@@ -28,8 +26,6 @@ void Renderer::stop() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//glEnable(GL_TEXTURE_2D);
 }
 
 void Renderer::getBufferTextures(Shader *shader) {
@@ -106,8 +102,6 @@ void Renderer::stopShadowMap() {
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-
-int temp = 3;
 
 void Renderer::updateQuadShader(Shader* shader) {
 	//this is to update textures for quad shader

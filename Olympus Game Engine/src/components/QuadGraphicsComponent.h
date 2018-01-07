@@ -15,10 +15,9 @@ public:
 	virtual void update(Entity& entity);
 	void updateQuadShader(Shader*);
 private:
-
 	unsigned int VAO, VBO;
-
 	Shader* m_shader;
+
 	float vertices[18] = {
 
 		-1.0f, -1.0f, 0.0f,
@@ -38,5 +37,4 @@ private:
 		1.0f,1.0f
 	};
 };
-
 #endif

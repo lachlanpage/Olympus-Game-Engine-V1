@@ -17,7 +17,7 @@ public:
 private:
 
 	void updateLightShader();
-
+	void generateLightVolume();
 	unsigned int VAO, VBO, m_vboIndex;
 	int m_stacks, m_slices;
 	float m_radius;

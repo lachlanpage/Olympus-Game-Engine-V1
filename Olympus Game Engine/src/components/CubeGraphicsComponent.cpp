@@ -32,7 +32,6 @@ void CubeGraphicsComponent::postInit(Entity& entity) {
 
 
 void CubeGraphicsComponent::renderShadow(Entity& entity) {
-	//std::cout << "CALLED FROM CUBE CLASS" << std::endl;
 	m_shadowShader->use();
 	m_shadowShader->setMat4("view", Settings::Instance()->depthViewMatrix);
 	m_shadowShader->setMat4("projection", Settings::Instance()->projectionMatrix);
@@ -48,7 +47,6 @@ void CubeGraphicsComponent::renderShadow(Entity& entity) {
 	m_shadowShader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-
 }
 
 void CubeGraphicsComponent::update(Entity& entity) {
@@ -61,14 +59,11 @@ void CubeGraphicsComponent::update(Entity& entity) {
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
 	model = glm::scale(model, entity.getScale());
-	//x rotation
+	//rotation axis of model {x,y,z}
 	model = glm::rotate(model, glm::radians(entity.getRotation().x), glm::vec3(1, 0, 0));
-	//y rotation 
 	model = glm::rotate(model, glm::radians(entity.getRotation().y), glm::vec3(0, 1, 0));
-	//z rotation
 	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0, 0, 1));
 	m_shader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-	//sendToRenderer(GL_TRIANGLES, 0, 36);
 }

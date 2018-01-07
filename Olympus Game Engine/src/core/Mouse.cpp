@@ -66,14 +66,6 @@ void Mouse::update(std::vector<Entity*> entityList) {
 		}
 		rayLength = rayLength + step_size;
 	}
-	//m_currentPoint = endOfRay;
-	
-	//check intersection need to move to own function if tests complete 
-
-
-	//std::cout << startOfRay.x << " " << startOfRay.y << " " << startOfRay.z << std::endl;
-	//std::cout << endOfRay.x << " " << endOfRay.y << " " << endOfRay.z << std::endl;
-	//std::cout << currentRay.x << " " << currentRay.y << " " <<  currentRay.z << " " << std::endl;
 }
 
 glm::vec3 Mouse::getCurrentPoint() {
