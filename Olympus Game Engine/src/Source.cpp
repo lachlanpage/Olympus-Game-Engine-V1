@@ -28,7 +28,7 @@
 #include "components\DirectionalLightComponent.h"
 
 #include <iostream>
-
+#include <Windows.h>
 #include "core/Mouse.h"
 
 //lua bridge must be after lua
@@ -46,19 +46,14 @@
 float xoffset = 0;
 float yoffset = 0;
 
-void ImGui_ImplSdl_CharCallback(unsigned int c) {
 
-}
 
 
 int main(int argc, char* argv[]) {
 
-	static float value = 10;
-	static char buffer[50] = {};
-	std::vector<char> buffman;
-	static float buf1[64] = { 0 };
 
-	/*
+
+
 	//Test lua
 	lua_State *L = luaL_newstate();
 	luaL_openlibs(L);
@@ -67,20 +62,24 @@ int main(int argc, char* argv[]) {
 		const char* err = lua_tostring(L, -1);
 		std::cout << err << std::endl;
 	}
-	lua_pcall(L, 0, 0, 0);
-	luabridge::LuaRef s = luabridge::getGlobal(L, "something");
-	std::string luaString = s.cast<std::string>();
-	std::cout << luaString << std::endl;
+	luabridge::LuaRef sumNumbers = luabridge::getGlobal(L, "sumNumbers");
+	int result = sumNumbers(5, 4);
+
+	std::cout << result << std::endl;
+	//lua_pcall(L, 0, 0, 0);
+	//luabridge::LuaRef s = luabridge::getGlobal(L, "something");
+	//std::string luaString = s.cast<std::string>();
+	//std::cout << luaString << std::endl;
 
 	//lua_state *L;
 	//lua_State *L = luaL_newstate();
 	//luaL_openlibs(L);
 
-	*/
 
 
 
-	Window *mainWindow = new Window("Olympus Game Engine", 800, 600, MessageBus::Instance());
+
+	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
 
 
@@ -179,6 +178,9 @@ int main(int argc, char* argv[]) {
 
 	ImGui_ImplSdlGL3_Init(mainWindow->getWindow());
 
+	//sample texture
+	unsigned int albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
+
 	while (mainWindow->isRunning()) {
 
 		//ImGuiIO& io = ImGui::GetIO();
@@ -268,40 +270,84 @@ int main(int argc, char* argv[]) {
 		//create gui 
 
 		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
+		//Creation of imgui entity frame
+		int ID;
+		glm::vec3 blockPos;
+		glm::vec3 blockScale;
+		glm::vec3 blockRotation;
+		Entity *entityAdd = nullptr;
+		if (raycast->blockClickID != -1) {
+			for (auto entity : entityList) {
+				if (raycast->blockClickID == entity->m_ID) {
+					ID = entity->m_ID;
+					blockPos = entity->getPosition();
+					blockScale = entity->getScale();
+					blockRotation = entity->getRotation();
+					entityAdd = entity;
+				}
+			}
+		}
+		else {
+			ID = 0;
+			blockPos = glm::vec3(0, 0, 0);
+			blockScale = glm::vec3(0, 0, 0);
+			blockRotation = glm::vec3(0, 0, 0);
+		}
+		static float value = 10;
+		static char buffer[50] = {};
+		std::vector<char> buffman;
+		static float buf1[64] = { 0 };
 
 		ImGui::Begin("Entity Inspector");
 		ImGui::Spacing();
-		ImGui::Text("Entity");
-		if (ImGui::CollapsingHeader("Transform")) {
-			if (ImGui::InputText("label", buffer, 50, ImGuiInputTextFlags_AlwaysInsertMode)) {
-				ImGui::SetKeyboardFocusHere(-1);
-			}
-			
+		ImGui::PushItemWidth(100);
+		ImGui::Text("Entity");  ImGui::SameLine(); ImGui::Text(std::to_string(ID).c_str());
+		ImGui::PopItemWidth();
+		if (ImGui::CollapsingHeader("Transform")) {	
 			ImGui::Text("Position");
 			ImGui::NewLine();
 			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  if(ImGui::InputFloat("a", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); if(ImGui::InputFloat("b", buf1, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); if(ImGui::InputFloat("c", buf1, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); }
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-			ImGui::Text("Rotation");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  if (ImGui::InputFloat("a2", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); if (ImGui::InputFloat("b2", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); if (ImGui::InputFloat("c43", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }
+			ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(0); if (ImGui::InputFloat("", &blockPos.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::PopID();ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine(); ImGui::PushID(1);if(ImGui::InputFloat("", &blockPos.y, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine(); ImGui::PushID(2); if(ImGui::InputFloat("", &blockPos.z, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
 			ImGui::PopItemWidth();
 			ImGui::NewLine();
 			ImGui::Text("Scale");
 			ImGui::NewLine();
 			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine(); if (ImGui::InputFloat("ad", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); if (ImGui::InputFloat("df", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); if (ImGui::InputFloat("dfs", buf1, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }
+			ImGui::Text("X"); ImGui::SameLine();  ImGui::PushID(3); if (ImGui::InputFloat("", &blockScale.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }   ImGui::PopID();ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine();  ImGui::PushID(4);if (ImGui::InputFloat("", &blockScale.y, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID(); ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine();  ImGui::PushID(5);if (ImGui::InputFloat("", &blockScale.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
+			ImGui::PopItemWidth();
+			ImGui::NewLine();
+			ImGui::Text("Rotation");
+			ImGui::NewLine();
+			ImGui::PushItemWidth(100);
+			ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(6); if (ImGui::InputFloat("", &blockRotation.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }   ImGui::PopID();ImGui::SameLine();
+			ImGui::Text("Y"); ImGui::SameLine();  ImGui::PushID(7);if (ImGui::InputFloat("", &blockRotation.y, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID(); ImGui::SameLine();
+			ImGui::Text("Z"); ImGui::SameLine();  ImGui::PushID(8);if (ImGui::InputFloat("", &blockRotation.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
 			ImGui::PopItemWidth();
 			ImGui::NewLine();
 			//ImGui::SliderFloat("label", &value, 0, 100);
+
+			//if gui updates values we gotta set them here 
+			if(entityAdd != nullptr){
+				entityAdd->setPosition(blockPos);
+				entityAdd->setScale(blockScale);
+				entityAdd->setRotation(blockRotation);
+			}
+
+		}
+
+		if (ImGui::CollapsingHeader("Textures")) {
+			static char buf[100] = "";
+			ImGui::Text("Albedo");
+			ImGui::PushItemWidth(100);
+			ImGui::Image((void*)albedo_texture, ImVec2(100, 100)); ImGui::SameLine();
+			ImGui::InputText("filename", buf, 100);
+			ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), buf);
+			ImGui::PopItemWidth();
+			
 		}
 		ImGui::End();
 
@@ -337,9 +383,10 @@ int main(int argc, char* argv[]) {
 		//render crosshair
 
 		//render GUI 
-		//if (renderIMGUI)
-		ImGui::Render();
-		//ImGui::EndFrame();
+		if (renderIMGUI)
+			ImGui::Render();
+		else
+			ImGui::EndFrame();
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();

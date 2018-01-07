@@ -30,7 +30,7 @@ void main(){
 
 	if(textureSelector == 5){
 
-		color = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV); //hardcoded ambience
+		color = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
 	}
 
 	if(textureSelector == 3){

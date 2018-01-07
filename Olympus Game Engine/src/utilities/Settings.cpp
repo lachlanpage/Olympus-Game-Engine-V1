@@ -10,9 +10,9 @@ Settings* Settings::Instance() {
 
 Settings::Settings() {
 	//set all global settings here
-	projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 10000.0f);
-	window_height = 600;
-	window_width = 800;
+	projection = glm::perspective(glm::radians(90.0f), (float)800 / (float)600, 0.1f, 10000.0f);
+	window_height = 1080;
+	window_width = 1920;
 
 	//shadow map stuff 
 	lightDir = glm::vec3(0.7, 0.3, 0.1);

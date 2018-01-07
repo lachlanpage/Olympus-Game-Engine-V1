@@ -185,5 +185,7 @@
     <None Include="src\shaders\model.fs" />
     <None Include="src\shaders\shadow.vs" />
     <None Include="src\shaders\shadow.fs" />
+    <None Include="scripts\test.lua" />
+    <None Include="src\scripts\test.lua" />
   </ItemGroup>
 </Project>

@@ -17,13 +17,12 @@ public:
 	virtual void postInit(Entity& entity);
 
 private:
-
 	unsigned int albedo_texture;
-
 	unsigned int cubeVAO, cubeVBO;
 
 	Shader* m_shader;
 	Shader* m_shadowShader;
+
 	float vertices[108] = {
 
 		0.0f, 0.0f, 0.0f,

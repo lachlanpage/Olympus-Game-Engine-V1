@@ -1,2 +1,0 @@
-print("HELLO WORLD THIS IS A LUA SCRIPT")
-something = "WHATS UP WORLD"
