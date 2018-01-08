@@ -31,6 +31,8 @@
 #include <Windows.h>
 #include "core/Mouse.h"
 
+#include "core/GUIManager.h"
+
 //lua bridge must be after lua
 #include <Lua\lua.hpp>
 #include <LuaBridge\LuaBridge.h>
@@ -75,23 +77,20 @@ int main(int argc, char* argv[]) {
 	//lua_State *L = luaL_newstate();
 	//luaL_openlibs(L);
 
-
-
-
-
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
-
-
-
 
 	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
+	//startup GUI 
+	std::cout << GUIManager::Instance(mainWindow->getWindow()) << std::endl;
+	std::cout << GUIManager::Instance() << std::endl;
+
 	std::vector<Entity*> entityList;
 	//test floor and wall 
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j <20; j++) {
+	for (int i = 0; i < 30; i++) {
+		for (int j = 0; j <30; j++) {
 			Entity *ent = new Entity(glm::vec3(i, 0, j));
 			ent->addComponent(new CubeGraphicsComponent());
 		
@@ -123,22 +122,6 @@ int main(int argc, char* argv[]) {
 	ent3->addComponent(new CubeGraphicsComponent());
 	entityList.push_back(ent3);
 
-
-
-
-	/*
-	//test wall
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			entityList.push_back(new Entity(glm::vec3(0, j, i), new CubeGraphicsComponent()));
-			entityList.push_back(new Entity(glm::vec3(i, j, 0), new CubeGraphicsComponent()));
-		}
-	}
-
-	entityList.push_back(new Entity(glm::vec3(5, 1, 5), new CubeGraphicsComponent()));
-
-	entityList.push_back(new Entity(glm::vec3(5, 2, 5), new CubeGraphicsComponent()));
-	*/
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 	Entity *sphere = new Entity(glm::vec3(5, 5, 5), new SphereGraphicsComponent());
 
@@ -171,12 +154,10 @@ int main(int argc, char* argv[]) {
 	double lastTime = SDL_GetTicks();
 	int nbFrames = 0;
 
-	//Imgui styling 
-	ImGui::StyleColorsDark();
+
 
 	bool renderIMGUI = true;
 
-	ImGui_ImplSdlGL3_Init(mainWindow->getWindow());
 
 	//sample texture
 	unsigned int albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
@@ -188,8 +169,6 @@ int main(int argc, char* argv[]) {
 
 		//testing of creating gui 
 
-		nbFrames += 1;
-
 		//mouse picking
 		raycast->update(entityList);
 		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
@@ -197,10 +176,10 @@ int main(int argc, char* argv[]) {
 
 
 		if (raycast->blockClickID == -1) {
-			renderIMGUI = false;	
+			GUIManager::Instance()->renderEntityEditor(false);
 		}
 		else {
-			renderIMGUI = true;
+			GUIManager::Instance()->renderEntityEditor(true);
 		}
 
 		//check block selections will move to entity manager class ? 
@@ -214,40 +193,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		
-		//std::cout << light->getPosition().x << " " << light->getPosition().y << " " << light->getPosition().z << std::endl;
-		double currentTime = SDL_GetTicks();
-		if (currentTime - lastTime > 1000) {
-			//a second has passed 
-			std::cout << " FPS: " << nbFrames <<  std::endl;
-			lastTime = currentTime;
-			nbFrames = 0;
-		}
 
-		/*
-		if (renderIMGUI == true && ImGui::IsMouseHoveringAnyWindow() == true) {
-			SDL_Event event;
-			while (SDL_PollEvent(&event))
-			{
-				ImGui_ImplSdlGL3_ProcessEvent(&event);
-			}
-			//ImGuiIO& io = ImGui::GetIO();
-			//io.WantCaptureKeyboard = true;
-			//io.WantCaptureMouse = true;
-			
-			//std::cout << io.WantCaptureKeyboard << std::endl;
-
-		
-
-		}
-		else {
-			//std::cout << "THIS SHOULD NOT BE CALLED" << std::endl;
-			ImGuiIO& io = ImGui::GetIO();
-			std::cout << io.WantCaptureKeyboard << std::endl;
-			Camera::Instance()->processMouseMovement();
-			mainWindow->handleInput();
-		}
-
-		*/
 
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.WantCaptureKeyboard == 1 || io.WantCaptureMouse == 1) {
@@ -268,7 +214,7 @@ int main(int argc, char* argv[]) {
 
 		//create gui 
 		//create gui 
-
+		/*
 		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
 		//Creation of imgui entity frame
 		int ID;
@@ -293,6 +239,8 @@ int main(int argc, char* argv[]) {
 			blockScale = glm::vec3(0, 0, 0);
 			blockRotation = glm::vec3(0, 0, 0);
 		}
+
+		
 		static float value = 10;
 		static char buffer[50] = {};
 		std::vector<char> buffman;
@@ -351,11 +299,7 @@ int main(int argc, char* argv[]) {
 		}
 		ImGui::End();
 
-
-
-		//if (io.WantCaptureKeyboard == 1) {
-
-		//}
+		*/
 
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
@@ -383,10 +327,11 @@ int main(int argc, char* argv[]) {
 		//render crosshair
 
 		//render GUI 
-		if (renderIMGUI)
-			ImGui::Render();
-		else
-			ImGui::EndFrame();
+		GUIManager::Instance()->render();
+		//if (renderIMGUI)
+		//	ImGui::Render();
+		//else
+		//	ImGui::EndFrame();
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();

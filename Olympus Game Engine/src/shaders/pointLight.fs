@@ -3,6 +3,7 @@
 uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
+uniform sampler2D specularTexture;
 
 out vec4 outputColor;
 
@@ -43,7 +44,12 @@ void main() {
 	vec3 h = normalize(1+v);
 
 	//diffuse and specular
-	vec3 color = lightColor * albedo.xyz * max(0.0, dot(n.xyz, vec3(1,1,1))) + lightColor * 0.4 * pow(max(0.0, dot(h,n)), 12.0);
+	vec3 viewDir = normalize(cameraPosition - pos.xyz);
+	vec3 reflectDir = reflect(-l, n);
+	float spec = pow(max(dot(viewDir, reflectDir),0.0), 32);
+	vec3 specular = 0.5 * spec * texture(specularTexture, UV).xyz;
+
+	vec3 color = lightColor * albedo.xyz * max(0.0, dot(n.xyz, vec3(1,1,1))) +  lightColor * specular;
 
 	//z test and attenuation 
 	//outputColor *= ztest * attenuation;

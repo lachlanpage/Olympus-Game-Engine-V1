@@ -10,6 +10,8 @@
 #include "../utilities/BusNode.h"
 #include "../utilities/Time.h"
 
+#include "GUIManager.h"
+
 class Window : public BusNode {
 public:
 	Window(const char* title, int width, int height, MessageBus* messageBus);

@@ -17,7 +17,8 @@ Window::Window(const char* title, int width, int height, MessageBus* messageBus)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	SDL_GL_SetSwapInterval(1);
+	//vsync: 1 to activate, 0 to disable
+	SDL_GL_SetSwapInterval(0);
 	//SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
@@ -46,6 +47,8 @@ void Window::handleInput() {
 			break;
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
+			case SDLK_m:
+				GUIManager::Instance()->renderSettingsGUI(true);
 			case SDLK_c:
 				aMessage.setEvent("CAMERA_STOP");
 				send(aMessage);
