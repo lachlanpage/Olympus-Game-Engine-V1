@@ -7,6 +7,7 @@
 #include "../utilities/Logger.h"
 
 #include <iostream>
+#include "../utilities/Settings.h"
 
 class GUIManager {
 	//Singleton class to hold all global consts across engine {width, height of window etc}

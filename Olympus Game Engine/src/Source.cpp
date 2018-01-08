@@ -189,7 +189,6 @@ int main(int argc, char* argv[]) {
 		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
 		light->setPosition(raycast->getCurrentPoint());
 
-
 		if (raycast->blockClickID == -1) {
 			GUIManager::Instance()->renderEntityEditor(false);
 		}
@@ -315,28 +314,37 @@ int main(int argc, char* argv[]) {
 		ImGui::End();
 
 		*/
-
+		float currentFrame = SDL_GetTicks();
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
 		//end geometry pass
 		Renderer::Instance()->stop();
-
+		float timeNow = SDL_GetTicks();
+		Settings::Instance()->m_geometryPass = timeNow - currentFrame;
+		
+		currentFrame = SDL_GetTicks();
 		//Shadow Pass 
+
 		Renderer::Instance()->startShadowMap();
 		for (auto x : entityList)
 			x->updateShadow();
 		Renderer::Instance()->stopShadowMap();
+		timeNow = SDL_GetTicks();
+		Settings::Instance()->m_shadowPass = timeNow - currentFrame;
 
 		//lighting pass
-		Renderer::Instance()->lightingPassStart();
-		light->update();
-		light2->update();
-		light4->update();
-		//sun->update();
 
+		currentFrame = SDL_GetTicks();
+		Renderer::Instance()->lightingPassStart();
+		
+		light2->update();
+		sun->update();
 		Renderer::Instance()->lightingPassStop();
+		timeNow = SDL_GetTicks();
+		Settings::Instance()->m_lightingPass = timeNow - currentFrame;
+
 		//draw screen quad with final texture
 		quad->update();
 
@@ -344,14 +352,12 @@ int main(int argc, char* argv[]) {
 
 		//render GUI 
 		GUIManager::Instance()->render();
-		//if (renderIMGUI)
-		//	ImGui::Render();
-		//else
-		//	ImGui::EndFrame();
+
 		//update all messages
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
+
 	}
 	ImGui_ImplSdlGL3_Shutdown();
 	//lua_close(L);

@@ -113,8 +113,8 @@ void Renderer::stopShadowMap() {
 void Renderer::updateQuadShader(Shader* shader) {
 	//this is to update textures for quad shader
 	//int ID = shader->ID;
-	shader->setFloat("textureSelector", 5);
-
+	//shader->setFloat("textureSelector", 5);
+	shader->setFloat("textureSelector", Settings::Instance()->m_textureSelector);
 	//need to delete
 	//teseting for shadow stuff 
 	shader->setMat4("biasMatrix", Settings::Instance()->biasMatrix);

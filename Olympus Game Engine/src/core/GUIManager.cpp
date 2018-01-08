@@ -130,14 +130,17 @@ void GUIManager::generateEntityEditor() {
 void GUIManager::generateSettingsGUI() {
 	ImGui::Begin("Settings", &m_renderSettingsEditor);
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	static int e = 0; 
+	ImGui::Text("Geometry Pass %.3f ms/frame (%.1f FPS)", Settings::Instance()->m_geometryPass, 1/(Settings::Instance()->m_geometryPass/1000));
+	ImGui::Text("Shadow Pass %.3f ms/frame (%.1f FPS)", Settings::Instance()->m_shadowPass, 1 / (Settings::Instance()->m_shadowPass / 1000));
+	ImGui::Text("Lighting Pass %.3f ms/frame (%.1f FPS)", Settings::Instance()->m_lightingPass, 1 / (Settings::Instance()->m_lightingPass / 1000));
+
 	if (ImGui::CollapsingHeader("Display Mode")) {
-		ImGui::RadioButton("Albedo", &e, 0);
-		ImGui::RadioButton("Normal", &e, 1);
-		ImGui::RadioButton("Position", &e, 2);
-		ImGui::RadioButton("Shadow Map", &e, 3);
-		ImGui::RadioButton("Specular", &e, 4);
-		ImGui::RadioButton("Combined", &e, 5);
+		ImGui::RadioButton("Albedo", &Settings::Instance()->m_textureSelector, 0);
+		ImGui::RadioButton("Normal", &Settings::Instance()->m_textureSelector,1);
+		ImGui::RadioButton("Position", &Settings::Instance()->m_textureSelector, 2);
+		ImGui::RadioButton("Shadow Map", &Settings::Instance()->m_textureSelector, 6);
+		ImGui::RadioButton("Specular", &Settings::Instance()->m_textureSelector, 7);
+		ImGui::RadioButton("Combined", &Settings::Instance()->m_textureSelector, 5);
 	}
 	ImGui::End();
 }

@@ -28,6 +28,8 @@ Settings::Settings() {
 		0.0, 0.0, 0.5, 0.0,
 		0.5, 0.5, 0.5, 1.0
 	);
+
+	m_textureSelector = 5;
 }
 
 void Settings::setLightDirection(glm::vec3 direction) {
