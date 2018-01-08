@@ -42,6 +42,7 @@ private:
 	unsigned int colorTexture;
 	unsigned int normalTexture;
 	unsigned int positionTexture;
+	unsigned int specularTexture;
 
 	unsigned int shadowDepthTexture;
 

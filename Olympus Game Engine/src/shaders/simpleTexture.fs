@@ -10,6 +10,7 @@ uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
 uniform sampler2D lightTexture;
 uniform sampler2D shadowTexture;
+uniform sampler2D specularTexture;
 
 uniform float textureSelector;
 
@@ -29,8 +30,12 @@ void main(){
 	}
 
 	if(textureSelector == 5){
-
-		color = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
+		
+		vec4 colorBeforeGamma = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
+		float gamma = 2.2;
+		color.rgb = pow(colorBeforeGamma.rgb, vec3(1.0/gamma));
+		color.w = 1;
+		color = colorBeforeGamma;
 	}
 
 	if(textureSelector == 3){
@@ -109,6 +114,10 @@ void main(){
 
 	if(textureSelector == 6){
 		color =texture(shadowTexture, UV);
+	}
+
+	if(textureSelector == 7){
+		color = texture(specularTexture, UV);
 	}
 }
 

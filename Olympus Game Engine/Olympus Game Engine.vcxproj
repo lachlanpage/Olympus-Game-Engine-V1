@@ -128,6 +128,7 @@
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
     <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
+    <ClCompile Include="src\core\GUIManager.cpp" />
     <ClCompile Include="src\core\Mouse.cpp" />
     <ClCompile Include="src\core\Renderer.cpp" />
     <ClCompile Include="src\core\ResourceManager.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
     <ClInclude Include="src\components\SphereGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
+    <ClInclude Include="src\core\GUIManager.h" />
     <ClInclude Include="src\core\Mouse.h" />
     <ClInclude Include="src\core\Renderer.h" />
     <ClInclude Include="src\core\ResourceManager.h" />

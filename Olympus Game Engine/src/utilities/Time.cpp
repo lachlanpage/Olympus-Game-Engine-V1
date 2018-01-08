@@ -28,3 +28,12 @@ float Time::getDeltaTime() {
 float Time::getRuntime() {
 	return SDL_GetTicks() / 1000;
 }
+//		nbFrames += 1;
+//std::cout << light->getPosition().x << " " << light->getPosition().y << " " << light->getPosition().z << std::endl;
+//double currentTime = SDL_GetTicks();
+//if (currentTime - lastTime > 1000) {
+//	//a second has passed 
+//	std::cout << " FPS: " << nbFrames << std::endl;
+//	lastTime = currentTime;
+//	nbFrames = 0;
+//}

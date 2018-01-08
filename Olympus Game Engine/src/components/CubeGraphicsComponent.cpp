@@ -24,6 +24,7 @@ CubeGraphicsComponent::CubeGraphicsComponent() {
 	glEnableVertexAttribArray(2);
 
 	albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
+	specular_texture = ResourceManager::Instance()->loadTexture("textures/specular_container.png");
 }
 
 void CubeGraphicsComponent::postInit(Entity& entity) {
@@ -54,8 +55,16 @@ void CubeGraphicsComponent::update(Entity& entity) {
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
 	m_shader->setBool("isSelected", entity.is_selected);
+
+	//texture stuff
+	m_shader->setInt("albedo_texture", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, albedo_texture);
+
+	m_shader->setInt("specular_texture", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, specular_texture);
+
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
 	model = glm::scale(model, entity.getScale());

@@ -4,12 +4,14 @@ in vec2 UV2;
 in vec4 lightspaceFrag;
 
 layout (location = 0) out vec4 color;
-layout (location = 1) out vec4 specular;
+
 
 uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
 uniform sampler2D shadowTexture;
+uniform sampler2D specularTexture;
+
 
 uniform mat4 lightSpaceMatrix;
 uniform vec3 lightDirection;
@@ -60,14 +62,18 @@ void main(){
 	vec3 h = normalize(l+v);
 
 	vec4 fragPos = lightspaceFrag * vec4(pos,1.0);
-
 	vec4 posFromLight =  lightSpaceMatrix * vec4(pos,1.0); 
-
 	float shadow = shadowCalculation(posFromLight,n);
 
 	float diff= max(dot(n, l), 0.0);
 	vec3 diffuse = 0.6 * diff * albedo.xyz;
-	vec3 col = (1.0 - shadow ) * diffuse;
+	
+	vec3 viewDir = normalize(cameraPosition - pos.xyz);
+	vec3 reflectDir = reflect(-l, n);
+	float spec = pow(max(dot(viewDir, reflectDir),0.0), 32);
+	vec3 specular = 0.5 * spec * texture(specularTexture, UV).xyz;
+
+	vec3 col = ((1.0 - shadow ) * (diffuse + specular));
 
 	//vec3 col =  albedo.xyz * max(0.0, dot(n.xyz, l));//) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));
 	//vec3 col =  albedo.xyz * max(0.0, dot(n.xyz, vec3(1.0,1.0,1.0)) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));
