@@ -66,6 +66,10 @@ void Renderer::updateLightShader(Shader* shader) {
 	shader->setInt("shadowTexture", 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+
+	shader->setInt("specularTexture", 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
 }
 
 void Renderer::lightingPassStart() {
@@ -132,6 +136,10 @@ void Renderer::updateQuadShader(Shader* shader) {
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
 
+	shader->setInt("specularTexture", 5);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
+
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -170,6 +178,15 @@ Renderer::Renderer() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, positionTexture, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	//specular texture
+	glGenTextures(1, &specularTexture);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, specularTexture, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	//Depth buffer for framebuffer
 	glGenRenderbuffers(1, &renderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
@@ -179,8 +196,8 @@ Renderer::Renderer() {
 
 
 	//attach texture and depth buffer to framebuffer
-	GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2};
-	glDrawBuffers(3, attachments);
+	GLuint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
+	glDrawBuffers(4, attachments);
 	glEnable(GL_DEPTH_TEST);
 
 	//check for errors 

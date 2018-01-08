@@ -17,7 +17,7 @@ public:
 	virtual void postInit(Entity& entity);
 
 private:
-	unsigned int albedo_texture;
+	unsigned int albedo_texture, specular_texture;
 	unsigned int cubeVAO, cubeVBO;
 
 	Shader* m_shader;
