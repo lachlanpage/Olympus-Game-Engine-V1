@@ -73,6 +73,8 @@ void Renderer::updateLightShader(Shader* shader) {
 }
 
 void Renderer::lightingPassStart() {
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glDisable(GL_DEPTH_TEST);
 
 	glEnable(GL_BLEND);
@@ -88,6 +90,7 @@ void Renderer::lightingPassStart() {
 }
 
 void Renderer::lightingPassStop() {
+	glDisable(GL_CULL_FACE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

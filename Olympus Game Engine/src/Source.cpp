@@ -89,13 +89,28 @@ int main(int argc, char* argv[]) {
 
 	std::vector<Entity*> entityList;
 	//test floor and wall 
-	for (int i = 0; i < 30; i++) {
-		for (int j = 0; j <30; j++) {
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j <20; j++) {
 			Entity *ent = new Entity(glm::vec3(i, 0, j));
 			ent->addComponent(new CubeGraphicsComponent());
-		
+			
 			entityList.push_back(ent);
 		}
+	}
+
+	for (int i = 0; i < 20; i++) {
+		Entity *ent = new Entity(glm::vec3(i, 1,0));
+		ent->addComponent(new CubeGraphicsComponent());
+		entityList.push_back(ent);
+
+		ent = new Entity(glm::vec3(i, 2, 0));
+		ent->addComponent(new CubeGraphicsComponent());
+		entityList.push_back(ent);
+
+		ent = new Entity(glm::vec3(i, 3, 0));
+		ent->addComponent(new CubeGraphicsComponent());
+		entityList.push_back(ent);
+
 	}
 
 	Entity *ent = new Entity(glm::vec3(10, 1, 10));
@@ -305,7 +320,6 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		for (auto x : entityList)
 			x->update();
-
 		//end geometry pass
 		Renderer::Instance()->stop();
 
@@ -318,7 +332,9 @@ int main(int argc, char* argv[]) {
 		//lighting pass
 		Renderer::Instance()->lightingPassStart();
 		light->update();
-		sun->update();
+		light2->update();
+		light4->update();
+		//sun->update();
 
 		Renderer::Instance()->lightingPassStop();
 		//draw screen quad with final texture
