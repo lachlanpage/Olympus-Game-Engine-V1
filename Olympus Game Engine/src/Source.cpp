@@ -132,24 +132,6 @@ int main(int argc, char* argv[]) {
 		raycast->update(entityManager->getEntityList());
 		light->setPosition(raycast->getCurrentPoint());
 
-		if(raycast->blockClickID == -1) {
-			GUIManager::Instance()->renderEntityEditor(false);
-		}
-		else {
-			GUIManager::Instance()->renderEntityEditor(true);
-		}
-
-		//check block selections will move to entity manager class ? 
-		int blockID = raycast->blockClickID;
-		for (auto entity : entityManager->getEntityList()) {
-			if (entity->m_ID == blockID) {
-				entity->is_selected = true;
-			}
-			else {
-				entity->is_selected = false;
-			}
-		}
-		
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.WantCaptureKeyboard == 1 || io.WantCaptureMouse == 1) {
 			SDL_Event event;

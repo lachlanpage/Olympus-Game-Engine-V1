@@ -30,45 +30,23 @@ void GUIManager::renderEntityEditor(bool flag) {
 void GUIManager::renderSettingsGUI(bool flag) {
 	m_renderSettingsEditor = flag;
 }
+
+void GUIManager::setEntityEditor(Entity* entity) {
+	m_entity = entity;
+}
 void GUIManager::generateEntityEditor() {
 	//here goes all the code for entity editor 
-	static char buf[50] = "";
+	int ID = m_entity->m_ID;
+	glm::vec3 blockPos = m_entity->getPosition();
+	glm::vec3 blockScale = m_entity->getScale();
+	glm::vec3 blockRotation = m_entity->getRotation();
 
-	ImGui::Begin("BLAHBlAH");
-	ImGui::Text("THIS IS A WINDOW 2");
-	ImGui::InputText("abcd", buf, 50);
-
-
-	//Creation of imgui entity frame
-	/*
-	int ID;
-	glm::vec3 blockPos;
-	glm::vec3 blockScale;
-	glm::vec3 blockRotation;
-	Entity *entityAdd = nullptr;
-	if (raycast->blockClickID != -1) {
-		for (auto entity : entityList) {
-			if (raycast->blockClickID == entity->m_ID) {
-				ID = entity->m_ID;
-				blockPos = entity->getPosition();
-				blockScale = entity->getScale();
-				blockRotation = entity->getRotation();
-				entityAdd = entity;
-			}
-		}
-	}
-	else {
+	if (m_entity == nullptr) {
 		ID = 0;
 		blockPos = glm::vec3(0, 0, 0);
 		blockScale = glm::vec3(0, 0, 0);
 		blockRotation = glm::vec3(0, 0, 0);
 	}
-
-
-	static float value = 10;
-	static char buffer[50] = {};
-	std::vector<char> buffman;
-	static float buf1[64] = { 0 };
 
 	ImGui::Begin("Entity Inspector");
 	ImGui::Spacing();
@@ -100,15 +78,18 @@ void GUIManager::generateEntityEditor() {
 		ImGui::Text("Z"); ImGui::SameLine();  ImGui::PushID(8);if (ImGui::InputFloat("", &blockRotation.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
 		ImGui::PopItemWidth();
 		ImGui::NewLine();
-		//ImGui::SliderFloat("label", &value, 0, 100);
+		ImGui::PushItemWidth(100);
+		ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(9); ImGui::SliderFloat("X", &blockRotation.x, 0, 360); ImGui::PopID();
+		ImGui::Text("Y"); ImGui::SameLine(); ImGui::PushID(10); ImGui::SliderFloat("Y", &blockRotation.y, 0, 360); ImGui::PopID();
+		ImGui::Text("Z"); ImGui::SameLine(); ImGui::PushID(11); ImGui::SliderFloat("Z", &blockRotation.z, 0, 360);ImGui::PopID();
+		ImGui::PopItemWidth();
 
 		//if gui updates values we gotta set them here 
-		if (entityAdd != nullptr) {
-			entityAdd->setPosition(blockPos);
-			entityAdd->setScale(blockScale);
-			entityAdd->setRotation(blockRotation);
+		if (m_entity!= nullptr) {
+			m_entity->setPosition(blockPos);
+			m_entity->setScale(blockScale);
+			m_entity->setRotation(blockRotation);
 		}
-
 	}
 
 	//if (ImGui::CollapsingHeader("Textures")) {
@@ -120,9 +101,6 @@ void GUIManager::generateEntityEditor() {
 	//	ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), buf);
 	//	ImGui::PopItemWidth();
 	//}
-
-	*/
-
 	ImGui::End();
 }
 

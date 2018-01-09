@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "../utilities/Settings.h"
+#include "Entity.h"
 
 class GUIManager {
 	//Singleton class to hold all global consts across engine {width, height of window etc}
@@ -17,6 +18,7 @@ public:
 
 	//setters for render window flags 
 	void renderEntityEditor(bool);
+	void setEntityEditor(Entity*);
 	void renderSettingsGUI(bool);
 
 	void render();
@@ -28,6 +30,9 @@ private:
 	SDL_Window* m_window;
 	bool m_renderEntityEditor;
 	bool m_renderSettingsEditor;
+
+
+	Entity* m_entity;
 
 	GUIManager(SDL_Window*);
 	static GUIManager* m_Instance;
