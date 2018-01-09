@@ -27,12 +27,14 @@
 #include "components\ModelComponent.h"
 #include "components\DirectionalLightComponent.h"
 
+#include "utilities\ScriptManager.h"
+
 #include <iostream>
 #include <Windows.h>
 #include "core/Mouse.h"
 
 #include "core/GUIManager.h"
-
+#include "core/EntityManager.h"
 //lua bridge must be after lua
 #include <Lua\lua.hpp>
 #include <LuaBridge\LuaBridge.h>
@@ -53,29 +55,7 @@ float yoffset = 0;
 
 int main(int argc, char* argv[]) {
 
-
-
-
-	//Test lua
-	lua_State *L = luaL_newstate();
-	luaL_openlibs(L);
-
-	if (luaL_dofile(L, "src/scripts/test.lua")) {
-		const char* err = lua_tostring(L, -1);
-		std::cout << err << std::endl;
-	}
-	luabridge::LuaRef sumNumbers = luabridge::getGlobal(L, "sumNumbers");
-	int result = sumNumbers(5, 4);
-
-	std::cout << result << std::endl;
-	//lua_pcall(L, 0, 0, 0);
-	//luabridge::LuaRef s = luabridge::getGlobal(L, "something");
-	//std::string luaString = s.cast<std::string>();
-	//std::cout << luaString << std::endl;
-
-	//lua_state *L;
-	//lua_State *L = luaL_newstate();
-	//luaL_openlibs(L);
+	ScriptManager::Instance();
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
@@ -84,61 +64,43 @@ int main(int argc, char* argv[]) {
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	//startup GUI 
-	std::cout << GUIManager::Instance(mainWindow->getWindow()) << std::endl;
-	std::cout << GUIManager::Instance() << std::endl;
-
-	std::vector<Entity*> entityList;
+	GUIManager::Instance(mainWindow->getWindow());
+	
+	EntityManager *entityManager = new EntityManager();
+	
 	//test floor and wall 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {
 			Entity *ent = new Entity(glm::vec3(i, 0, j));
 			ent->addComponent(new CubeGraphicsComponent());
-			
-			entityList.push_back(ent);
+			entityManager->addEntity(ent);
 		}
 	}
 
 	for (int i = 0; i < 20; i++) {
 		Entity *ent = new Entity(glm::vec3(i, 1,0));
 		ent->addComponent(new CubeGraphicsComponent());
-		entityList.push_back(ent);
+		entityManager->addEntity(ent);
 
 		ent = new Entity(glm::vec3(i, 2, 0));
 		ent->addComponent(new CubeGraphicsComponent());
-		entityList.push_back(ent);
+		entityManager->addEntity(ent);
 
 		ent = new Entity(glm::vec3(i, 3, 0));
 		ent->addComponent(new CubeGraphicsComponent());
-		entityList.push_back(ent);
+		entityManager->addEntity(ent);
 
 	}
 
 	Entity *ent = new Entity(glm::vec3(10, 1, 10));
 	ent->addComponent(new CubeGraphicsComponent());
-	entityList.push_back(ent);
+	entityManager->addEntity(ent);
 
 	Entity *ent2 = new Entity(glm::vec3(10, 2, 10));
 	ent2->addComponent(new CubeGraphicsComponent());
-	entityList.push_back(ent2);
-
-	Entity *ent3 = new Entity(glm::vec3(10, 3, 10));
-	ent3->addComponent(new CubeGraphicsComponent());
-	entityList.push_back(ent3);
-
-	ent3 = new Entity(glm::vec3(11, 1, 8));
-	ent3->addComponent(new CubeGraphicsComponent());
-	entityList.push_back(ent3);
-
-	ent3 = new Entity(glm::vec3(4, 2, 1));
-	ent3->addComponent(new CubeGraphicsComponent());
-	entityList.push_back(ent3);
-
-	ent3 = new Entity(glm::vec3(4, 1, 1));
-	ent3->addComponent(new CubeGraphicsComponent());
-	entityList.push_back(ent3);
+	entityManager->addEntity(ent2);
 
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
-	Entity *sphere = new Entity(glm::vec3(5, 5, 5), new SphereGraphicsComponent());
 
 	std::vector<Entity*> lightList;
 	Entity *light = new Entity(glm::vec3(0,2,10));
@@ -165,31 +127,12 @@ int main(int argc, char* argv[]) {
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 
-
-	double lastTime = SDL_GetTicks();
-	int nbFrames = 0;
-
-
-
-	bool renderIMGUI = true;
-
-
-	//sample texture
-	unsigned int albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
-
 	while (mainWindow->isRunning()) {
-
-		//ImGuiIO& io = ImGui::GetIO();
-		//io.WantCaptureKeyboard = false;
-
-		//testing of creating gui 
-
 		//mouse picking
-		raycast->update(entityList);
-		//std::cout << raycast->getCurrentPoint().x << " " << raycast->getCurrentPoint().y << std::endl;
+		raycast->update(entityManager->getEntityList());
 		light->setPosition(raycast->getCurrentPoint());
 
-		if (raycast->blockClickID == -1) {
+		if(raycast->blockClickID == -1) {
 			GUIManager::Instance()->renderEntityEditor(false);
 		}
 		else {
@@ -198,7 +141,7 @@ int main(int argc, char* argv[]) {
 
 		//check block selections will move to entity manager class ? 
 		int blockID = raycast->blockClickID;
-		for (auto entity : entityList) {
+		for (auto entity : entityManager->getEntityList()) {
 			if (entity->m_ID == blockID) {
 				entity->is_selected = true;
 			}
@@ -207,18 +150,12 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		
-
-
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.WantCaptureKeyboard == 1 || io.WantCaptureMouse == 1) {
 			SDL_Event event;
 			while (SDL_PollEvent(&event))
-			{
 				ImGui_ImplSdlGL3_ProcessEvent(&event);
-			}
-
 		}
-		
 		else {
 			Camera::Instance()->processMouseMovement();
 			mainWindow->handleInput();
@@ -317,8 +254,9 @@ int main(int argc, char* argv[]) {
 		float currentFrame = SDL_GetTicks();
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
-		for (auto x : entityList)
-			x->update();
+		entityManager->render();
+		//for (auto x : entityList)
+		//	x->update();
 		//end geometry pass
 		Renderer::Instance()->stop();
 		float timeNow = SDL_GetTicks();
@@ -328,8 +266,7 @@ int main(int argc, char* argv[]) {
 		//Shadow Pass 
 
 		Renderer::Instance()->startShadowMap();
-		for (auto x : entityList)
-			x->updateShadow();
+		entityManager->renderShadow();
 		Renderer::Instance()->stopShadowMap();
 		timeNow = SDL_GetTicks();
 		Settings::Instance()->m_shadowPass = timeNow - currentFrame;

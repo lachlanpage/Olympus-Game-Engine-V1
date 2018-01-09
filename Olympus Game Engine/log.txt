@@ -1846,29 +1846,11 @@ Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
 Texture: textures/albedo_container.png already exists
 Texture: textures/specular_container.png already exists
-Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
-Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
-Texture: textures/albedo_container.png already exists
-Texture: textures/specular_container.png already exists
-Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
-Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
-Texture: textures/albedo_container.png already exists
-Texture: textures/specular_container.png already exists
-Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
-Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
-Texture: textures/albedo_container.png already exists
-Texture: textures/specular_container.png already exists
-Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
-Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
-Texture: textures/albedo_container.png already exists
-Texture: textures/specular_container.png already exists
 Shader CREATED: vert - src/shaders/passthrough.vs frag - src/shaders/simpleTexture.fs
-Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 Shader CREATED: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader EXISTS: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader CREATED: vert - src/shaders/directional_light.vs frag - src/shaders/directional_light.fs
-Texture: textures/albedo_container.png already exists
 TERMINATED SUCCESSFULLY
