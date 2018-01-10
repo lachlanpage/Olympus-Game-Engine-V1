@@ -128,6 +128,8 @@ int main(int argc, char* argv[]) {
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 
+	GUIManager::Instance()->renderSceneGraph(true);
+
 	while (mainWindow->isRunning()) {
 		//mouse picking
 		raycast->update(entityManager->getEntityList());

@@ -83,6 +83,7 @@ void GUIManager::generateEntityEditor() {
 
 	if (ImGui::CollapsingHeader("Textures")) {
 		ImGui::Text("Albedo");
+		ImGui::PushID(100);
 		if (ImGui::ImageButton((void*)entityGraphics->getAlbedoTexture(), ImVec2(100, 100))) {
 			TCHAR*DefaultExtension = 0;
 			TCHAR*FileName = new TCHAR[MAX_PATH];
@@ -112,14 +113,19 @@ void GUIManager::generateEntityEditor() {
 			GetOpenFileName(&ofn);
 			//need to fix this hacky way and figure out how to use relative paths
 			std::string filename = FileName;
-			std::string textureFile = filename.substr(77);
-			textureFile[8] = '/';
-
-			entityGraphics->setAlbedoTexture(textureFile);
+			if (filename.size() != 0) {
+				std::string textureFile = filename.substr(77);
+				textureFile[8] = '/';
+				entityGraphics->setAlbedoTexture(textureFile);
+			}
 		}
+		ImGui::PopID();
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), entityGraphics->getAlbedoTextureFilename().c_str());
+		
+		ImGui::NewLine();
 
 		ImGui::Text("Specular");
+		ImGui::PushID(101);
 		if (ImGui::ImageButton((void*)entityGraphics->getSpecularTexture(), ImVec2(100, 100))) {
 			TCHAR*DefaultExtension = 0;
 			TCHAR*FileName = new TCHAR[MAX_PATH];
@@ -149,12 +155,19 @@ void GUIManager::generateEntityEditor() {
 			GetOpenFileName(&ofn);
 			//need to fix this hacky way and figure out how to use relative paths
 			std::string filename = FileName;
-			std::string textureFile = filename.substr(77);
-			textureFile[8] = '/';
+			if (filename.size() != 0) {
+				std::string textureFile = filename.substr(77);
+				textureFile[8] = '/';
 
-			entityGraphics->setSpecularTexture(textureFile);
+				entityGraphics->setSpecularTexture(textureFile);
+			}
 		}
+		ImGui::PopID();
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), entityGraphics->getSpecularTextureFilename().c_str());
+
+		ImGui::NewLine();
+
+
 	}
 	if (ImGui::CollapsingHeader("Transform")) {
 		ImGui::Text("Position");
@@ -199,18 +212,30 @@ void GUIManager::generateEntityEditor() {
 		}
 	}
 
-	//if (ImGui::CollapsingHeader("Textures")) {
-	//	static char buf[100] = "";
-	//	ImGui::Text("Albedo");
-	//	ImGui::PushItemWidth(100);
-	//	ImGui::Image((void*)albedo_texture, ImVec2(100, 100)); ImGui::SameLine();
-	//	ImGui::InputText("filename", buf, 100);
-	//	ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), buf);
-	//	ImGui::PopItemWidth();
-	//}
 	ImGui::End();
 }
 
+
+void GUIManager::renderSceneGraph(bool flag) {
+	m_renderSceneGraph = flag;
+}
+
+void GUIManager::generateSceneGraph() {
+	ImGui::Begin("Scene Graph");
+	ImGui::Text("Scene Graph");
+	for (auto entity : m_entitymanager->getEntityList()) {
+		std::string name = "Entity: " + std::to_string((entity->m_ID));
+		if (ImGui::TreeNode(name.c_str())) {
+			ImGui::Text(std::to_string(entity->getPosition().x).c_str());
+			ImGui::TreePop();
+		}
+	}
+	if (ImGui::TreeNode("abcd")) {
+		ImGui::Button("ASSDS");
+		ImGui::TreePop();
+	}
+	ImGui::End();
+}
 
 void GUIManager::generateSettingsGUI() {
 	ImGui::Begin("Settings", &m_renderSettingsEditor);
@@ -242,6 +267,10 @@ void GUIManager::render() {
 
 	if (m_renderSettingsEditor) {
 		generateSettingsGUI();
+	}
+
+	if (m_renderSceneGraph) {
+		generateSceneGraph();
 	}
 
 	ImGui::Render();

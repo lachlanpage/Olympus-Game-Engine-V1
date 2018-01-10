@@ -22,16 +22,20 @@ public:
 	void setEntityEditor(Entity*);
 	void setEntityManager(EntityManager*);
 	void renderSettingsGUI(bool);
+	void renderSceneGraph(bool);
+	
 
 	void render();
 private:
 	//generate the gui frames
 	void generateEntityEditor();
 	void generateSettingsGUI();
+	void generateSceneGraph();
 
 	SDL_Window* m_window;
 	bool m_renderEntityEditor;
 	bool m_renderSettingsEditor;
+	bool m_renderSceneGraph;
 
 	EntityManager *m_entitymanager;
 	Entity* m_entity;

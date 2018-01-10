@@ -30,8 +30,11 @@ unsigned int ResourceManager::loadTexture(std::string filename) {
 unsigned int ResourceManager::loadImage(std::string filename) {
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrChannels;
+	
 	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
+
 	if (!data) {
+		Logger::Instance()->write(stbi_failure_reason() + filename);
 		Logger::Instance()->write("Failed to load Image: " + filename);
 	}
 	else {
