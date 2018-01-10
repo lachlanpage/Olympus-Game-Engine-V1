@@ -4,6 +4,9 @@ CubeGraphicsComponent::CubeGraphicsComponent() {
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/cube.vs", "src/shaders/cube.fs");
 	m_shadowShader = ResourceManager::Instance()->loadShader("src/shaders/shadow.vs", "src/shaders/shadow.fs");
 
+	m_albedoTextureFilename = "textures/albedo_container.png";
+	m_specularTextureFilename = "textures/specular_container.png";
+
 	//Create the appropriate buffers for the cube
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &cubeVBO);
@@ -23,14 +26,41 @@ CubeGraphicsComponent::CubeGraphicsComponent() {
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 
-	albedo_texture = ResourceManager::Instance()->loadTexture("textures/albedo_container.png");
-	specular_texture = ResourceManager::Instance()->loadTexture("textures/specular_container.png");
+	albedo_texture = ResourceManager::Instance()->loadTexture(m_albedoTextureFilename);
+	specular_texture = ResourceManager::Instance()->loadTexture(m_specularTextureFilename);
 }
 
 void CubeGraphicsComponent::postInit(Entity& entity) {
 
 }
 
+unsigned int CubeGraphicsComponent::getAlbedoTexture() {
+	return albedo_texture;
+}
+
+unsigned int CubeGraphicsComponent::getSpecularTexture() {
+	return specular_texture;
+}
+
+std::string CubeGraphicsComponent::getAlbedoTextureFilename() {
+	return m_albedoTextureFilename;
+}
+
+std::string CubeGraphicsComponent::getSpecularTextureFilename() {
+	return m_specularTextureFilename;
+}
+
+void CubeGraphicsComponent::setAlbedoTexture(std::string filename) {
+	std::cout << "SET ALBEDO CALLED";
+	albedo_texture = ResourceManager::Instance()->loadTexture(filename);
+	m_albedoTextureFilename = filename;
+}
+
+void CubeGraphicsComponent::setSpecularTexture(std::string filename) {
+	std::cout << "SET SPEC CALLED" << std::endl;
+	specular_texture = ResourceManager::Instance()->loadTexture(filename);
+	m_specularTextureFilename = filename;
+}
 
 void CubeGraphicsComponent::renderShadow(Entity& entity) {
 	m_shadowShader->use();

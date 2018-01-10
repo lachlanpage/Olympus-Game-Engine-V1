@@ -68,6 +68,7 @@ int main(int argc, char* argv[]) {
 	
 	EntityManager *entityManager = new EntityManager();
 	
+	GUIManager::Instance()->setEntityManager(entityManager);
 	//test floor and wall 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {

@@ -1,4 +1,8 @@
 #include "GUIManager.h"
+#include "../components/CubeGraphicsComponent.h"
+
+#include <Windows.h>
+#include <Commdlg.h>
 
 GUIManager* GUIManager::m_Instance = 0;
 
@@ -34,6 +38,10 @@ void GUIManager::renderSettingsGUI(bool flag) {
 void GUIManager::setEntityEditor(Entity* entity) {
 	m_entity = entity;
 }
+
+void GUIManager::setEntityManager(EntityManager* entityManager) {
+	m_entitymanager = entityManager;
+}
 void GUIManager::generateEntityEditor() {
 	//here goes all the code for entity editor 
 	int ID = m_entity->m_ID;
@@ -50,9 +58,104 @@ void GUIManager::generateEntityEditor() {
 
 	ImGui::Begin("Entity Inspector");
 	ImGui::Spacing();
+
+	/*
+	if (ImGui::CollapsingHeader("Create Entity")) {
+		glm::vec3 newEntityBlock;
+		ImGui::PushItemWidth(100);
+		ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(17); if (ImGui::InputFloat("", &newEntityBlock.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::PopID();ImGui::SameLine();
+		ImGui::Text("Y"); ImGui::SameLine(); ImGui::PushID(18);if (ImGui::InputFloat("", &newEntityBlock.y, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();ImGui::SameLine();
+		ImGui::Text("Z"); ImGui::SameLine(); ImGui::PushID(19); if (ImGui::InputFloat("", &newEntityBlock.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
+		ImGui::PopItemWidth();
+
+		if (ImGui::Button("Create Entity")) {
+			m_entitymanager->addEntity(new Entity(newEntityBlock));
+		}
+	}
+
+	*/
+
+	CubeGraphicsComponent *entityGraphics = m_entity->GetComponent  <CubeGraphicsComponent> ();
+
 	ImGui::PushItemWidth(100);
 	ImGui::Text("Entity");  ImGui::SameLine(); ImGui::Text(std::to_string(ID).c_str());
 	ImGui::PopItemWidth();
+
+	if (ImGui::CollapsingHeader("Textures")) {
+		ImGui::Text("Albedo");
+		if (ImGui::ImageButton((void*)entityGraphics->getAlbedoTexture(), ImVec2(100, 100))) {
+			TCHAR*DefaultExtension = 0;
+			TCHAR*FileName = new TCHAR[MAX_PATH];
+			TCHAR*Filter = 0;
+			int FilterIndex = 0;
+			int Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+			TCHAR*InitialDir = 0;
+			HWND Owner = 0;
+			TCHAR*Title = 0;
+
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = Owner;
+
+			ofn.lpstrDefExt = DefaultExtension;
+			ofn.lpstrFile = FileName;
+			ofn.lpstrFile[0] = '\0';
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = Filter;
+			ofn.nFilterIndex = FilterIndex;
+			ofn.lpstrInitialDir = InitialDir;
+			ofn.lpstrTitle = Title;
+			ofn.Flags = Flags;
+
+			GetOpenFileName(&ofn);
+			//need to fix this hacky way and figure out how to use relative paths
+			std::string filename = FileName;
+			std::string textureFile = filename.substr(77);
+			textureFile[8] = '/';
+
+			entityGraphics->setAlbedoTexture(textureFile);
+		}
+		ImGui::TextColored(ImVec4(1, 0, 0, 1), entityGraphics->getAlbedoTextureFilename().c_str());
+
+		ImGui::Text("Specular");
+		if (ImGui::ImageButton((void*)entityGraphics->getSpecularTexture(), ImVec2(100, 100))) {
+			TCHAR*DefaultExtension = 0;
+			TCHAR*FileName = new TCHAR[MAX_PATH];
+			TCHAR*Filter = 0;
+			int FilterIndex = 0;
+			int Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+			TCHAR*InitialDir = 0;
+			HWND Owner = 0;
+			TCHAR*Title = 0;
+
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = Owner;
+
+			ofn.lpstrDefExt = DefaultExtension;
+			ofn.lpstrFile = FileName;
+			ofn.lpstrFile[0] = '\0';
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = Filter;
+			ofn.nFilterIndex = FilterIndex;
+			ofn.lpstrInitialDir = InitialDir;
+			ofn.lpstrTitle = Title;
+			ofn.Flags = Flags;
+
+			GetOpenFileName(&ofn);
+			//need to fix this hacky way and figure out how to use relative paths
+			std::string filename = FileName;
+			std::string textureFile = filename.substr(77);
+			textureFile[8] = '/';
+
+			entityGraphics->setSpecularTexture(textureFile);
+		}
+		ImGui::TextColored(ImVec4(1, 0, 0, 1), entityGraphics->getSpecularTextureFilename().c_str());
+	}
 	if (ImGui::CollapsingHeader("Transform")) {
 		ImGui::Text("Position");
 		ImGui::NewLine();
@@ -60,6 +163,10 @@ void GUIManager::generateEntityEditor() {
 		ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(0); if (ImGui::InputFloat("", &blockPos.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::PopID();ImGui::SameLine();
 		ImGui::Text("Y"); ImGui::SameLine(); ImGui::PushID(1);if (ImGui::InputFloat("", &blockPos.y, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();ImGui::SameLine();
 		ImGui::Text("Z"); ImGui::SameLine(); ImGui::PushID(2); if (ImGui::InputFloat("", &blockPos.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
+		ImGui::NewLine();
+		ImGui::PushID(12); ImGui::SliderFloat("", &blockPos.x, -10, 10); ImGui::PopID(); ImGui::SameLine(); ImGui::PushID(13); ImGui::VSliderFloat("asd", ImVec2(100, 100), &blockPos.y, -10, 10); ImGui::PopID(); ImGui::SameLine();
+		ImGui::PushID(14); ImGui::SliderFloat("", &blockPos.z, -10, 10); ImGui::PopID();
+
 		ImGui::PopItemWidth();
 		ImGui::NewLine();
 		ImGui::Text("Scale");
@@ -111,7 +218,10 @@ void GUIManager::generateSettingsGUI() {
 	ImGui::Text("Geometry Pass %.3f ms/frame (%.1f FPS)", Settings::Instance()->m_geometryPass, 1/(Settings::Instance()->m_geometryPass/1000));
 	ImGui::Text("Shadow Pass %.3f ms/frame (%.1f FPS)", Settings::Instance()->m_shadowPass, 1 / (Settings::Instance()->m_shadowPass / 1000));
 	ImGui::Text("Lighting Pass %.3f ms/frame (%.1f FPS)", Settings::Instance()->m_lightingPass, 1 / (Settings::Instance()->m_lightingPass / 1000));
-
+	ImGui::NewLine();
+	ImGui::NewLine();
+	ImGui::Text("Entity Count: "); ImGui::SameLine(); ImGui::Text(std::to_string(m_entitymanager->getEntityList().size()).c_str());
+	ImGui::NewLine();
 	if (ImGui::CollapsingHeader("Display Mode")) {
 		ImGui::RadioButton("Albedo", &Settings::Instance()->m_textureSelector, 0);
 		ImGui::RadioButton("Normal", &Settings::Instance()->m_textureSelector,1);

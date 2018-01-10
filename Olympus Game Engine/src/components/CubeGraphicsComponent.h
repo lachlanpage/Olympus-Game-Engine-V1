@@ -16,9 +16,20 @@ public:
 	void renderShadow(Entity& entity);
 	virtual void postInit(Entity& entity);
 
+	unsigned int getAlbedoTexture();
+	unsigned int getSpecularTexture(); 
+
+	void setAlbedoTexture(std::string);
+	void setSpecularTexture(std::string);
+
+	std::string getAlbedoTextureFilename();
+	std::string getSpecularTextureFilename();
+
 private:
 	unsigned int albedo_texture, specular_texture;
 	unsigned int cubeVAO, cubeVBO;
+
+	std::string m_albedoTextureFilename, m_specularTextureFilename;
 
 	Shader* m_shader;
 	Shader* m_shadowShader;
