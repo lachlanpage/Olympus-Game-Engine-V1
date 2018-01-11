@@ -57,7 +57,7 @@ void Entity::update(){
 	for (auto component : m_components)
 		component->update(*this);
 
-	is_selected = false;
+	//is_selected = false;
 }
 
 void Entity::updateShadow() {

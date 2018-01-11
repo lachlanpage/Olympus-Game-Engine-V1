@@ -17,6 +17,8 @@ uniform mat4 lightSpaceMatrix;
 uniform vec3 lightDirection;
 uniform vec3 cameraPosition;
 
+uniform vec3 lightColor;
+
 float shadowCalculation(vec4 fragPosLightSpace, vec3 norm){
 	//perform perspective division as bias matirx not used 
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
@@ -73,7 +75,7 @@ void main(){
 	float spec = pow(max(dot(viewDir, reflectDir),0.0), 32);
 	vec3 specular = 0.5 * spec * texture(specularTexture, UV).xyz;
 
-	vec3 col = ((1.0 - shadow ) * (diffuse + specular));
+	vec3 col = ((1.0 - shadow ) * (diffuse + specular)) * lightColor;
 
 	//vec3 col =  albedo.xyz * max(0.0, dot(n.xyz, l));//) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));
 	//vec3 col =  albedo.xyz * max(0.0, dot(n.xyz, vec3(1.0,1.0,1.0)) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));

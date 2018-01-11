@@ -11,6 +11,10 @@
 #include "Entity.h"
 #include "EntityManager.h"
 
+#include "../components/CubeGraphicsComponent.h"
+#include "../components/DirectionalLightComponent.h"
+#include "../components/LightComponent.h"
+
 class GUIManager {
 	//Singleton class to hold all global consts across engine {width, height of window etc}
 public:
@@ -19,11 +23,17 @@ public:
 
 	//setters for render window flags 
 	void renderEntityEditor(bool);
+
 	void setEntityEditor(Entity*);
 	void setEntityManager(EntityManager*);
+	void setDirectionalLightEditor(DirectionalLightComponent*);
+	void setPointLightEditor(LightComponent*);
+
+
 	void renderSettingsGUI(bool);
 	void renderSceneGraph(bool);
-	
+	void renderDirectionalLightEditor(bool);
+	void renderPointLightEditor(bool);
 
 	void render();
 private:
@@ -31,14 +41,20 @@ private:
 	void generateEntityEditor();
 	void generateSettingsGUI();
 	void generateSceneGraph();
+	void generateDirectionalLightGUI();
+	void generatePointLightGUI();
 
 	SDL_Window* m_window;
 	bool m_renderEntityEditor;
 	bool m_renderSettingsEditor;
 	bool m_renderSceneGraph;
+	bool m_renderDirectionalLight;
+	bool m_renderPointLight;
 
 	EntityManager *m_entitymanager;
 	Entity* m_entity;
+	DirectionalLightComponent* m_directionalLight;
+	LightComponent* m_pointLight;
 
 	GUIManager(SDL_Window*);
 	static GUIManager* m_Instance;

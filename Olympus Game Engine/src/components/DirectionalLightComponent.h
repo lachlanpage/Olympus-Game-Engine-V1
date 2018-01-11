@@ -15,9 +15,16 @@ public:
 	virtual void update(Entity& entity);
 	void getBufferTextures();
 	virtual void postInit(Entity& entity);
+
+	glm::vec3 getDirection();
+	void setDirection(glm::vec3);
+
+	glm::vec3 getLightColor();
+	void setLightColor(glm::vec3);
+
 private:
 	unsigned int VAO, VBO;
-	glm::vec3 m_direction;
+	glm::vec3 m_direction, m_color;
 	Shader* m_shader;
 
 	float vertices[18] = {

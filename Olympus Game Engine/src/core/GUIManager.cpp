@@ -1,5 +1,4 @@
 #include "GUIManager.h"
-#include "../components/CubeGraphicsComponent.h"
 
 #include <Windows.h>
 #include <Commdlg.h>
@@ -220,18 +219,64 @@ void GUIManager::renderSceneGraph(bool flag) {
 	m_renderSceneGraph = flag;
 }
 
+
+void GUIManager::setDirectionalLightEditor(DirectionalLightComponent* entity) {
+	m_directionalLight = entity;
+}
+
+void GUIManager::setPointLightEditor(LightComponent* entity) {
+	m_pointLight = entity;
+}
+
+void GUIManager::renderDirectionalLightEditor(bool flag) {
+	m_renderDirectionalLight = flag;
+}
+
+void GUIManager::renderPointLightEditor(bool flag) {
+	m_renderPointLight = flag;
+}
+
 void GUIManager::generateSceneGraph() {
 	ImGui::Begin("Scene Graph");
 	ImGui::Text("Scene Graph");
 	for (auto entity : m_entitymanager->getEntityList()) {
 		std::string name = "Entity: " + std::to_string((entity->m_ID));
-		if (ImGui::TreeNode(name.c_str())) {
-			if (entity->GetComponent <CubeGraphicsComponent>() != nullptr) {
-				if (ImGui::Button("Cube Graphics Component")) {
-				}
+
+		std::string entityID = std::to_string(entity->m_ID);
+
+		CubeGraphicsComponent *entityCubeGraphicsComponent = entity->GetComponent <CubeGraphicsComponent>();
+		DirectionalLightComponent *entityDirectionalLightComponent = entity->GetComponent <DirectionalLightComponent>();
+		LightComponent *entityLightComponent = entity->GetComponent <LightComponent>();
+
+		entity->is_selected = false;
+		//renderEntityEditor(false);
+		if (entityCubeGraphicsComponent != nullptr) {
+			std::string name = "Cube: " + entityID;
+			if (ImGui::TreeNode(name.c_str())) {
+				//stuff specific to cube graphics component
+				setEntityEditor(entity);
+				renderEntityEditor(true);
+				entity->is_selected = true;
+				ImGui::TreePop();
 			}
-			ImGui::Text(std::to_string(entity->getPosition().x).c_str());
-			ImGui::TreePop();
+		}
+
+		else if (entityDirectionalLightComponent != nullptr) {
+			std::string name = "Directional Light: " + entityID;
+			if (ImGui::TreeNode(name.c_str())) {
+				//stuff specific to directional light
+				setDirectionalLightEditor(entityDirectionalLightComponent);
+				renderDirectionalLightEditor(true);
+				ImGui::TreePop();
+			}
+		}
+
+		else if (entityLightComponent != nullptr) {
+			std::string name = "Light:  " + entityID;
+			if (ImGui::TreeNode(name.c_str())) {
+				//stuff specific to Light component
+				ImGui::TreePop();
+			}
 		}
 	}
 	if (ImGui::TreeNode("abcd")) {
@@ -262,6 +307,44 @@ void GUIManager::generateSettingsGUI() {
 	ImGui::End();
 }
 
+
+void GUIManager::generateDirectionalLightGUI() {
+	ImGui::Begin("Directional Light", &m_renderDirectionalLight);
+	ImGui::PushItemWidth(100);
+	ImGui::Text("Direction: {x,y,z}");
+	ImGui::PopItemWidth();
+	ImGui::NewLine();
+	glm::vec3 direction = m_directionalLight->getDirection();
+	ImGui::PushItemWidth(100);
+	ImGui::PushID(12); 
+	ImGui::SliderFloat("", &direction.x, -2, 2); 
+	ImGui::PopID();
+	ImGui::SameLine();
+	ImGui::PushID(13);
+	ImGui::SliderFloat("", &direction.y, -2, 2);
+	ImGui::PopID();
+	ImGui::SameLine();
+	ImGui::PushID(14);
+	ImGui::SliderFloat("", &direction.z, -2, 2);
+	ImGui::PopID();
+	ImGui::SameLine();
+	ImGui::PopItemWidth();
+
+	ImGui::NewLine();
+	ImGui::NewLine();
+	glm::vec3 lightColor = m_directionalLight->getLightColor();
+	ImGui::ColorEdit3("", &lightColor[0]);
+	ImGui::End();
+
+	m_directionalLight->setDirection(direction);
+	m_directionalLight->setLightColor(lightColor);
+}
+
+void GUIManager::generatePointLightGUI() {
+	ImGui::Begin("Point Light", &m_renderPointLight);
+	ImGui::End();
+}
+
 void GUIManager::render() {
 	ImGui_ImplSdlGL3_NewFrame(m_window);
 
@@ -275,6 +358,14 @@ void GUIManager::render() {
 
 	if (m_renderSceneGraph) {
 		generateSceneGraph();
+	}
+
+	if (m_renderDirectionalLight) {
+		generateDirectionalLightGUI();
+	}
+
+	if (m_renderPointLight) {
+		generatePointLightGUI();
 	}
 
 	ImGui::Render();

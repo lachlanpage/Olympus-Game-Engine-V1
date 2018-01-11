@@ -3,7 +3,7 @@
 DirectionalLightComponent::DirectionalLightComponent(glm::vec3 direction) {
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/directional_light.vs", "src/shaders/directional_light.fs");
 	m_direction = direction;
-
+	m_color = glm::vec3(1.0, 1.0, 1.0);
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindVertexArray(VAO);
@@ -19,13 +19,14 @@ DirectionalLightComponent::DirectionalLightComponent(glm::vec3 direction) {
 void DirectionalLightComponent::update(Entity& entity) {
 	//update light direction in settings which will affect shadows 
 	//at the moment want directional light to rotate direction over time for testing hence the cos() for m_direction.x
-	m_direction = glm::vec3(cos(SDL_GetTicks() / 10000.0), m_direction.y, m_direction.z);
+	//m_direction = glm::vec3(cos(SDL_GetTicks() / 10000.0), m_direction.y, m_direction.z);
 	Settings::Instance()->setLightDirection(m_direction);
 
 	m_shader->use();
 	m_shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	m_shader->setMat4("lightSpaceMatrix", Settings::Instance()->lightSpaceMatrix);
 	m_shader->setVec3("lightDirection", m_direction);
+	m_shader->setVec3("lightColor", m_color);
 	getBufferTextures();
 	glBindVertexArray(VAO);
 	sendToRenderer(GL_TRIANGLES, 0, 6);
@@ -37,4 +38,20 @@ void DirectionalLightComponent::postInit(Entity& entity) {
 
 void DirectionalLightComponent::getBufferTextures() {
 	Renderer::Instance()->getBufferTextures(m_shader);
+}
+
+
+glm::vec3 DirectionalLightComponent::getDirection() {
+	return m_direction;
+}
+void DirectionalLightComponent::setDirection(glm::vec3 direction) {
+	m_direction = direction;
+}
+
+void DirectionalLightComponent::setLightColor(glm::vec3 lightColor) {
+	m_color = lightColor;
+}
+
+glm::vec3 DirectionalLightComponent::getLightColor() {
+	return m_color;
 }

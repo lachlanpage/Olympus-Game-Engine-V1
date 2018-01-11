@@ -63,14 +63,10 @@ int main(int argc, char* argv[]) {
 
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
-	//startup GUI 
 	GUIManager::Instance(mainWindow->getWindow());
-	
 	EntityManager *entityManager = new EntityManager();
-
-	entityManager->addEntity(new Entity());
-	
 	GUIManager::Instance()->setEntityManager(entityManager);
+
 	//test floor and wall 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {
@@ -92,7 +88,6 @@ int main(int argc, char* argv[]) {
 		ent = new Entity(glm::vec3(i, 3, 0));
 		ent->addComponent(new CubeGraphicsComponent());
 		entityManager->addEntity(ent);
-
 	}
 
 	Entity *ent = new Entity(glm::vec3(10, 1, 10));
@@ -108,7 +103,6 @@ int main(int argc, char* argv[]) {
 	std::vector<Entity*> lightList;
 	Entity *light = new Entity(glm::vec3(0,2,10));
 	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
-	//lightList.push_back(light);
 
 	Entity *light2 = new Entity(glm::vec3(14, 4, 9));
 	light2->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
@@ -126,18 +120,17 @@ int main(int argc, char* argv[]) {
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	lightList.push_back(light6);
 
-
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 
 	entityManager->addEntity(sun);
-
+	entityManager->addEntity(light2);
 
 	GUIManager::Instance()->renderSceneGraph(true);
 
 	while (mainWindow->isRunning()) {
 		//mouse picking
-		raycast->update(entityManager->getEntityList());
+		//raycast->update(entityManager->getEntityList());
 		light->setPosition(raycast->getCurrentPoint());
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -187,6 +180,7 @@ int main(int argc, char* argv[]) {
 
 		//render GUI 
 		GUIManager::Instance()->render();
+		//raycast->update(entityManager->getEntityList());
 
 		//update all messages
 		MessageBus::Instance()->notify();
