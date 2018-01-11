@@ -67,6 +67,8 @@ int main(int argc, char* argv[]) {
 	GUIManager::Instance(mainWindow->getWindow());
 	
 	EntityManager *entityManager = new EntityManager();
+
+	entityManager->addEntity(new Entity());
 	
 	GUIManager::Instance()->setEntityManager(entityManager);
 	//test floor and wall 
@@ -128,6 +130,9 @@ int main(int argc, char* argv[]) {
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 
+	entityManager->addEntity(sun);
+
+
 	GUIManager::Instance()->renderSceneGraph(true);
 
 	while (mainWindow->isRunning()) {
@@ -146,124 +151,32 @@ int main(int argc, char* argv[]) {
 			mainWindow->handleInput();
 		}
 
-
-
-		//create gui 
-		//create gui 
-		/*
-		ImGui_ImplSdlGL3_NewFrame(mainWindow->getWindow());
-		//Creation of imgui entity frame
-		int ID;
-		glm::vec3 blockPos;
-		glm::vec3 blockScale;
-		glm::vec3 blockRotation;
-		Entity *entityAdd = nullptr;
-		if (raycast->blockClickID != -1) {
-			for (auto entity : entityList) {
-				if (raycast->blockClickID == entity->m_ID) {
-					ID = entity->m_ID;
-					blockPos = entity->getPosition();
-					blockScale = entity->getScale();
-					blockRotation = entity->getRotation();
-					entityAdd = entity;
-				}
-			}
-		}
-		else {
-			ID = 0;
-			blockPos = glm::vec3(0, 0, 0);
-			blockScale = glm::vec3(0, 0, 0);
-			blockRotation = glm::vec3(0, 0, 0);
-		}
-
 		
-		static float value = 10;
-		static char buffer[50] = {};
-		std::vector<char> buffman;
-		static float buf1[64] = { 0 };
-
-		ImGui::Begin("Entity Inspector");
-		ImGui::Spacing();
-		ImGui::PushItemWidth(100);
-		ImGui::Text("Entity");  ImGui::SameLine(); ImGui::Text(std::to_string(ID).c_str());
-		ImGui::PopItemWidth();
-		if (ImGui::CollapsingHeader("Transform")) {	
-			ImGui::Text("Position");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(0); if (ImGui::InputFloat("", &blockPos.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }  ImGui::PopID();ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine(); ImGui::PushID(1);if(ImGui::InputFloat("", &blockPos.y, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine(); ImGui::PushID(2); if(ImGui::InputFloat("", &blockPos.z, 0,0,3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-			ImGui::Text("Scale");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine();  ImGui::PushID(3); if (ImGui::InputFloat("", &blockScale.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }   ImGui::PopID();ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine();  ImGui::PushID(4);if (ImGui::InputFloat("", &blockScale.y, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID(); ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine();  ImGui::PushID(5);if (ImGui::InputFloat("", &blockScale.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-			ImGui::Text("Rotation");
-			ImGui::NewLine();
-			ImGui::PushItemWidth(100);
-			ImGui::Text("X"); ImGui::SameLine(); ImGui::PushID(6); if (ImGui::InputFloat("", &blockRotation.x, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); }   ImGui::PopID();ImGui::SameLine();
-			ImGui::Text("Y"); ImGui::SameLine();  ImGui::PushID(7);if (ImGui::InputFloat("", &blockRotation.y, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID(); ImGui::SameLine();
-			ImGui::Text("Z"); ImGui::SameLine();  ImGui::PushID(8);if (ImGui::InputFloat("", &blockRotation.z, 0, 0, 3)) { ImGui::SetKeyboardFocusHere(-1); } ImGui::PopID();
-			ImGui::PopItemWidth();
-			ImGui::NewLine();
-			//ImGui::SliderFloat("label", &value, 0, 100);
-
-			//if gui updates values we gotta set them here 
-			if(entityAdd != nullptr){
-				entityAdd->setPosition(blockPos);
-				entityAdd->setScale(blockScale);
-				entityAdd->setRotation(blockRotation);
-			}
-
-		}
-
-		if (ImGui::CollapsingHeader("Textures")) {
-			static char buf[100] = "";
-			ImGui::Text("Albedo");
-			ImGui::PushItemWidth(100);
-			ImGui::Image((void*)albedo_texture, ImVec2(100, 100)); ImGui::SameLine();
-			ImGui::InputText("filename", buf, 100);
-			ImGui::TextColored(ImVec4(1.0, 0.0, 0.0, 1.0), buf);
-			ImGui::PopItemWidth();
-			
-		}
-		ImGui::End();
-
-		*/
 		float currentFrame = SDL_GetTicks();
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
 		entityManager->render();
-		//for (auto x : entityList)
-		//	x->update();
-		//end geometry pass
 		Renderer::Instance()->stop();
+
 		float timeNow = SDL_GetTicks();
 		Settings::Instance()->m_geometryPass = timeNow - currentFrame;
-		
 		currentFrame = SDL_GetTicks();
-		//Shadow Pass 
 
+		//Shadow Pass 
 		Renderer::Instance()->startShadowMap();
 		entityManager->renderShadow();
 		Renderer::Instance()->stopShadowMap();
+
 		timeNow = SDL_GetTicks();
 		Settings::Instance()->m_shadowPass = timeNow - currentFrame;
 
 		//lighting pass
-
 		currentFrame = SDL_GetTicks();
 		Renderer::Instance()->lightingPassStart();
-		
-		light2->update();
-		sun->update();
+
+		entityManager->renderLight();
 		Renderer::Instance()->lightingPassStop();
+
 		timeNow = SDL_GetTicks();
 		Settings::Instance()->m_lightingPass = timeNow - currentFrame;
 

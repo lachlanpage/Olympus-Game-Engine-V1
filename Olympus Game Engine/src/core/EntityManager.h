@@ -2,6 +2,11 @@
 #define ENTITYMANAGER_H 
 #include "Entity.h"
 #include <vector>
+
+#include "../components/CubeGraphicsComponent.h"	
+#include "../components/LightComponent.h"
+#include "../components/DirectionalLightComponent.h"
+
 class EntityManager {
 public:
 	EntityManager();
@@ -9,6 +14,7 @@ public:
 	Entity* getEntity(int ID);
 	void render();
 	void renderShadow();
+	void renderLight();
 	std::vector<Entity*> getEntityList();
 private:
 	std::vector<Entity*> m_entityList;

@@ -15,15 +15,29 @@ Entity* EntityManager::getEntity(int ID) {
 }
 
 void EntityManager::render() {
-	for (auto entity : m_entityList)
-		entity->update();
+	for (auto entity : m_entityList) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr) {
+			entity->update();
+		}
+	}
 }
 
 void EntityManager::renderShadow() {
-	for (auto entity : m_entityList)
-		entity->updateShadow();
+	for (auto entity : m_entityList) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr) {
+			entity->updateShadow();
+		}
+	}
 }
 
+void EntityManager::renderLight() {
+	for (auto entity : m_entityList) {
+		if (entity->GetComponent<DirectionalLightComponent>() != nullptr || entity->GetComponent<LightComponent>() != nullptr) {
+			entity->update();
+		}
+	}
+}
 std::vector<Entity*> EntityManager::getEntityList() {
 	return m_entityList;
 }
+

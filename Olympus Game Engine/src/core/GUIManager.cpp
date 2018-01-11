@@ -226,6 +226,10 @@ void GUIManager::generateSceneGraph() {
 	for (auto entity : m_entitymanager->getEntityList()) {
 		std::string name = "Entity: " + std::to_string((entity->m_ID));
 		if (ImGui::TreeNode(name.c_str())) {
+			if (entity->GetComponent <CubeGraphicsComponent>() != nullptr) {
+				if (ImGui::Button("Cube Graphics Component")) {
+				}
+			}
 			ImGui::Text(std::to_string(entity->getPosition().x).c_str());
 			ImGui::TreePop();
 		}

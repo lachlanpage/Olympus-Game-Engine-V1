@@ -37,6 +37,8 @@ public:
 				return comp;
 			}
 		}
+
+		return nullptr;
 	}
 
 private:
