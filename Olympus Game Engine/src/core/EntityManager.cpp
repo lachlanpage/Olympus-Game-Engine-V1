@@ -16,7 +16,7 @@ Entity* EntityManager::getEntity(int ID) {
 
 void EntityManager::render() {
 	for (auto entity : m_entityList) {
-		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<PlaneGraphicsComponent>() != nullptr) {
 			entity->update();
 		}
 	}

@@ -241,6 +241,9 @@ void GUIManager::renderPointLightEditor(bool flag) {
 
 void GUIManager::generateSceneGraph() {
 	ImGui::Begin("Scene Graph");
+	if (ImGui::Button("ADD NEW ENTITY")) {
+		m_entitymanager->addEntity(new Entity());
+	}
 	ImGui::Checkbox("Filter Models", &scenegraph_showModels);
 	ImGui::Checkbox("Filter Lights", &scenegraph_showLights);
 	for (auto entity : m_entitymanager->getEntityList()) {
@@ -251,6 +254,7 @@ void GUIManager::generateSceneGraph() {
 		CubeGraphicsComponent *entityCubeGraphicsComponent = entity->GetComponent <CubeGraphicsComponent>();
 		DirectionalLightComponent *entityDirectionalLightComponent = entity->GetComponent <DirectionalLightComponent>();
 		LightComponent *entityLightComponent = entity->GetComponent <LightComponent>();
+		PlaneGraphicsComponent *entityPlaneGraphicsComponent = entity->GetComponent <PlaneGraphicsComponent>();
 
 		entity->is_selected = false;
 
@@ -264,6 +268,18 @@ void GUIManager::generateSceneGraph() {
 					entity->is_selected = true;
 					ImGui::TreePop();
 				}
+			} 
+
+			if (entityPlaneGraphicsComponent != nullptr) {
+				std::string name = "Plane: " + entityID;
+				if (ImGui::TreeNode(name.c_str())) {
+					//stuff specific to cube graphics component
+					setEntityEditor(entity);
+					renderEntityEditor(true);
+					entity->is_selected = true;
+					ImGui::TreePop();
+				}
+
 			}
 		}
 
@@ -286,6 +302,14 @@ void GUIManager::generateSceneGraph() {
 					renderPointLightEditor(true);
 					ImGui::TreePop();
 				}
+			}
+		}
+
+		if (!entityCubeGraphicsComponent && !entityDirectionalLightComponent && !entityLightComponent) {
+			std::string name = "Empty Entity: " + entityID;
+			if (ImGui::TreeNode(name.c_str())) {
+
+				ImGui::TreePop();
 			}
 		}
 	}

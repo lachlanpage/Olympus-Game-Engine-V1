@@ -20,6 +20,7 @@
 #include "components\QuadGraphicsComponent.h"
 #include "components\SphereGraphicsComponent.h"
 #include "components\PointLightGraphicsComponent.h"
+#include "components\PlaneGraphicsComponent.h"
 #include "core\Shader.h"
 #include "core\ResourceManager.h"
 
@@ -66,7 +67,9 @@ int main(int argc, char* argv[]) {
 	GUIManager::Instance(mainWindow->getWindow());
 	EntityManager *entityManager = new EntityManager();
 	GUIManager::Instance()->setEntityManager(entityManager);
+	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
 
+	/*
 	//test floor and wall 
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {
@@ -98,8 +101,6 @@ int main(int argc, char* argv[]) {
 	ent2->addComponent(new CubeGraphicsComponent());
 	entityManager->addEntity(ent2);
 
-	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
-
 	std::vector<Entity*> lightList;
 	Entity *light = new Entity(glm::vec3(0,2,10));
 	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
@@ -120,18 +121,35 @@ int main(int argc, char* argv[]) {
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	lightList.push_back(light6);
 
+	*/
+
+
+
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 
 	entityManager->addEntity(sun);
-	entityManager->addEntity(light2);
+	//entityManager->addEntity(light2);
+
+	Entity *floor = new Entity(glm::vec3(12, 0, 12));
+	floor->addComponent(new PlaneGraphicsComponent());
+	floor->setScale(glm::vec3(100, 1, 100));
+	floor->setRotation(glm::vec3(90, 0, 0));
+	entityManager->addEntity(floor);
+
+	Entity *cube = new Entity(glm::vec3(12, 1, 12));
+	cube->addComponent(new CubeGraphicsComponent());
+	entityManager->addEntity(cube);
+	entityManager->addEntity(cube);
+	entityManager->addEntity(cube);
+	entityManager->addEntity(cube);
 
 	GUIManager::Instance()->renderSceneGraph(true);
 
 	while (mainWindow->isRunning()) {
 		//mouse picking
 		//raycast->update(entityManager->getEntityList());
-		light->setPosition(raycast->getCurrentPoint());
+		//light->setPosition(raycast->getCurrentPoint());
 
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.WantCaptureKeyboard == 1 || io.WantCaptureMouse == 1) {

@@ -6,6 +6,8 @@
 #include "../components/CubeGraphicsComponent.h"	
 #include "../components/LightComponent.h"
 #include "../components/DirectionalLightComponent.h"
+#include "../components/QuadGraphicsComponent.h"
+#include "../components/PlaneGraphicsComponent.h"
 
 class EntityManager {
 public:
