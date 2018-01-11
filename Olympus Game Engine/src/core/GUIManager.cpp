@@ -25,6 +25,9 @@ GUIManager::GUIManager(SDL_Window* window) {
 	//setting defautls 
 	m_renderSettingsEditor = false;
 	m_renderEntityEditor = false;
+
+	scenegraph_showLights = true;
+	scenegraph_showModels = true;
 }
 
 void GUIManager::renderEntityEditor(bool flag) {
@@ -238,7 +241,8 @@ void GUIManager::renderPointLightEditor(bool flag) {
 
 void GUIManager::generateSceneGraph() {
 	ImGui::Begin("Scene Graph");
-	ImGui::Text("Scene Graph");
+	ImGui::Checkbox("Filter Models", &scenegraph_showModels);
+	ImGui::Checkbox("Filter Lights", &scenegraph_showLights);
 	for (auto entity : m_entitymanager->getEntityList()) {
 		std::string name = "Entity: " + std::to_string((entity->m_ID));
 
@@ -249,40 +253,43 @@ void GUIManager::generateSceneGraph() {
 		LightComponent *entityLightComponent = entity->GetComponent <LightComponent>();
 
 		entity->is_selected = false;
-		//renderEntityEditor(false);
-		if (entityCubeGraphicsComponent != nullptr) {
-			std::string name = "Cube: " + entityID;
-			if (ImGui::TreeNode(name.c_str())) {
-				//stuff specific to cube graphics component
-				setEntityEditor(entity);
-				renderEntityEditor(true);
-				entity->is_selected = true;
-				ImGui::TreePop();
+
+		if (scenegraph_showModels) {
+			if (entityCubeGraphicsComponent != nullptr) {
+				std::string name = "Cube: " + entityID;
+				if (ImGui::TreeNode(name.c_str())) {
+					//stuff specific to cube graphics component
+					setEntityEditor(entity);
+					renderEntityEditor(true);
+					entity->is_selected = true;
+					ImGui::TreePop();
+				}
 			}
 		}
 
-		else if (entityDirectionalLightComponent != nullptr) {
-			std::string name = "Directional Light: " + entityID;
-			if (ImGui::TreeNode(name.c_str())) {
-				//stuff specific to directional light
-				setDirectionalLightEditor(entityDirectionalLightComponent);
-				renderDirectionalLightEditor(true);
-				ImGui::TreePop();
+		if(scenegraph_showLights){
+			if (entityDirectionalLightComponent != nullptr) {
+				std::string name = "Directional Light: " + entityID;
+				if (ImGui::TreeNode(name.c_str())) {
+					//stuff specific to directional light
+					setDirectionalLightEditor(entityDirectionalLightComponent);
+					renderDirectionalLightEditor(true);
+					ImGui::TreePop();
+				}
 			}
-		}
 
-		else if (entityLightComponent != nullptr) {
-			std::string name = "Light:  " + entityID;
-			if (ImGui::TreeNode(name.c_str())) {
-				//stuff specific to Light component
-				ImGui::TreePop();
+			else if (entityLightComponent != nullptr) {
+				std::string name = "Light:  " + entityID;
+				if (ImGui::TreeNode(name.c_str())) {
+					//stuff specific to Light component
+					setPointLightEditor(entityLightComponent);
+					renderPointLightEditor(true);
+					ImGui::TreePop();
+				}
 			}
 		}
 	}
-	if (ImGui::TreeNode("abcd")) {
-		ImGui::Button("ASSDS");
-		ImGui::TreePop();
-	}
+
 	ImGui::End();
 }
 
@@ -342,7 +349,14 @@ void GUIManager::generateDirectionalLightGUI() {
 
 void GUIManager::generatePointLightGUI() {
 	ImGui::Begin("Point Light", &m_renderPointLight);
+
+	ImGui::NewLine();
+	glm::vec3 lightColor = m_pointLight->getLightColor();
+	ImGui::ColorEdit3("", &lightColor[0]);
 	ImGui::End();
+
+	m_pointLight->setLightColor(lightColor);
+	
 }
 
 void GUIManager::render() {

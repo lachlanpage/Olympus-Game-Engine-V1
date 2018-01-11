@@ -21,6 +21,14 @@ LightComponent::LightComponent(float radius, glm::vec3 color) {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
 }
 
+void LightComponent::setLightColor(glm::vec3 color) {
+	m_color = color;
+}
+
+glm::vec3 LightComponent::getLightColor() {
+	return m_color;
+}
+
 void LightComponent::update(Entity& entity) {
 	glm::vec3 currentPosition = entity.getPosition();
 

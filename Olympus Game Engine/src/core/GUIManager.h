@@ -51,6 +51,10 @@ private:
 	bool m_renderDirectionalLight;
 	bool m_renderPointLight;
 
+	//keeping track of what scene graph entities to display 
+	bool scenegraph_showLights;
+	bool scenegraph_showModels;
+
 	EntityManager *m_entitymanager;
 	Entity* m_entity;
 	DirectionalLightComponent* m_directionalLight;
