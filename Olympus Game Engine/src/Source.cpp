@@ -118,7 +118,8 @@ int main(int argc, char* argv[]) {
 	GUIManager::Instance()->renderSceneGraph(true);
 
 	while (mainWindow->isRunning()){
-		//uncomment to use mouse picking
+		//comment to disable mouse picking
+		//scene graph entity clicking will not work if raycasting is on
 		raycast->update(entityManager->getEntityList());
 		//light->setPosition(raycast->getCurrentPoint());
 
