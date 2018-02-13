@@ -49,7 +49,6 @@ void Renderer::getBufferTextures(Shader *shader) {
 
 void Renderer::updateLightShader(Shader* shader) {
 
-
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);

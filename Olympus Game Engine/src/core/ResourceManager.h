@@ -8,6 +8,8 @@
 #include "../core/Shader.h"
 
 class ResourceManager {
+	//Responsible for allocating textures and shader files
+	//If texture/shader is found will return the address in hashmap otherwise will load and store in hashmap
 public:
 	static ResourceManager* m_Instance;
 	static ResourceManager* Instance();

@@ -71,7 +71,6 @@ void Mouse::update(std::vector<Entity*> entityList) {
 
 
 	//update is selected
-	
 	for (auto entity : m_entityList) {
 		if (entity->m_ID == blockClickID) {
 			entity->is_selected = true;

@@ -8,9 +8,7 @@ ResourceManager* ResourceManager::Instance() {
 	return m_Instance;
 }
 
-ResourceManager::ResourceManager() {
-	
-}
+ResourceManager::ResourceManager() {}
 
 unsigned int ResourceManager::loadTexture(std::string filename) {
 	//check if texture has already been loaded, if it has not - load image and then store in loaded texture otherwise return image

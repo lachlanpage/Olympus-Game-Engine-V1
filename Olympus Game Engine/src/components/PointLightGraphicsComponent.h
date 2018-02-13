@@ -25,9 +25,6 @@ private:
 
 	Shader* m_shader;
 	std::vector<GLfloat> vertices;
-
-
-
 };
 
 #endif

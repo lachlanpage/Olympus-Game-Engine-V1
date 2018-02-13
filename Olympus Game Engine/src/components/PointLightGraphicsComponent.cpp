@@ -1,7 +1,6 @@
 #include "PointLightGraphicsComponent.h"
 
 PointLightGraphicsComponent::PointLightGraphicsComponent(){
-
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/pointLight.vs", "src/shaders/pointLight.fs");
 	m_color = glm::vec3(1.0, 0.0, 0.0);
 	m_stacks = 40;
@@ -33,8 +32,6 @@ PointLightGraphicsComponent::PointLightGraphicsComponent(){
 
 }
 void PointLightGraphicsComponent::update(Entity& entity) {
-
-
 	m_shader->use();
 
 	//lightradius, lightpoisiton, lightcolor 

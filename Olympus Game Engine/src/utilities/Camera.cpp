@@ -24,7 +24,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, MessageBus* me
 	m_front = front;
 	m_worldUp = up;
 
-	//constants
+	//camera constants
 	m_yaw = -90.0f;
 	m_pitch = 0.0f;
 	m_movementSpeed = 10;
@@ -39,16 +39,14 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, MessageBus* me
 glm::mat4 Camera::getViewMatrix() {
 	return glm::lookAt(m_position,m_position + m_front, m_up);
 }
-glm::vec3 Camera::getPosition() { return m_position; }
 
+glm::vec3 Camera::getPosition() { return m_position; }
 
 void Camera::onNotify(Message message) {
 	handleInput(message.getEvent());
 }
 
 void Camera::handleInput(std::string movement) {
-
-
 	float velocity = m_movementSpeed * Time::Instance()->getDeltaTime();
 	if (movement == "CAMERA_W_A") {
 		m_position -= m_right * velocity;
@@ -59,14 +57,10 @@ void Camera::handleInput(std::string movement) {
 		m_position += m_right * velocity;
 	}
 
-	else if (movement == "CAMERA_S_D") {
+	else if (movement == "CAMERA_S_D")
 		std::cout << "CAM SD" << std::endl;
-	}
-
-	else if (movement == "CAMERA_S_A") {
+	else if (movement == "CAMERA_S_A")
 		std::cout << "CAM SA" << std::endl;
-	}
-
 	else if (movement == "CAMERA_LSHIFT")
 		m_position -= velocity * glm::vec3(0.0f, 1.0f, 0.0f);
 	else if (movement == "CAMERA_SPACE")
@@ -79,9 +73,8 @@ void Camera::handleInput(std::string movement) {
 		m_position -= m_front * velocity;
 	else if (movement == "CAMERA_D")
 		m_position += m_right * velocity;
-	else if (movement == "CAMERA_GET_POSITION") {
+	else if (movement == "CAMERA_GET_POSITION")
 		std::cout << m_position.x << " " << m_position.y << " " << m_position.z << std::endl;
-	} 
 	else if (movement == "CAMERA_STOP") {
 		if (m_updateCamera == true) {
 			m_updateCamera = false;
@@ -94,7 +87,6 @@ void Camera::handleInput(std::string movement) {
 }
 
 void Camera::processMouseMovement() {
-
 	if (m_updateCamera) {
 		bool constrainPitch = true;
 
@@ -107,7 +99,6 @@ void Camera::processMouseMovement() {
 
 		m_yaw -= m_mouseSensitivity * (0.5 * window_width - x);
 		m_pitch += m_mouseSensitivity * (0.5 * window_height - y);
-
 
 		// Make sure that when pitch is out of bounds, screen doesn't get flipped
 		if (constrainPitch)
@@ -123,6 +114,7 @@ void Camera::processMouseMovement() {
 		SDL_ShowCursor(SDL_DISABLE);
 	}
 	else {
+		//Implement to hide cursor
 		//SDL_ShowCursor(SDL_TRUE);
 	}
 }

@@ -1,7 +1,6 @@
 #include "ModelComponent.h"
 
 ModelComponent::ModelComponent() {
-
 	std::string inputfile = "models/sponza/sponza.obj";
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;

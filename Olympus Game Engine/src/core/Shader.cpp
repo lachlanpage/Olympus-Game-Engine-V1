@@ -101,7 +101,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* tes
 		std::cout << "ERROR::SHADER::TESSELATION::eVAKL::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
-
 	//Shader Program time 
 	ID = glCreateProgram();
 	glAttachShader(ID, vertex);
@@ -202,7 +201,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geo
 	if (!success) {
 		glGetShaderInfoLog(geometry, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::GEOMETRY SHADER D\n" << infoLog << std::endl;
-
 	}
 
 	//Shader Program time 
@@ -286,7 +284,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
-
 	//Shader Program time 
 	ID = glCreateProgram();
 	glAttachShader(ID, vertex);
@@ -335,8 +332,3 @@ void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const
 {
 	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
-
-
-//void Shader::setMat4(const std::string &name, glm::mat4 value) const {
-//	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
-//}

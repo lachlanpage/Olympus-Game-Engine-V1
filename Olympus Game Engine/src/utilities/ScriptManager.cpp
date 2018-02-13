@@ -1,5 +1,7 @@
 #include "ScriptManager.h"
 
+//WORK IN PROGRESS 
+//CURRENTLY NOT NEEDED 
 ScriptManager* ScriptManager::m_pInstance = 0;
 
 ScriptManager* ScriptManager::Instance() {
