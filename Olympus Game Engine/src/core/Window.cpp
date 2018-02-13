@@ -53,9 +53,9 @@ void Window::handleInput() {
 				send(aMessage);
 				break;
 			case SDLK_q:
-				SDL_Surface * image = SDL_CreateRGBSurface(SDL_SWSURFACE, 800, 600, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+				SDL_Surface * image = SDL_CreateRGBSurface(SDL_SWSURFACE, Settings::Instance()->window_width, Settings::Instance()->window_height, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
 				glReadBuffer(GL_FRONT);
-				glReadPixels(0, 0, 800, 600, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+				glReadPixels(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
 				std::string filename = "screenshot_" + std::to_string(Time::Instance()->getRuntime()) + ".bmp";
 				SDL_SaveBMP(image, filename.c_str());
 				SDL_FreeSurface(image);
