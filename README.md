@@ -1,30 +1,27 @@
 # Olympus Game Engine V1
-A 3D game engine exploring opengl - Created by Lachlan Page
+A 3D game engine written in C++ exploring openGL - Created by Lachlan Page
 
-Aims (rough) : An FPS style game engine with world editor?
+Aims (rough) : Creating a game engine to experiment with openGL :) 
 
-To do (Non specific order): 
-- Skyboxes with cubemap
-- Multiple light support
-- Better fps camera
-- Material system 
-- Text Rendering
-- Geometry shaders
-- Bullet physics
-- Reflection / Refraction
-- Physically based rendering
-- Particle Support
-- Animation 
-- Height map gen
-- Water shader
-- Shadows
-- Bloom
-- HDR
-- Mesh/obj loading 
-- Hotswap shaders and materials while running live
-- world editor 
+## Screenshots
+![directional light](https://raw.githubusercontent.com/lachlanpage/Olympus-Game-Engine-V1/master/Olympus%20Game%20Engine/screenshots/directional%20light.png)
+![normal mapping](https://raw.githubusercontent.com/lachlanpage/Olympus-Game-Engine-V1/master/Olympus%20Game%20Engine/screenshots/normal%20map.png)
+## Videos
+https://www.youtube.com/watch?v=Vv9Letb-IJg&list=PLWeLRvHUIfgs7Kln3Hv5QQvASRt7XbvIF
+### Controls: 
+- movement: <kbd>w</kbd> <kbd>a</kbd> <kbd>s</kbd> <kbd>d</kbd>
+- increase/decrease elevation: <kbd>shift</kbd> <kbd>spacebar</kbd>
+- look around: <kbd>mouse</kbd>
+- select: <kbd>mouse-left</kbd>
+- free camera: <kbd>c</kbd>
+- render settings gui: <kbd>m</kbd>
+- get position: <kbd>p</kbd>
+- take screenshot: <kbd>q</kbd>
+- quit: <kbd>esc</kbd>
 
-Bugs: 
+### To do (Non specific order): 
+- check issues
+### Bugs: 
 - check issues
 
 README will be updated as project develops over time. 
