@@ -9,6 +9,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_main.h>
 #include <iostream>
+#include "GUIManager.h"
 class Mouse : public BusNode {
 public:
 	static Mouse* Instance();
@@ -26,6 +27,7 @@ private:
 	Mouse(MessageBus* messageBus);
 	void onNotify(Message message);
 
+	std::vector<Entity*> m_entityList;
 
 	glm::vec3 getPointOnRay(glm::vec3 ray, float distance);
 	glm::vec3 calculateMouseRay();

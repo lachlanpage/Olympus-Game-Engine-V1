@@ -25,12 +25,14 @@ void Mouse::checkIntersection(glm::vec3 position) {
 
 void Mouse::onNotify(Message message) {
 	if (message.getEvent() == "MOUSE_LEFT_CLICK") {
+		std::cout << "THIS IS CALLED" << std::endl;
 		blockClickID = m_blockIntersectionID;
-		
 	}
 }
 
 void Mouse::update(std::vector<Entity*> entityList) {
+	m_entityList = entityList;
+
 	viewMatrix = Camera::Instance()->getViewMatrix();
 	currentRay = calculateMouseRay();
 
@@ -65,6 +67,26 @@ void Mouse::update(std::vector<Entity*> entityList) {
 			}
 		}
 		rayLength = rayLength + step_size;
+	}
+
+
+	//update is selected
+	for (auto entity : m_entityList) {
+		if (entity->m_ID == blockClickID) {
+			entity->is_selected = true;
+			GUIManager::Instance()->setEntityEditor(entity);
+		}
+		else {
+			//entity->is_selected = false;
+		}
+	}
+
+	//render gui accordingly 
+	if (blockClickID == -1) {
+		GUIManager::Instance()->renderEntityEditor(false);
+	}
+	else {
+		GUIManager::Instance()->renderEntityEditor(true);
 	}
 }
 

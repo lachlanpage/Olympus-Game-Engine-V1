@@ -11,6 +11,13 @@ public:
 	int window_width;
 	glm::vec3 lightDir;
 
+	float m_geometryPass;
+	float m_lightingPass;
+	float m_shadowPass;
+	float m_testFPS;
+
+	int m_textureSelector;
+
 	void setLightDirection(glm::vec3);
 
 	glm::mat4 projectionMatrix;

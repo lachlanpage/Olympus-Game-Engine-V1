@@ -124,10 +124,12 @@
     <ClCompile Include="src\components\DirectionalLightComponent.cpp" />
     <ClCompile Include="src\components\LightComponent.cpp" />
     <ClCompile Include="src\components\ModelComponent.cpp" />
+    <ClCompile Include="src\components\PlaneGraphicsComponent.cpp" />
     <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
     <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
+    <ClCompile Include="src\core\EntityManager.cpp" />
     <ClCompile Include="src\core\GUIManager.cpp" />
     <ClCompile Include="src\core\Mouse.cpp" />
     <ClCompile Include="src\core\Renderer.cpp" />
@@ -144,6 +146,7 @@
     <ClCompile Include="src\utilities\Camera.cpp" />
     <ClCompile Include="src\utilities\Logger.cpp" />
     <ClCompile Include="src\utilities\MessageBus.cpp" />
+    <ClCompile Include="src\utilities\ScriptManager.cpp" />
     <ClCompile Include="src\utilities\Settings.cpp" />
     <ClCompile Include="src\utilities\stb_image.cpp" />
     <ClCompile Include="src\utilities\Time.cpp" />
@@ -155,10 +158,12 @@
     <ClInclude Include="src\components\GraphicsComponent.h" />
     <ClInclude Include="src\components\LightComponent.h" />
     <ClInclude Include="src\components\ModelComponent.h" />
+    <ClInclude Include="src\components\PlaneGraphicsComponent.h" />
     <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
     <ClInclude Include="src\components\SphereGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
+    <ClInclude Include="src\core\EntityManager.h" />
     <ClInclude Include="src\core\GUIManager.h" />
     <ClInclude Include="src\core\Mouse.h" />
     <ClInclude Include="src\core\Renderer.h" />
@@ -171,6 +176,7 @@
     <ClInclude Include="src\utilities\Logger.h" />
     <ClInclude Include="src\utilities\Message.h" />
     <ClInclude Include="src\utilities\MessageBus.h" />
+    <ClInclude Include="src\utilities\ScriptManager.h" />
     <ClInclude Include="src\utilities\Settings.h" />
     <ClInclude Include="src\utilities\stb_image.h" />
     <ClInclude Include="src\utilities\Time.h" />

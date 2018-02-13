@@ -14,6 +14,10 @@ public:
 
 	virtual void update(Entity& entity);
 	virtual void postInit(Entity& entity);
+
+	glm::vec3 getLightColor();
+	void setLightColor(glm::vec3);
+
 private:
 
 	void updateLightShader();

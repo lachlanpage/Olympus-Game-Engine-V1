@@ -3,6 +3,9 @@
 int Entity::uniqueIDCounter = 0;
 
 Entity::Entity(){
+	m_position = glm::vec3(0, 0, 0);
+	m_scale = glm::vec3(1, 1, 1);
+	m_rotation = glm::vec3(0, 0, 0);
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;
 }
@@ -14,6 +17,8 @@ Entity::Entity(glm::vec3 position, GraphicsComponent* graphics) {
 	m_graphics = graphics;
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;	
+
+	is_selected = false;
 }
 
 Entity::Entity(glm::vec3 position) {
@@ -22,6 +27,8 @@ Entity::Entity(glm::vec3 position) {
 	m_rotation = glm::vec3(0, 0, 0);
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;
+
+	is_selected = false;
 }
 
 Entity::Entity(GraphicsComponent* graphics) {
@@ -30,6 +37,8 @@ Entity::Entity(GraphicsComponent* graphics) {
 	m_rotation = glm::vec3(0, 0, 0);
 	m_ID = uniqueIDCounter;
 	uniqueIDCounter++;
+
+	is_selected = false;
 }
 Entity::~Entity(){}
 glm::vec3 Entity::getPosition() { return m_position; }
@@ -48,7 +57,7 @@ void Entity::update(){
 	for (auto component : m_components)
 		component->update(*this);
 
-	is_selected = false;
+	//is_selected = false;
 }
 
 void Entity::updateShadow() {

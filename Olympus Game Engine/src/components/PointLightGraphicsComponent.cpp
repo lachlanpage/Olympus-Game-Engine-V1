@@ -1,11 +1,8 @@
 #include "PointLightGraphicsComponent.h"
 
 PointLightGraphicsComponent::PointLightGraphicsComponent(){
-
-	//fix this up with a radius method and stacks and slices approach 
-	//something like this: https://www.opengl.org/discussion_boards/showthread.php/159584-sphere-generation
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/pointLight.vs", "src/shaders/pointLight.fs");
-
+	m_color = glm::vec3(1.0, 0.0, 0.0);
 	m_stacks = 40;
 	m_slices = 40;
 	//generate sphere vertices
@@ -35,8 +32,6 @@ PointLightGraphicsComponent::PointLightGraphicsComponent(){
 
 }
 void PointLightGraphicsComponent::update(Entity& entity) {
-
-
 	m_shader->use();
 
 	//lightradius, lightpoisiton, lightcolor 
@@ -48,8 +43,16 @@ void PointLightGraphicsComponent::update(Entity& entity) {
 	m_shader->setMat4("model", model);
 	m_shader->setVec3("lightPosition", entity.getPosition());
 	m_shader->setFloat("lightRadius", 10);
-	m_shader->setVec3("lightColor", glm::vec3(1.0, 0.0, 0.0));
+	m_shader->setVec3("lightColor", m_color);
 	glBindVertexArray(VAO);
 	Renderer::Instance()->updateLightShader(m_shader);
 	sendToRenderer(GL_TRIANGLES, 0, m_stacks*m_slices);
+}
+
+void PointLightGraphicsComponent::setLightColor(glm::vec3 color) {
+	m_color = color;
+}
+
+glm::vec3 PointLightGraphicsComponent::getLightColor() {
+	return m_color;
 }

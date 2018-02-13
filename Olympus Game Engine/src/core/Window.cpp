@@ -42,7 +42,6 @@ void Window::handleInput() {
 			if (event.button.button == SDL_BUTTON_LEFT) {
 				aMessage.setEvent("MOUSE_LEFT_CLICK");
 				send(aMessage);
-
 			}
 			break;
 		case SDL_KEYDOWN:
@@ -121,7 +120,7 @@ void Window::handleInput() {
 	}
 
 	else if (state[SDL_SCANCODE_O]) {
-
+		//not implemented will be used for opening lua console?
 	}
 }
 

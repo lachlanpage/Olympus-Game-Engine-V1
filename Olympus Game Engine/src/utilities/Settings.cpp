@@ -15,7 +15,7 @@ Settings::Settings() {
 	projection = glm::perspective(glm::radians(80.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
 	
 
-	//shadow map stuff 
+	//shadow map consts
 	lightDir = glm::vec3(0.7, 0.3, 0.1);
 	projectionMatrix = glm::ortho<float>(-20, 20, -20, 20, -20, 20);
 	depthViewMatrix = glm::lookAt(lightDir, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
@@ -28,6 +28,8 @@ Settings::Settings() {
 		0.0, 0.0, 0.5, 0.0,
 		0.5, 0.5, 0.5, 1.0
 	);
+
+	m_textureSelector = 5;
 }
 
 void Settings::setLightDirection(glm::vec3 direction) {

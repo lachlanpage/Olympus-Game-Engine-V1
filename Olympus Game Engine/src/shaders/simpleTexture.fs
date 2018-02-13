@@ -32,10 +32,10 @@ void main(){
 	if(textureSelector == 5){
 		
 		vec4 colorBeforeGamma = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
-		float gamma = 2.2;
+		float gamma = 1.2;
 		color.rgb = pow(colorBeforeGamma.rgb, vec3(1.0/gamma));
 		color.w = 1;
-		color = colorBeforeGamma;
+		//color = colorBeforeGamma;
 	}
 
 	if(textureSelector == 3){

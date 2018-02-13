@@ -1,6 +1,6 @@
-#include "CubeGraphicsComponent.h"
+#include "PlaneGraphicsComponent.h"
 
-CubeGraphicsComponent::CubeGraphicsComponent() {
+PlaneGraphicsComponent::PlaneGraphicsComponent() {
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/cube.vs", "src/shaders/cube.fs");
 	m_shadowShader = ResourceManager::Instance()->loadShader("src/shaders/shadow.vs", "src/shaders/shadow.fs");
 
@@ -30,39 +30,39 @@ CubeGraphicsComponent::CubeGraphicsComponent() {
 	specular_texture = ResourceManager::Instance()->loadTexture(m_specularTextureFilename);
 }
 
-void CubeGraphicsComponent::postInit(Entity& entity) {
+void PlaneGraphicsComponent::postInit(Entity& entity) {
 
 }
 
-unsigned int CubeGraphicsComponent::getAlbedoTexture() {
+unsigned int PlaneGraphicsComponent::getAlbedoTexture() {
 	return albedo_texture;
 }
 
-unsigned int CubeGraphicsComponent::getSpecularTexture() {
+unsigned int PlaneGraphicsComponent::getSpecularTexture() {
 	return specular_texture;
 }
 
-std::string CubeGraphicsComponent::getAlbedoTextureFilename() {
+std::string PlaneGraphicsComponent::getAlbedoTextureFilename() {
 	return m_albedoTextureFilename;
 }
 
-std::string CubeGraphicsComponent::getSpecularTextureFilename() {
+std::string PlaneGraphicsComponent::getSpecularTextureFilename() {
 	return m_specularTextureFilename;
 }
 
-void CubeGraphicsComponent::setAlbedoTexture(std::string filename) {
+void PlaneGraphicsComponent::setAlbedoTexture(std::string filename) {
 	std::cout << "SET ALBEDO CALLED";
 	albedo_texture = ResourceManager::Instance()->loadTexture(filename);
 	m_albedoTextureFilename = filename;
 }
 
-void CubeGraphicsComponent::setSpecularTexture(std::string filename) {
+void PlaneGraphicsComponent::setSpecularTexture(std::string filename) {
 	std::cout << "SET SPEC CALLED" << std::endl;
 	specular_texture = ResourceManager::Instance()->loadTexture(filename);
 	m_specularTextureFilename = filename;
 }
 
-void CubeGraphicsComponent::renderShadow(Entity& entity) {
+void PlaneGraphicsComponent::renderShadow(Entity& entity) {
 	m_shadowShader->use();
 	m_shadowShader->setMat4("view", Settings::Instance()->depthViewMatrix);
 	m_shadowShader->setMat4("projection", Settings::Instance()->projectionMatrix);
@@ -72,15 +72,15 @@ void CubeGraphicsComponent::renderShadow(Entity& entity) {
 	//x rotation
 	model = glm::rotate(model, glm::radians(entity.getRotation().x), glm::vec3(1, 0, 0));
 	//y rotation 
-	model = glm::rotate(model, glm::radians(entity.getRotation().y), glm::vec3(0,1, 0));
+	model = glm::rotate(model, glm::radians(entity.getRotation().y), glm::vec3(0, 1, 0));
 	//z rotation
-	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0,0,1));
+	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0, 0, 1));
 	m_shadowShader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
-void CubeGraphicsComponent::update(Entity& entity) {
+void PlaneGraphicsComponent::update(Entity& entity) {
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
@@ -104,5 +104,5 @@ void CubeGraphicsComponent::update(Entity& entity) {
 	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0, 0, 1));
 	m_shader->setMat4("model", model);
 	glBindVertexArray(cubeVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 }

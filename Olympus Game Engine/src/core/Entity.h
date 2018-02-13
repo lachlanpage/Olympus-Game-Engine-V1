@@ -30,6 +30,17 @@ public:
 	void update();
 	void updateShadow();
 
+	template<typename ComponentType>
+	ComponentType* GetComponent() {
+		for (auto component : m_components) {
+			if (ComponentType* comp = dynamic_cast<ComponentType*>(component)) {
+				return comp;
+			}
+		}
+
+		return nullptr;
+	}
+
 private:
 	std::vector<Component*> m_components;
 	glm::vec3 m_position;

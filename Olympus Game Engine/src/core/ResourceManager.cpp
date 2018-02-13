@@ -8,9 +8,7 @@ ResourceManager* ResourceManager::Instance() {
 	return m_Instance;
 }
 
-ResourceManager::ResourceManager() {
-	
-}
+ResourceManager::ResourceManager() {}
 
 unsigned int ResourceManager::loadTexture(std::string filename) {
 	//check if texture has already been loaded, if it has not - load image and then store in loaded texture otherwise return image
@@ -30,8 +28,11 @@ unsigned int ResourceManager::loadTexture(std::string filename) {
 unsigned int ResourceManager::loadImage(std::string filename) {
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrChannels;
+	
 	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
+
 	if (!data) {
+		Logger::Instance()->write(stbi_failure_reason() + filename);
 		Logger::Instance()->write("Failed to load Image: " + filename);
 	}
 	else {
