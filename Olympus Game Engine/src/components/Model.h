@@ -7,6 +7,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "../utilities/stb_image.h"
 
 
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
@@ -20,7 +21,10 @@ public:
 	std::vector<Mesh> meshes;
 	std::string directory;
 	bool gammaCorrection;
-
+	Model();
+	void setFilepath(char *path) {
+		loadModel(path);
+	}
 	Model(char *path)
 	{
 		loadModel(path);

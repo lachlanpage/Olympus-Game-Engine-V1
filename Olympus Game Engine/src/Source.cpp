@@ -30,6 +30,7 @@
 #include "components/LightComponent.h"
 #include "components/ModelComponent.h"
 #include "components/DirectionalLightComponent.h"
+#include "components/ModelComponent.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -42,6 +43,8 @@
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl_gl3.h>
+
+
 
 int main(int argc, char* argv[]) {
 
@@ -95,15 +98,17 @@ int main(int argc, char* argv[]) {
 	lightList.push_back(light6);
 	*/
 
+	Entity *model1 = new Entity(glm::vec3(10, 10, 10));
+	model1->addComponent(new ModelComponent("models/nanosuit/nanosuit.obj"));
+	model1->setScale(glm::vec3(0.3, 0.3, 0.3));
+	model1->setPosition(glm::vec3(15, 1, 15));
+	entityManager->addEntity(model1);
+
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 	entityManager->addEntity(sun);
 
 	GUIManager::Instance()->renderSceneGraph(true);
-
-	//load test model 
-	Shader *ourShader = ResourceManager::Instance()->loadShader("model_loading.vs", "model_loading.fs");
-	Model ourModel("models/nanosuit/nanosuit.obj");
 
 	while (mainWindow->isRunning()){
 		//comment to disable mouse picking
@@ -129,13 +134,6 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->start();
 		entityManager->render();
 
-		// render the loaded model
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.0002f, 0.0002f, 0.0002f));	// it's a bit too big for our scene, so scale it down
-		ourShader->setMat4("model", model);
-		ourModel.Draw(ourShader);
-
 		Renderer::Instance()->stop();
 		//End Geometry Pass
 		timeNow = SDL_GetTicks();
@@ -146,8 +144,6 @@ int main(int argc, char* argv[]) {
 		//begin Shadow Pass 
 		Renderer::Instance()->startShadowMap();
 		entityManager->renderShadow();
-		// render the loaded model
-		ourModel.Draw(ourShader);
 		Renderer::Instance()->stopShadowMap();
 		//End Shadow Pass
 		timeNow = SDL_GetTicks();

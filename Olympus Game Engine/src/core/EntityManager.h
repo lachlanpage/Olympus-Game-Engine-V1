@@ -8,6 +8,7 @@
 #include "../components/DirectionalLightComponent.h"
 #include "../components/QuadGraphicsComponent.h"
 #include "../components/PlaneGraphicsComponent.h"
+#include "../components/ModelComponent.h"
 
 class EntityManager {
 public:

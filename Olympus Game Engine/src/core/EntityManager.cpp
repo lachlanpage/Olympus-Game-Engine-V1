@@ -16,7 +16,7 @@ Entity* EntityManager::getEntity(int ID) {
 
 void EntityManager::render() {
 	for (auto entity : m_entityList) {
-		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<PlaneGraphicsComponent>() != nullptr) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<PlaneGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr) {
 			entity->update();
 		}
 	}
@@ -24,7 +24,7 @@ void EntityManager::render() {
 
 void EntityManager::renderShadow() {
 	for (auto entity : m_entityList) {
-		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr) {
 			entity->updateShadow();
 		}
 	}

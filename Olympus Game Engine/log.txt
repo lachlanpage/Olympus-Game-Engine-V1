@@ -1847,6 +1847,7 @@ Shader EXISTS: vert - src/shaders/cube.vs frag - src/shaders/cube.fs
 Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
 Texture: textures/albedo_container.png already exists
 Texture: textures/specular_container.png already exists
+Shader CREATED: vert - src/shaders/model_loading.vs frag - src/shaders/model_loading.fs
+Shader EXISTS: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
 Shader CREATED: vert - src/shaders/directional_light.vs frag - src/shaders/directional_light.fs
-Shader CREATED: vert - model_loading.vs frag - model_loading.fs
 TERMINATED SUCCESSFULLY
