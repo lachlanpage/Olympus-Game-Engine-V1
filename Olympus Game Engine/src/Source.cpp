@@ -31,16 +31,17 @@
 #include "components/ModelComponent.h"
 #include "components/DirectionalLightComponent.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include "components/Model.h"
 //lua bridge must be after lua import
 #include <Lua/lua.hpp>
 #include <LuaBridge/LuaBridge.h>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl_gl3.h>
-
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
-
 
 int main(int argc, char* argv[]) {
 
@@ -88,24 +89,7 @@ int main(int argc, char* argv[]) {
 	ent2->addComponent(new CubeGraphicsComponent());
 	entityManager->addEntity(ent2);
 
-	//List of lights in scene
 	/*
-	std::vector<Entity*> lightList;
-	Entity *light = new Entity(glm::vec3(0,2,10));
-	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
-
-	Entity *light2 = new Entity(glm::vec3(14, 4, 9));
-	light2->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
-	lightList.push_back(light2);
-
-	Entity *light4 = new Entity(glm::vec3(19, 7, 12));
-	light4->addComponent(new LightComponent(8, glm::vec3(1.0, 1.0, 0.0)));
-	lightList.push_back(light4);
-
-	Entity *light5 = new Entity(glm::vec3(0, 3, 12));
-	light5->addComponent(new LightComponent(10, glm::vec3(0.4, 0.1, 0.8)));
-	lightList.push_back(light5);
-
 	Entity *light6 = new Entity(glm::vec3(13, 5, 18));
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	lightList.push_back(light6);
@@ -116,6 +100,10 @@ int main(int argc, char* argv[]) {
 	entityManager->addEntity(sun);
 
 	GUIManager::Instance()->renderSceneGraph(true);
+
+	//load test model 
+	Shader *ourShader = ResourceManager::Instance()->loadShader("model_loading.vs", "model_loading.fs");
+	Model ourModel("models/nanosuit/nanosuit.obj");
 
 	while (mainWindow->isRunning()){
 		//comment to disable mouse picking
@@ -140,6 +128,14 @@ int main(int argc, char* argv[]) {
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
 		entityManager->render();
+
+		// render the loaded model
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.0002f, 0.0002f, 0.0002f));	// it's a bit too big for our scene, so scale it down
+		ourShader->setMat4("model", model);
+		ourModel.Draw(ourShader);
+
 		Renderer::Instance()->stop();
 		//End Geometry Pass
 		timeNow = SDL_GetTicks();
@@ -150,6 +146,8 @@ int main(int argc, char* argv[]) {
 		//begin Shadow Pass 
 		Renderer::Instance()->startShadowMap();
 		entityManager->renderShadow();
+		// render the loaded model
+		ourModel.Draw(ourShader);
 		Renderer::Instance()->stopShadowMap();
 		//End Shadow Pass
 		timeNow = SDL_GetTicks();
