@@ -105,6 +105,12 @@
     <ClCompile Include="src\components\PlaneGraphicsComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\components\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h">
@@ -191,6 +197,12 @@
     <ClInclude Include="src\components\PlaneGraphicsComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\basic.fs" />
@@ -211,5 +223,7 @@
     <None Include="src\shaders\shadow.fs" />
     <None Include="scripts\test.lua" />
     <None Include="src\scripts\test.lua" />
+    <None Include="src\shaders\model_loading.vs" />
+    <None Include="src\shaders\model_loading.fs" />
   </ItemGroup>
 </Project>

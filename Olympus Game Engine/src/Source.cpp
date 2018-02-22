@@ -30,7 +30,13 @@
 #include "components/LightComponent.h"
 #include "components/ModelComponent.h"
 #include "components/DirectionalLightComponent.h"
+#include "components/ModelComponent.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include "components/Model.h"
 //lua bridge must be after lua import
 #include <Lua/lua.hpp>
 #include <LuaBridge/LuaBridge.h>
@@ -38,15 +44,13 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl_gl3.h>
 
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
 
 
 int main(int argc, char* argv[]) {
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
-	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
+	Camera::Instance(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	GUIManager::Instance(mainWindow->getWindow());
@@ -58,6 +62,8 @@ int main(int argc, char* argv[]) {
 
 	//create floor and wall {test scene} 
 	//will move to a scene class with manager 
+
+	/*
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {
 			Entity *ent = new Entity(glm::vec3(i, 0, j));
@@ -88,28 +94,33 @@ int main(int argc, char* argv[]) {
 	ent2->addComponent(new CubeGraphicsComponent());
 	entityManager->addEntity(ent2);
 
-	//List of lights in scene
+	*/
+
 	/*
-	std::vector<Entity*> lightList;
-	Entity *light = new Entity(glm::vec3(0,2,10));
-	light->addComponent(new LightComponent(5, glm::vec3(0.0,0.0,1.0)));
-
-	Entity *light2 = new Entity(glm::vec3(14, 4, 9));
-	light2->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
-	lightList.push_back(light2);
-
-	Entity *light4 = new Entity(glm::vec3(19, 7, 12));
-	light4->addComponent(new LightComponent(8, glm::vec3(1.0, 1.0, 0.0)));
-	lightList.push_back(light4);
-
-	Entity *light5 = new Entity(glm::vec3(0, 3, 12));
-	light5->addComponent(new LightComponent(10, glm::vec3(0.4, 0.1, 0.8)));
-	lightList.push_back(light5);
-
 	Entity *light6 = new Entity(glm::vec3(13, 5, 18));
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	lightList.push_back(light6);
 	*/
+
+	/*
+	Entity *model1 = new Entity(glm::vec3(10, 10, 10));
+	model1->addComponent(new ModelComponent("models/nanosuit/nanosuit.obj"));
+	model1->setScale(glm::vec3(0.3, 0.3, 0.3));
+	model1->setPosition(glm::vec3(15, 1, 15));
+	entityManager->addEntity(model1);
+	*/
+
+	Entity *model2 = new Entity(glm::vec3(0, 0,0));
+	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
+	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
+	entityManager->addEntity(model2);
+
+	Entity *light1 = new Entity(glm::vec3(11, 1.2, -0.65));
+	light1->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
+	entityManager->addEntity(light1);
+	//unoptimized 19.1 FPS 
+	// at 100 entities 
+		//entityManager->addEntity(model1);
 
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
@@ -120,7 +131,7 @@ int main(int argc, char* argv[]) {
 	while (mainWindow->isRunning()){
 		//comment to disable mouse picking
 		//scene graph entity clicking will not work if raycasting is on
-		raycast->update(entityManager->getEntityList());
+		//raycast->update(entityManager->getEntityList());
 		//light->setPosition(raycast->getCurrentPoint());
 
 		ImGuiIO& io = ImGui::GetIO();

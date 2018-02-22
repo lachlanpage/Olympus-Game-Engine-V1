@@ -77,12 +77,13 @@ void GUIManager::generateEntityEditor() {
 
 	*/
 
-	CubeGraphicsComponent *entityGraphics = m_entity->GetComponent  <CubeGraphicsComponent> ();
+	//CubeGraphicsComponent *entityGraphics = m_entity->GetComponent  <CubeGraphicsComponent> ();
 
 	ImGui::PushItemWidth(100);
 	ImGui::Text("Entity");  ImGui::SameLine(); ImGui::Text(std::to_string(ID).c_str());
 	ImGui::PopItemWidth();
 
+	/*
 	if (ImGui::CollapsingHeader("Textures")) {
 		ImGui::Text("Albedo");
 		ImGui::PushID(100);
@@ -168,9 +169,9 @@ void GUIManager::generateEntityEditor() {
 		ImGui::TextColored(ImVec4(1, 0, 0, 1), entityGraphics->getSpecularTextureFilename().c_str());
 
 		ImGui::NewLine();
-
-
 	}
+
+	*/
 	if (ImGui::CollapsingHeader("Transform")) {
 		ImGui::Text("Position");
 		ImGui::NewLine();
@@ -247,6 +248,7 @@ void GUIManager::generateSceneGraph() {
 	ImGui::Checkbox("Filter Models", &scenegraph_showModels);
 	ImGui::Checkbox("Filter Lights", &scenegraph_showLights);
 	for (auto entity : m_entitymanager->getEntityList()) {
+		//Add any components to be included in scene graph here
 		std::string name = "Entity: " + std::to_string((entity->m_ID));
 
 		std::string entityID = std::to_string(entity->m_ID);
@@ -255,6 +257,7 @@ void GUIManager::generateSceneGraph() {
 		DirectionalLightComponent *entityDirectionalLightComponent = entity->GetComponent <DirectionalLightComponent>();
 		LightComponent *entityLightComponent = entity->GetComponent <LightComponent>();
 		PlaneGraphicsComponent *entityPlaneGraphicsComponent = entity->GetComponent <PlaneGraphicsComponent>();
+		ModelComponent *entityModelComponent = entity->GetComponent <ModelComponent>();
 
 		entity->is_selected = false;
 
@@ -268,7 +271,18 @@ void GUIManager::generateSceneGraph() {
 					entity->is_selected = true;
 					ImGui::TreePop();
 				}
-			} 
+			}
+
+			if (entityModelComponent != nullptr) {
+				std::string name = "Model: " + entityID;
+				if (ImGui::TreeNode(name.c_str())) {
+					//stuff specific to cube graphics component
+					setEntityEditor(entity);
+					renderEntityEditor(true);
+					entity->is_selected = true;
+					ImGui::TreePop();
+				}
+			}
 
 			if (entityPlaneGraphicsComponent != nullptr) {
 				std::string name = "Plane: " + entityID;
