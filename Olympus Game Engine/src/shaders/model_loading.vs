@@ -9,9 +9,16 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+out vec2 vs_textureCoordinates;
+out vec3 vs_normalData;
+out vec3 vs_pos;
+
 void main()
 {
     TexCoords = aTexCoords;    
     gl_Position = projection * view * model * vec4(aPos, 1.0);
-}
 
+	vs_normalData = aNormal;
+	vs_textureCoordinates = aTexCoords;
+	vs_pos = vec3(model*vec4(aPos,1.0));
+}

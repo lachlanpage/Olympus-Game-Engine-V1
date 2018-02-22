@@ -15,8 +15,6 @@ unsigned int TextureFromFile(const char *path, const std::string &directory, boo
 class Model
 {
 public:
-	/*  Functions   */
-	/*  Model Data */
 	std::vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 	std::vector<Mesh> meshes;
 	std::string directory;
@@ -30,29 +28,24 @@ public:
 		loadModel(path);
 	}
 	void Draw(Shader *shader) {
-		for (unsigned int i = 0; i < meshes.size(); i++)
-			meshes[i].Draw(shader);
+		for (auto mesh : meshes) {
+			mesh.Draw(shader);
+		}
 	}
 private:
-	/*  Model Data  */
-
-	/*  Functions   */
 	void loadModel(std::string path) {
 		// read file via ASSIMP
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-		// check for errors
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
-		{
-			std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals);
+		//error checking {if root node and scene are null then we got problems}
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+			//Logger::Instance()->write("ERROR LOADING MODEL::ASSIMP");
 			return;
-		}
-		// retrieve the directory path of the filepath
 		directory = path.substr(0, path.find_last_of('/'));
-
 		// process ASSIMP's root node recursively
 		processNode(scene->mRootNode, scene);
 	}
+
 	void processNode(aiNode *node, const aiScene *scene) {
 		// process each mesh located at the current node
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -64,17 +57,16 @@ private:
 		}
 		// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
-		{
 			processNode(node->mChildren[i], scene);
-		}
 	}
+
 	Mesh processMesh(aiMesh *mesh, const aiScene *scene) {
 		// data to fill
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
 
-		// Walk through each of the mesh's vertices
+		//Iterate each of mesh vertices
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;

@@ -62,6 +62,8 @@ int main(int argc, char* argv[]) {
 
 	//create floor and wall {test scene} 
 	//will move to a scene class with manager 
+
+	/*
 	for (int i = 0; i < 20; i++) {
 		for (int j = 0; j <20; j++) {
 			Entity *ent = new Entity(glm::vec3(i, 0, j));
@@ -92,17 +94,33 @@ int main(int argc, char* argv[]) {
 	ent2->addComponent(new CubeGraphicsComponent());
 	entityManager->addEntity(ent2);
 
+	*/
+
 	/*
 	Entity *light6 = new Entity(glm::vec3(13, 5, 18));
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	lightList.push_back(light6);
 	*/
 
+	/*
 	Entity *model1 = new Entity(glm::vec3(10, 10, 10));
 	model1->addComponent(new ModelComponent("models/nanosuit/nanosuit.obj"));
 	model1->setScale(glm::vec3(0.3, 0.3, 0.3));
 	model1->setPosition(glm::vec3(15, 1, 15));
 	entityManager->addEntity(model1);
+	*/
+
+	Entity *model2 = new Entity(glm::vec3(0, 0,0));
+	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
+	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
+	entityManager->addEntity(model2);
+
+	Entity *light1 = new Entity(glm::vec3(11, 1.2, -0.65));
+	light1->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
+	entityManager->addEntity(light1);
+	//unoptimized 19.1 FPS 
+	// at 100 entities 
+		//entityManager->addEntity(model1);
 
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
@@ -113,7 +131,7 @@ int main(int argc, char* argv[]) {
 	while (mainWindow->isRunning()){
 		//comment to disable mouse picking
 		//scene graph entity clicking will not work if raycasting is on
-		raycast->update(entityManager->getEntityList());
+		//raycast->update(entityManager->getEntityList());
 		//light->setPosition(raycast->getCurrentPoint());
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -133,7 +151,6 @@ int main(int argc, char* argv[]) {
 		//Deferred Rendering: start geometry pass 
 		Renderer::Instance()->start();
 		entityManager->render();
-
 		Renderer::Instance()->stop();
 		//End Geometry Pass
 		timeNow = SDL_GetTicks();
