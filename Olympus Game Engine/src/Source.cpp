@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
-	Camera::Instance(glm::vec3(6.0f, 15.0f, 24.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
+	Camera::Instance(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	GUIManager::Instance(mainWindow->getWindow());

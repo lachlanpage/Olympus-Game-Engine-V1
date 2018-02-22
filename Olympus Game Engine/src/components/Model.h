@@ -140,6 +140,7 @@ private:
 	}
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
 		std::vector<Texture> textures;
+		
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString str;
