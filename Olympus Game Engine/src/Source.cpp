@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
-	Camera::Instance(glm::vec3(5.0f, 5.0f, 5.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
+	Camera::Instance(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	GUIManager::Instance(mainWindow->getWindow());
@@ -59,6 +59,9 @@ int main(int argc, char* argv[]) {
 
 	//final quad drawn in deferred rendering stage
 	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
+
+
+	float aTime, bTime;
 
 	//create floor and wall {test scene} 
 	//will move to a scene class with manager 
@@ -112,10 +115,13 @@ int main(int argc, char* argv[]) {
 
 	Entity *model2 = new Entity(glm::vec3(0, 0,0));
 	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
+
+	//model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
 	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
+	//for(int i = 0; i < 10; i++)
 	entityManager->addEntity(model2);
 
-	Entity *light1 = new Entity(glm::vec3(11, 1.2, -0.65));
+	Entity *light1 = new Entity(glm::vec3(0, 0, 0));
 	light1->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
 	entityManager->addEntity(light1);
 	//unoptimized 19.1 FPS 
@@ -128,7 +134,11 @@ int main(int argc, char* argv[]) {
 
 	GUIManager::Instance()->renderSceneGraph(true);
 
+
+
 	while (mainWindow->isRunning()){
+
+		aTime = SDL_GetTicks();
 		//comment to disable mouse picking
 		//scene graph entity clicking will not work if raycasting is on
 		//raycast->update(entityManager->getEntityList());
@@ -185,6 +195,9 @@ int main(int argc, char* argv[]) {
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
+
+		bTime = SDL_GetTicks();
+		std::cout << bTime - aTime << std::endl;
 	}
 
 	ImGui_ImplSdlGL3_Shutdown();

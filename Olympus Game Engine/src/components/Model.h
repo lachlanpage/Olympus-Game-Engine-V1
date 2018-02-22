@@ -28,8 +28,10 @@ public:
 		loadModel(path);
 	}
 	void Draw(Shader *shader) {
+		int vertCount = 0;
 		for (auto mesh : meshes) {
 			mesh.Draw(shader);
+			vertCount += mesh.vertices.size();
 		}
 	}
 private:

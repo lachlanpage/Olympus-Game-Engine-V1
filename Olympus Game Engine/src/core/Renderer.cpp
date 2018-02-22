@@ -15,6 +15,8 @@ void Renderer::render(GLenum mode, GLint first, GLsizei count) {
 void Renderer::start() {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -157,7 +159,8 @@ Renderer::Renderer() {
 	// color texture
 	glGenTextures(1, &colorTexture);
 	glBindTexture(GL_TEXTURE_2D, colorTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);

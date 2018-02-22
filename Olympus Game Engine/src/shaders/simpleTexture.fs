@@ -1,5 +1,5 @@
 #version 430 core 
-
+//this is for quad that renders final stuff 
 in vec2 UV;
 in vec4 shadowCoord;
 
@@ -30,11 +30,19 @@ void main(){
 	}
 
 	if(textureSelector == 5){
-		
-		vec4 colorBeforeGamma = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
-		float gamma = 1.2;
-		color.rgb = pow(colorBeforeGamma.rgb, vec3(1.0/gamma));
-		color.w = 1;
+		//reinhard tone mapping with gamma correction and exposure selector
+		float gamma = 2.2;
+		float exposure = 0.4;
+		vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
+		//exposure tone mapping
+		vec3 mapped = (vec4(1.0,1.0,1.0,1.0) - exp(-hdrCol * exposure)).rgb;
+		mapped = pow(mapped, vec3(1.0 / gamma));
+		color = vec4(mapped,1.0);
+
+		//vec4 colorBeforeGamma = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
+		//float gamma = 1.2;
+		//color.rgb = pow(colorBeforeGamma.rgb, vec3(1.0/gamma));
+		//color.w = 1;
 		//color = colorBeforeGamma;
 	}
 
