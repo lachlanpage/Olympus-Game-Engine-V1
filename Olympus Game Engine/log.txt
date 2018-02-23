@@ -1,6 +1,6 @@
-Shader CREATED: vert - src/shaders/passthrough.vs frag - src/shaders/simpleTexture.fs
 Shader CREATED: vert - src/shaders/model_loading.vs frag - src/shaders/model_loading.fs
 Shader CREATED: vert - src/shaders/shadow.vs frag - src/shaders/shadow.fs
 Shader CREATED: vert - src/shaders/light.vs frag - src/shaders/light.fs
 Shader CREATED: vert - src/shaders/directional_light.vs frag - src/shaders/directional_light.fs
+Shader CREATED: vert - src/shaders/passthrough.vs frag - src/shaders/simpleTexture.fs
 TERMINATED SUCCESSFULLY

@@ -17,6 +17,7 @@ uniform sampler2D ssaoTextureBlur;
 uniform float textureSelector;
 
 uniform vec3 cameraPosition;
+uniform mat4 view;
 
 void main(){
 	if(textureSelector == 0){

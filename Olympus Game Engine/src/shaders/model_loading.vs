@@ -13,12 +13,17 @@ out vec2 vs_textureCoordinates;
 out vec3 vs_normalData;
 out vec3 vs_pos;
 
+out vec3 eyePos;
+out vec3 eyeNormal;
+
 void main()
 {
     TexCoords = aTexCoords;    
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 
-	vs_normalData = (view*model*vec4(aNormal,1.0)).xyz;
+	vs_normalData = aNormal;
+	eyeNormal = (view * model * vec4(aNormal,1.0)).xyz;
+	eyePos = vec3(view*model*vec4(aPos,1.0));
 	vs_textureCoordinates = aTexCoords;
-	vs_pos = vec3(view*model*vec4(aPos,1.0));
+	vs_pos = vec3(model*vec4(aPos,1.0));
 }

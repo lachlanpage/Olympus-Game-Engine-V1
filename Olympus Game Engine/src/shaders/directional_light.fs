@@ -11,6 +11,7 @@ uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
 uniform sampler2D shadowTexture;
 uniform sampler2D specularTexture;
+uniform sampler2D ssaoTexture;
 
 
 uniform mat4 lightSpaceMatrix;

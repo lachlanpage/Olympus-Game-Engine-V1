@@ -122,15 +122,15 @@ void Renderer::SSAO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
 	glClear(GL_COLOR_BUFFER_BIT);
 	shaderSSAO->use();
-	shaderSSAO->setMat4("viewMatrix", Settings::Instance()->depthViewMatrix);
+	shaderSSAO->setMat4("viewMatrix", Camera::Instance()->getViewMatrix());
 	//send kernel + rotation 
 	for (unsigned int i = 0; i < 64; i++)
 		shaderSSAO->setVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
 	shaderSSAO->setMat4("projection", Settings::Instance()->projection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, positionTexture);
+	glBindTexture(GL_TEXTURE_2D, eyePositionTexture);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, normalTexture);
+	glBindTexture(GL_TEXTURE_2D, eyeNormalTexture);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, noiseTexture);
 	renderQuad();
@@ -155,6 +155,8 @@ void Renderer::updateQuadShader(Shader* shader) {
 	//need to delete
 	//teseting for shadow stuff 
 	shader->setMat4("biasMatrix", Settings::Instance()->biasMatrix);
+
+	shader->setMat4("view", Camera::Instance()->getViewMatrix());
 
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -241,6 +243,27 @@ Renderer::Renderer() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, specularTexture, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// normal txture
+	glGenTextures(1, &eyeNormalTexture);
+	glBindTexture(GL_TEXTURE_2D, eyeNormalTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, eyeNormalTexture, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glGenTextures(1, &eyePositionTexture);
+	glBindTexture(GL_TEXTURE_2D, eyePositionTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D,eyePositionTexture, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+
 	//Depth buffer for framebuffer
 	glGenRenderbuffers(1, &renderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
@@ -250,8 +273,8 @@ Renderer::Renderer() {
 
 
 	//attach texture and depth buffer to framebuffer
-	GLuint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3};
-	glDrawBuffers(4, attachments);
+	GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5};
+	glDrawBuffers(6, attachments);
 	glEnable(GL_DEPTH_TEST);
 
 	//check for errors 

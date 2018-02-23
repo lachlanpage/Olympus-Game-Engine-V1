@@ -60,6 +60,8 @@ private:
 	unsigned int normalTexture;
 	unsigned int positionTexture;
 	unsigned int specularTexture;
+	unsigned int eyePositionTexture;
+	unsigned int eyeNormalTexture;
 	unsigned int noiseTexture;
 
 	unsigned int shadowDepthTexture;
