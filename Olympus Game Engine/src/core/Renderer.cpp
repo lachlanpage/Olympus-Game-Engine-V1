@@ -122,6 +122,7 @@ void Renderer::SSAO() {
 	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBuffer);
 	glClear(GL_COLOR_BUFFER_BIT);
 	shaderSSAO->use();
+	shaderSSAO->setMat4("viewMatrix", Settings::Instance()->depthViewMatrix);
 	//send kernel + rotation 
 	for (unsigned int i = 0; i < 64; i++)
 		shaderSSAO->setVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
@@ -182,6 +183,10 @@ void Renderer::updateQuadShader(Shader* shader) {
 	shader->setInt("ssaoTexture", 6);
 	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
+
+	shader->setInt("ssaoTextureBlur", 7);
+	glActiveTexture(GL_TEXTURE7);
+	glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
 
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 }
@@ -328,7 +333,7 @@ Renderer::Renderer() {
 
 	//generate sample kernerl 
 	
-	float resolution = 64.0;
+	float resolution = 128.0;
 	for (int i = 0; i < resolution; i++) {
 		glm::vec3 sample(randomFloats(generator) * 2.0 - 1.0, randomFloats(generator) * 2.0 - 1.0, randomFloats(generator));
 		sample = glm::normalize(sample);

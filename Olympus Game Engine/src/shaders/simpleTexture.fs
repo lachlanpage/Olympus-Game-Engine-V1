@@ -11,6 +11,8 @@ uniform sampler2D positionTexture;
 uniform sampler2D lightTexture;
 uniform sampler2D shadowTexture;
 uniform sampler2D specularTexture;
+uniform sampler2D ssaoTexture;
+uniform sampler2D ssaoTextureBlur;
 
 uniform float textureSelector;
 
@@ -33,7 +35,10 @@ void main(){
 		//reinhard tone mapping with gamma correction and exposure selector
 		float gamma = 2.2;
 		float exposure = 0.4;
-		vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
+		//ambient line 
+		float ambientOcclusion = texture(ssaoTexture, UV).r; 
+		//vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
+		vec4 hdrCol = texture(lightTexture, UV) + 0.3*ambientOcclusion*texture(colorTexture, UV);
 		//exposure tone mapping
 		vec3 mapped = (vec4(1.0,1.0,1.0,1.0) - exp(-hdrCol * exposure)).rgb;
 		mapped = pow(mapped, vec3(1.0 / gamma));
@@ -48,7 +53,6 @@ void main(){
 
 	if(textureSelector == 3){
 		//defferred rendering test with fixed lights
-
 		vec3 Position = vec3(0,3,0);
 		vec3 Color = vec3(1.0,0.0,0.0);
 
@@ -127,5 +131,15 @@ void main(){
 	if(textureSelector == 7){
 		color = texture(specularTexture, UV);
 	}
+
+	if(textureSelector == 8){
+		color = texture(ssaoTexture, UV);
+	}
+
+	if(textureSelector == 9){
+		color = texture(ssaoTextureBlur, UV);
+	}
+
+
 }
 
