@@ -50,18 +50,12 @@ int main(int argc, char* argv[]) {
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
-	Camera::Instance(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
+	Camera::Instance(glm::vec3(2.0f, 2.0f,2.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	GUIManager::Instance(mainWindow->getWindow());
 	EntityManager *entityManager = new EntityManager();
 	GUIManager::Instance()->setEntityManager(entityManager);
-
-	//final quad drawn in deferred rendering stage
-	Entity *quad = new Entity(glm::vec3(0, 0, 0), new QuadGraphicsComponent());
-
-
-	float aTime, bTime;
 
 	//create floor and wall {test scene} 
 	//will move to a scene class with manager 
@@ -105,28 +99,16 @@ int main(int argc, char* argv[]) {
 	lightList.push_back(light6);
 	*/
 
-	/*
-	Entity *model1 = new Entity(glm::vec3(10, 10, 10));
-	model1->addComponent(new ModelComponent("models/nanosuit/nanosuit.obj"));
-	model1->setScale(glm::vec3(0.3, 0.3, 0.3));
-	model1->setPosition(glm::vec3(15, 1, 15));
-	entityManager->addEntity(model1);
-	*/
 
 	Entity *model2 = new Entity(glm::vec3(0, 0,0));
 	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
-
-	//model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
+	model2->setPosition(glm::vec3(1.0, 1.0, 1.0));
 	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
-	//for(int i = 0; i < 10; i++)
 	entityManager->addEntity(model2);
 
 	Entity *light1 = new Entity(glm::vec3(0, 0, 0));
 	light1->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
 	entityManager->addEntity(light1);
-	//unoptimized 19.1 FPS 
-	// at 100 entities 
-		//entityManager->addEntity(model1);
 
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
@@ -134,11 +116,7 @@ int main(int argc, char* argv[]) {
 
 	GUIManager::Instance()->renderSceneGraph(true);
 
-
-
 	while (mainWindow->isRunning()){
-
-		aTime = SDL_GetTicks();
 		//comment to disable mouse picking
 		//scene graph entity clicking will not work if raycasting is on
 		//raycast->update(entityManager->getEntityList());
@@ -166,6 +144,7 @@ int main(int argc, char* argv[]) {
 		timeNow = SDL_GetTicks();
 		Settings::Instance()->m_geometryPass = timeNow - currentFrame;
 
+		Renderer::Instance()->SSAO();
 		
 		currentFrame = SDL_GetTicks();
 		//begin Shadow Pass 
@@ -185,8 +164,7 @@ int main(int argc, char* argv[]) {
 		timeNow = SDL_GetTicks();
 		Settings::Instance()->m_lightingPass = timeNow - currentFrame;
 
-		//draw screen quad with final texture
-		quad->update();
+		Renderer::Instance()->Flush();
 
 		//render GUI 
 		GUIManager::Instance()->render();
@@ -195,9 +173,6 @@ int main(int argc, char* argv[]) {
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
 		SDL_GL_SwapWindow(mainWindow->getWindow());
-
-		bTime = SDL_GetTicks();
-		std::cout << bTime - aTime << std::endl;
 	}
 
 	ImGui_ImplSdlGL3_Shutdown();

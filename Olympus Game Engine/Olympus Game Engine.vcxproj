@@ -212,6 +212,9 @@
     <None Include="src\shaders\shadow.fs" />
     <None Include="src\shaders\shadow.vs" />
     <None Include="src\shaders\simpleTexture.fs" />
+    <None Include="src\shaders\ssao.fs" />
+    <None Include="src\shaders\ssao.vs" />
+    <None Include="src\shaders\ssao_blur.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
