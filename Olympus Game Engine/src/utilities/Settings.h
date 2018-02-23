@@ -16,6 +16,11 @@ public:
 	float m_shadowPass;
 	float m_testFPS;
 
+	float gamma;
+	float exposure;
+	float ssaoRadius;
+	float ssaoBias;
+
 	int m_textureSelector;
 
 	void setLightDirection(glm::vec3);

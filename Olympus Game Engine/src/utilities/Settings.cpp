@@ -13,6 +13,11 @@ Settings::Settings() {
 	window_height = 1080;
 	window_width = 1920;
 	projection = glm::perspective(glm::radians(80.0f), (float)window_width / (float)window_height, 0.1f, 100.0f);
+
+	gamma = 1.8;
+	exposure = 0.5; 
+	ssaoRadius = 1;
+	ssaoBias = 0.009;
 	
 
 	//shadow map consts

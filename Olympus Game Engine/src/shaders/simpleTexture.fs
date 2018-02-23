@@ -1,5 +1,5 @@
 #version 430 core 
-
+//this is for quad that renders final stuff 
 in vec2 UV;
 in vec4 shadowCoord;
 
@@ -11,10 +11,16 @@ uniform sampler2D positionTexture;
 uniform sampler2D lightTexture;
 uniform sampler2D shadowTexture;
 uniform sampler2D specularTexture;
+uniform sampler2D ssaoTexture;
+uniform sampler2D ssaoTextureBlur;
 
 uniform float textureSelector;
 
 uniform vec3 cameraPosition;
+uniform mat4 view;
+
+uniform float gamma;
+uniform float exposure;
 
 void main(){
 	if(textureSelector == 0){
@@ -30,17 +36,25 @@ void main(){
 	}
 
 	if(textureSelector == 5){
-		
-		vec4 colorBeforeGamma = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
-		float gamma = 1.2;
-		color.rgb = pow(colorBeforeGamma.rgb, vec3(1.0/gamma));
-		color.w = 1;
+		//reinhard tone mapping with gamma correction and exposure selector
+		//ambient line 
+		float ambientOcclusion = texture(ssaoTexture, UV).r; 
+		//vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
+		vec4 hdrCol = texture(lightTexture, UV) + 0.3*ambientOcclusion*texture(colorTexture, UV);
+		//exposure tone mapping
+		vec3 mapped = (vec4(1.0,1.0,1.0,1.0) - exp(-hdrCol * exposure)).rgb;
+		mapped = pow(mapped, vec3(1.0 / gamma));
+		color = vec4(mapped,1.0);
+
+		//vec4 colorBeforeGamma = texture(lightTexture, UV) + 0.2 * texture(colorTexture, UV); //hardcoded ambience
+		//float gamma = 1.2;
+		//color.rgb = pow(colorBeforeGamma.rgb, vec3(1.0/gamma));
+		//color.w = 1;
 		//color = colorBeforeGamma;
 	}
 
 	if(textureSelector == 3){
 		//defferred rendering test with fixed lights
-
 		vec3 Position = vec3(0,3,0);
 		vec3 Color = vec3(1.0,0.0,0.0);
 
@@ -119,5 +133,15 @@ void main(){
 	if(textureSelector == 7){
 		color = texture(specularTexture, UV);
 	}
+
+	if(textureSelector == 8){
+		color = texture(ssaoTexture, UV);
+	}
+
+	if(textureSelector == 9){
+		color = texture(ssaoTextureBlur, UV);
+	}
+
+
 }
 

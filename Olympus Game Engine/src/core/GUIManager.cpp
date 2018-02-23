@@ -347,7 +347,20 @@ void GUIManager::generateSettingsGUI() {
 		ImGui::RadioButton("Position", &Settings::Instance()->m_textureSelector, 2);
 		ImGui::RadioButton("Shadow Map", &Settings::Instance()->m_textureSelector, 6);
 		ImGui::RadioButton("Specular", &Settings::Instance()->m_textureSelector, 7);
+		ImGui::RadioButton("SSAO Blurred", &Settings::Instance()->m_textureSelector, 8);
+		ImGui::RadioButton("SSAO", &Settings::Instance()->m_textureSelector, 9);
 		ImGui::RadioButton("Combined", &Settings::Instance()->m_textureSelector, 5);
+
+	}
+
+	if (ImGui::CollapsingHeader("HDR")) {
+		ImGui::InputFloat("Gamma", &Settings::Instance()->gamma);
+		ImGui::InputFloat("Exposure", &Settings::Instance()->exposure);
+	}
+
+	if (ImGui::CollapsingHeader("SSOA")) {
+		ImGui::InputFloat("radius", &Settings::Instance()->ssaoRadius);
+		ImGui::InputFloat("bias", &Settings::Instance()->ssaoBias);
 	}
 	ImGui::End();
 }

@@ -225,5 +225,9 @@
     <None Include="src\scripts\test.lua" />
     <None Include="src\shaders\model_loading.vs" />
     <None Include="src\shaders\model_loading.fs" />
+    <None Include="src\shaders\ssao.vs" />
+    <None Include="src\shaders\ssao.fs" />
+    <None Include="src\shaders\ssao_blur.fs" />
+    <None Include="src\shaders\godray.fs" />
   </ItemGroup>
 </Project>

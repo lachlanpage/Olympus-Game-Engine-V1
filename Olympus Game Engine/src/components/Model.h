@@ -28,8 +28,10 @@ public:
 		loadModel(path);
 	}
 	void Draw(Shader *shader) {
+		int vertCount = 0;
 		for (auto mesh : meshes) {
 			mesh.Draw(shader);
+			vertCount += mesh.vertices.size();
 		}
 	}
 private:
@@ -38,9 +40,10 @@ private:
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals);
 		//error checking {if root node and scene are null then we got problems}
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-			//Logger::Instance()->write("ERROR LOADING MODEL::ASSIMP");
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+			std::cout << "ASSIMP:: ERROR" << std::endl;
 			return;
+		}
 		directory = path.substr(0, path.find_last_of('/'));
 		// process ASSIMP's root node recursively
 		processNode(scene->mRootNode, scene);

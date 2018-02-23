@@ -4,12 +4,16 @@
 #include "Shader.h"
 #include "../utilities/Camera.h"
 #include <iostream>
+#include "ResourceManager.h"
+#include <random>
 class Renderer {
 public:
 	static Renderer* m_Instance;
 	static Renderer* Instance();
 	void start();
 	void stop();
+	void SSAO();
+	void Flush();
 	void lightingPassStart();
 	void lightingPassStop();
 
@@ -23,7 +27,18 @@ public:
 private:
 	unsigned int m_fbo;
 
+	//shaders used for post-processing effects
+	Shader *shaderSSAO;
+	Shader *shaderSSAOBlur;
+	Shader *shaderFinalPass;
+	std::vector<glm::vec3> ssaoNoise;
+	std::default_random_engine generator;
+	std::vector<glm::vec3> ssaoKernel;
+
 	Renderer();
+	void renderQuad();
+	unsigned int quadVAO = 0; 
+	unsigned int quadVBO;
 
 	//normal, diffuse, position, tex
 	GLuint m_textures[4];
@@ -37,12 +52,17 @@ private:
 	GLuint framebuffer;
 	GLuint lightingbuffer;
 	GLuint shadowBuffer;
+	GLuint ssaoBuffer, ssaoBlurBuffer;
+	GLuint ssaoColorBuffer, ssaoColorBufferBlur;
 
 	unsigned int lightingTexture;
 	unsigned int colorTexture;
 	unsigned int normalTexture;
 	unsigned int positionTexture;
 	unsigned int specularTexture;
+	unsigned int eyePositionTexture;
+	unsigned int eyeNormalTexture;
+	unsigned int noiseTexture;
 
 	unsigned int shadowDepthTexture;
 
