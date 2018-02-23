@@ -20,7 +20,6 @@ void main()
 {
     TexCoords = aTexCoords;    
     gl_Position = projection * view * model * vec4(aPos, 1.0);
-
 	vs_normalData = aNormal;
 	eyeNormal = (view * model * vec4(aNormal,1.0)).xyz;
 	eyePos = vec3(view*model*vec4(aPos,1.0));

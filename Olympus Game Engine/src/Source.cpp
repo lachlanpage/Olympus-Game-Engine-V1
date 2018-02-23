@@ -44,8 +44,6 @@
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_sdl_gl3.h>
 
-
-
 int main(int argc, char* argv[]) {
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
@@ -57,58 +55,15 @@ int main(int argc, char* argv[]) {
 	EntityManager *entityManager = new EntityManager();
 	GUIManager::Instance()->setEntityManager(entityManager);
 
-	//create floor and wall {test scene} 
-	//will move to a scene class with manager 
-
-	/*
-	for (int i = 0; i < 20; i++) {
-		for (int j = 0; j <20; j++) {
-			Entity *ent = new Entity(glm::vec3(i, 0, j));
-			ent->addComponent(new CubeGraphicsComponent());
-			entityManager->addEntity(ent);
-		}
-	}
-
-	for (int i = 0; i < 20; i++) {
-		Entity *ent = new Entity(glm::vec3(i, 1,0));
-		ent->addComponent(new CubeGraphicsComponent());
-		entityManager->addEntity(ent);
-
-		ent = new Entity(glm::vec3(i, 2, 0));
-		ent->addComponent(new CubeGraphicsComponent());
-		entityManager->addEntity(ent);
-
-		ent = new Entity(glm::vec3(i, 3, 0));
-		ent->addComponent(new CubeGraphicsComponent());
-		entityManager->addEntity(ent);
-	}
-
-	Entity *ent = new Entity(glm::vec3(10, 1, 10));
-	ent->addComponent(new CubeGraphicsComponent());
-	entityManager->addEntity(ent);
-
-	Entity *ent2 = new Entity(glm::vec3(10, 2, 10));
-	ent2->addComponent(new CubeGraphicsComponent());
-	entityManager->addEntity(ent2);
-
-	*/
-
-	/*
-	Entity *light6 = new Entity(glm::vec3(13, 5, 18));
+	Entity *light6 = new Entity(glm::vec3(3, 2, 3));
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
-	lightList.push_back(light6);
-	*/
-
+	entityManager->addEntity(light6);
 
 	Entity *model2 = new Entity(glm::vec3(0, 0,0));
 	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
 	model2->setPosition(glm::vec3(1.0, 1.0, 1.0));
 	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
 	entityManager->addEntity(model2);
-
-	Entity *light1 = new Entity(glm::vec3(0, 0, 0));
-	light1->addComponent(new LightComponent(5, glm::vec3(1.0, 0.0, 0.0)));
-	entityManager->addEntity(light1);
 
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
@@ -141,11 +96,12 @@ int main(int argc, char* argv[]) {
 		entityManager->render();
 		Renderer::Instance()->stop();
 		//End Geometry Pass
+
 		timeNow = SDL_GetTicks();
 		Settings::Instance()->m_geometryPass = timeNow - currentFrame;
 
 		Renderer::Instance()->SSAO();
-		
+	
 		currentFrame = SDL_GetTicks();
 		//begin Shadow Pass 
 		Renderer::Instance()->startShadowMap();

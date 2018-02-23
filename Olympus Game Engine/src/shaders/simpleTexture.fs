@@ -19,6 +19,9 @@ uniform float textureSelector;
 uniform vec3 cameraPosition;
 uniform mat4 view;
 
+uniform float gamma;
+uniform float exposure;
+
 void main(){
 	if(textureSelector == 0){
 		color =texture(colorTexture, UV);
@@ -34,8 +37,6 @@ void main(){
 
 	if(textureSelector == 5){
 		//reinhard tone mapping with gamma correction and exposure selector
-		float gamma = 2.2;
-		float exposure = 0.4;
 		//ambient line 
 		float ambientOcclusion = texture(ssaoTexture, UV).r; 
 		//vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);

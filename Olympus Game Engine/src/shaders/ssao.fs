@@ -1,7 +1,7 @@
 #version 330 core
-out float FragColor;
 
 in vec2 TexCoords;
+out float FragColor;
 
 uniform sampler2D gPosition;
 uniform sampler2D gNormal;
@@ -9,17 +9,18 @@ uniform sampler2D texNoise;
 
 uniform vec3 samples[64];
 
-
-// parameters (you'd probably want to use them as uniforms to more easily tweak the effect)
 int kernelSize = 128;
-float radius = 0.5;
-float bias = 0.025;
+
+//set via gui
+uniform float radius;
+uniform float bias;
 
 // tile noise texture over screen based on screen dimensions divided by noise size
 const vec2 noiseScale = vec2(1920.0/4.0, 1080.0/4.0); 
 
 uniform mat4 projection;
 uniform mat4 viewMatrix;
+
 void main()
 {
 	vec4 gPosition2 = viewMatrix * texture(gPosition, TexCoords);

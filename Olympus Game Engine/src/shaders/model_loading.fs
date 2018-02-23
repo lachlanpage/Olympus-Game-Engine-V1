@@ -7,8 +7,6 @@ layout (location = 3) out vec4 specularData;
 layout (location = 4) out vec4 eyeNormalData;
 layout (location = 5) out vec4 eyePositionData;
 
-
-
 in vec2 TexCoords;
 in vec2 vs_textureCoordinates;
 in vec3 vs_normalData;
@@ -16,7 +14,6 @@ in vec3 vs_pos;
 
 in vec3 eyePos;
 in vec3 eyeNormal;
-
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D specular_texture;

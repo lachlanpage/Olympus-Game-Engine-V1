@@ -352,6 +352,16 @@ void GUIManager::generateSettingsGUI() {
 		ImGui::RadioButton("Combined", &Settings::Instance()->m_textureSelector, 5);
 
 	}
+
+	if (ImGui::CollapsingHeader("HDR")) {
+		ImGui::InputFloat("Gamma", &Settings::Instance()->gamma);
+		ImGui::InputFloat("Exposure", &Settings::Instance()->exposure);
+	}
+
+	if (ImGui::CollapsingHeader("SSOA")) {
+		ImGui::InputFloat("radius", &Settings::Instance()->ssaoRadius);
+		ImGui::InputFloat("bias", &Settings::Instance()->ssaoBias);
+	}
 	ImGui::End();
 }
 

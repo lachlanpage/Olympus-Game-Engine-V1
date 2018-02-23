@@ -200,6 +200,7 @@
     <None Include="src\shaders\cube.vs" />
     <None Include="src\shaders\directional_light.fs" />
     <None Include="src\shaders\directional_light.vs" />
+    <None Include="src\shaders\godray.fs" />
     <None Include="src\shaders\light.fs" />
     <None Include="src\shaders\light.vs" />
     <None Include="src\shaders\model.fs" />

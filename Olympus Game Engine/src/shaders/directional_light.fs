@@ -5,7 +5,6 @@ in vec4 lightspaceFrag;
 
 layout (location = 0) out vec4 color;
 
-
 uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
@@ -13,11 +12,9 @@ uniform sampler2D shadowTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D ssaoTexture;
 
-
 uniform mat4 lightSpaceMatrix;
 uniform vec3 lightDirection;
 uniform vec3 cameraPosition;
-
 uniform vec3 lightColor;
 
 float shadowCalculation(vec4 fragPosLightSpace, vec3 norm){
@@ -25,19 +22,10 @@ float shadowCalculation(vec4 fragPosLightSpace, vec3 norm){
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5 ;//converts to [0,1] from [-1,1] for texture coordinates 
 	
-	
-	//float bias = 0.006;
 	float bias = max(0.02 * (1.0 - dot(norm, lightDirection)), 0.006);
 	
-	//float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);  
-
-	//float closestDepth = texture(shadowTexture, projCoords.xy).r;
 	float currentDepth = projCoords.z;
-	//float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 
-	//if(projCoords.z > 1.0){
-	//	shadow = 0.0;
-	//}
 	float shadow = 0.0;
 	vec2 texelSize = 1.0 / textureSize(shadowTexture,0);
 	for(int x = -1; x <=1; ++x){
@@ -78,9 +66,6 @@ void main(){
 
 	vec3 col = ((1.0 - shadow ) * (diffuse + specular)) * lightColor;
 
-	//vec3 col =  albedo.xyz * max(0.0, dot(n.xyz, l));//) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));
-	//vec3 col =  albedo.xyz * max(0.0, dot(n.xyz, vec3(1.0,1.0,1.0)) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));
-	//vec3 col = (1.0 - shadow) * albedo.xyz * max(0.0, dot(n.xyz, vec3(1.0,1.0,1.0)) + 0.4 * pow(max(0.0, dot(h,n)), 32.0));
 	color = vec4(col, 1.0);
 
 }

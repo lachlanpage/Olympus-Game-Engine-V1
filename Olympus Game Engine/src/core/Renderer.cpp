@@ -47,11 +47,9 @@ void Renderer::getBufferTextures(Shader *shader) {
 	shader->setInt("shadowTexture", 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
-
 }
 
 void Renderer::updateLightShader(Shader* shader) {
-
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 	shader->setInt("colorTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -92,7 +90,6 @@ void Renderer::lightingPassStart() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glGenerateMipmap(GL_TEXTURE_2D);
-
 }
 
 void Renderer::lightingPassStop() {
@@ -100,7 +97,6 @@ void Renderer::lightingPassStop() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 }
 
 void Renderer::startShadowMap() {
@@ -127,6 +123,9 @@ void Renderer::SSAO() {
 	for (unsigned int i = 0; i < 64; i++)
 		shaderSSAO->setVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
 	shaderSSAO->setMat4("projection", Settings::Instance()->projection);
+	//change uniforms
+	shaderSSAO->setFloat("radius", Settings::Instance()->ssaoRadius);
+	shaderSSAO->setFloat("bias", Settings::Instance()->ssaoBias);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, eyePositionTexture);
 	glActiveTexture(GL_TEXTURE1);
@@ -148,9 +147,7 @@ void Renderer::SSAO() {
 }
 
 void Renderer::updateQuadShader(Shader* shader) {
-	//this is to update textures for quad shader
-	//int ID = shader->ID;
-	//shader->setFloat("textureSelector", 5);
+	//this is to update textures for final quad shader
 	shader->setFloat("textureSelector", Settings::Instance()->m_textureSelector);
 	//need to delete
 	//teseting for shadow stuff 
@@ -191,10 +188,12 @@ void Renderer::updateQuadShader(Shader* shader) {
 	glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
 
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
+
+	shader->setFloat("exposure", Settings::Instance()->exposure);
+	shader->setFloat("gamma", Settings::Instance()->gamma);
 }
 
 Renderer::Renderer() {
-
 	//create post processing shaders
 	shaderSSAO = new Shader("src/shaders/ssao.vs", "src/shaders/ssao.fs");
 	shaderSSAOBlur = new Shader("src/shaders/ssao.vs", "src/shaders/ssao_blur.fs");
@@ -262,8 +261,6 @@ Renderer::Renderer() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D,eyePositionTexture, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-
-
 	//Depth buffer for framebuffer
 	glGenRenderbuffers(1, &renderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
@@ -273,8 +270,8 @@ Renderer::Renderer() {
 
 
 	//attach texture and depth buffer to framebuffer
-	GLuint attachments[6] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5};
-	glDrawBuffers(6, attachments);
+	GLuint attachments[7] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6 };
+	glDrawBuffers(7, attachments);
 	glEnable(GL_DEPTH_TEST);
 
 	//check for errors 
@@ -355,6 +352,8 @@ Renderer::Renderer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//generate sample kernerl 
+
+	//gen textures
 	
 	float resolution = 128.0;
 	for (int i = 0; i < resolution; i++) {
@@ -380,18 +379,16 @@ Renderer::Renderer() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 }
 
 void Renderer::Flush() {
-
 	shaderFinalPass->use();
 	updateQuadShader(shaderFinalPass);
 	renderQuad();
-
 }
+
 void Renderer::renderQuad() {
 	if (quadVAO == 0)
 	{
