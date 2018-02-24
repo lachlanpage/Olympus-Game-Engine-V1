@@ -111,6 +111,12 @@
     <ClCompile Include="src\components\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\components\ParticleGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\components\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\components\CubeGraphicsComponent.h">
@@ -203,6 +209,12 @@
     <ClInclude Include="src\components\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\components\ParticleGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\basic.fs" />
@@ -228,6 +240,7 @@
     <None Include="src\shaders\ssao.vs" />
     <None Include="src\shaders\ssao.fs" />
     <None Include="src\shaders\ssao_blur.fs" />
-    <None Include="src\shaders\godray.fs" />
+    <None Include="src\shaders\particle.fs" />
+    <None Include="src\shaders\particle.vs" />
   </ItemGroup>
 </Project>

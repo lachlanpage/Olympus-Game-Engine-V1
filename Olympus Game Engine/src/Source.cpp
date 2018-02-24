@@ -31,6 +31,7 @@
 #include "components/ModelComponent.h"
 #include "components/DirectionalLightComponent.h"
 #include "components/ModelComponent.h"
+#include "components/ParticleGenerator.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -59,17 +60,28 @@ int main(int argc, char* argv[]) {
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	entityManager->addEntity(light6);
 
-	Entity *model2 = new Entity(glm::vec3(0, 0,0));
-	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
-	model2->setPosition(glm::vec3(1.0, 1.0, 1.0));
-	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
-	entityManager->addEntity(model2);
+	//Entity *model2 = new Entity(glm::vec3(0, 0,0));
+	//model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
+	//model2->setPosition(glm::vec3(1.0, 1.0, 1.0));
+	//model2->setScale(glm::vec3(0.01, 0.01, 0.01));
+	//entityManager->addEntity(model2);
+
+	Entity *model = new Entity(glm::vec3(0, 0, 0));
+	model->addComponent(new ModelComponent("models/shaderBall/shaderBall.obj"));
+	model->setPosition(glm::vec3(1.0, 1.0, 1.0));
+	model->setScale(glm::vec3(0.01, 0.01, 0.01));
+	entityManager->addEntity(model);
 
 	Entity *sun = new Entity(glm::vec3(10, 10, 10));
 	sun->addComponent(new DirectionalLightComponent(glm::vec3(0.7,0.3,0.1)));
 	entityManager->addEntity(sun);
 
 	GUIManager::Instance()->renderSceneGraph(true);
+
+	Entity *particle = new Entity(glm::vec3(5, 5,1));
+	particle->setScale(glm::vec3(0.2,0.2,0.2));
+	particle->addComponent(new ParticleGenerator());
+	entityManager->addEntity(particle);
 
 	while (mainWindow->isRunning()){
 		//comment to disable mouse picking

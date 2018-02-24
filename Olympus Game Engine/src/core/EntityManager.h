@@ -9,6 +9,7 @@
 #include "../components/QuadGraphicsComponent.h"
 #include "../components/PlaneGraphicsComponent.h"
 #include "../components/ModelComponent.h"
+#include "../components/ParticleGenerator.h"
 
 class EntityManager {
 public:
