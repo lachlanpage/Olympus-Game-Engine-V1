@@ -12,10 +12,10 @@ uniform sampler2D particleTexture;
 
 void main(void){
 	//color = vec4(1.0,1.0,1.0,1.0);
-	color = texture(particleTexture, textureCoord);
+	//color = texture(particleTexture, textureCoord);
 
-	//vec4 col1 = texture(particleTexture, textureCoords1);
-	//vec4 col2 = texture(particleTexture, textureCoords2);
+	vec4 col1 = texture(particleTexture, textureCoords1);
+	vec4 col2 = texture(particleTexture, textureCoords2);
 
-	//color = mix(col1, col2, blend);
+	color = mix(col1, col2, blend);
 }

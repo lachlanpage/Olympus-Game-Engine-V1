@@ -38,31 +38,28 @@ bool Particle::update() {
 	return elapsedTime < lifetime;
 }
 
-void Particle::updateTextureData() {
+void Particle::updateTextureData(int NUMROWS) {
+	
 	float lifeFactor = elapsedTime / lifetime;
-	int stageCount = 8 * 8;
+	int stageCount = NUMROWS * NUMROWS;
 	float atlasProgression = lifeFactor * stageCount;
 
 	int index1 = (int) floor(atlasProgression);
 	int index2 = index1 < stageCount - 1 ? index1 + 1 : index1;
 	blend = std::fmod(atlasProgression, 1.0);
 
-	int col = index1 % 8;
-	int row = index1 / 8;
-	texOffset1.x = (float)col / 8;
-	texOffset1.y = (float)row / 8;
 
-	col = index2 & 8;
-	row = index2 / 8;
-	texOffset2.x = (float)col / 8;
-	texOffset2.y = (float)row / 8;
+	int col = index1 % NUMROWS;
+	int row = index1 / NUMROWS;
+	texOffset1.x = (float)col / NUMROWS;
+	texOffset1.y = (float)row / NUMROWS;
 
+	col = index2 % NUMROWS;
+	row = index2 / NUMROWS;
+	texOffset2.x = (float)col / NUMROWS;
+	texOffset2.y = (float)row / NUMROWS;
 }
 
 
 void Particle::setTextureOffset(glm::vec2 offset, int index) {
-	int col = index % 8;
-	int row = index / 8;
-	offset.x = (float)col / 8;
-	offset.y = (float)row / 8;
 }

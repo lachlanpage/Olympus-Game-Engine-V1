@@ -15,7 +15,7 @@ public:
 	float getBlend();
 	
 	bool update();
-	void updateTextureData();
+	void updateTextureData(int);
 	float getDistance();
 	void setTextureOffset(glm::vec2 offset, int index);
 

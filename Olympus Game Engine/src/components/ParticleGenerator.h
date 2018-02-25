@@ -45,6 +45,8 @@ private:
 	unsigned int quadVAO;
 	unsigned int quadVBO;
 
+	int rowsParticleTexture;
+
 	unsigned int particleTexture;
 
 	glm::vec3 position;

@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 	GUIManager::Instance()->renderSceneGraph(true);
 
 	Entity *particle = new Entity(glm::vec3(5, 5,1));
-	particle->setScale(glm::vec3(0.2,0.2,0.2));
+	particle->setScale(glm::vec3(1.2,1.2,1.2));
 	particle->addComponent(new ParticleGenerator());
 	entityManager->addEntity(particle);
 

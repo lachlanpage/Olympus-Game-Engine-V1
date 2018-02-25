@@ -24,8 +24,9 @@ ParticleGenerator::ParticleGenerator(){
 
 	//75fps with 10,000 particles
 	MaxParticles = 100;
+	rowsParticleTexture = 8;
 
-	particleTexture = ResourceManager::Instance()->loadTexture("textures/texture.png");
+	particleTexture = ResourceManager::Instance()->loadTexture("textures/fire.png");
 }
 void ParticleGenerator::update(Entity& entity){
 	glDepthMask(false);
@@ -42,6 +43,7 @@ void ParticleGenerator::update(Entity& entity){
 	glBindTexture(GL_TEXTURE_2D, particleTexture);
 
 	for (auto particle : ParticlesContainer) {
+		particle.updateTextureData(rowsParticleTexture);
 		glm::mat4 model;
 		model = glm::translate(model, particle.getPosition());
 		//model = glm::scale(model, particle.getScale());
@@ -60,13 +62,15 @@ void ParticleGenerator::update(Entity& entity){
 
 		particleShader->setVec2("texOffset1", particle.texOffset1);
 		particleShader->setVec2("texOffset2", particle.texOffset2);
-		particleShader->setVec2("texCoordInfo", glm::vec2(8, particle.getBlend()));
+		particleShader->setVec2("texCoordInfo", glm::vec2(rowsParticleTexture, particle.getBlend()));
 
-		particle.updateTextureData();
+		
 
 		glBindVertexArray(quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
+	
+
 	glBindVertexArray(0);
 
 	glDepthMask(true);
@@ -80,35 +84,14 @@ void ParticleGenerator::update(Entity& entity){
 	}
 
 	//create new particles
-	float particlesToCreate = Time::Instance()->getDeltaTime() * 200;
+	float particlesToCreate = Time::Instance()->getDeltaTime() * 500;
 	int count = (int)floor(particlesToCreate);
 
 	for (int i = 0; i < count; i++) {
 		emitParticle(entity);
 	}
 
-	//while (ParticlesContainer.size() <= MaxParticles) {
-	//	Particle aParticle = Particle(entity.getPosition(),
-	//		glm::vec3(rand() % 2 - 1, 1, rand() % 2 - 1), 1, rand() % 20 + 4, rand() % 100 + 1, 0);
-		//Particle aParticle = Particle(glm::vec3(entity.getPosition()), glm::vec3(rand()%15+1 - 7.5, rand() % 15 + 1, rand() % 15 + 1 - 7.5), 1, rand()%10+1, 0, 1);
-		//Particle aParticle = Particle(glm::vec3(entity.getPosition()), glm::vec3(0, 2, 0), 1, rand() % 100 + 1, 0, 1);
-		//ParticlesContainer.push_back(aParticle);
-		//float dirX = rand() % 2 - 1;
-		//float dirZ = rand() % 2 - 1;
-		//glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
-		//velocity = glm::normalize(velocity);
-
-		//Particle aParticle = Particle(entity.getPosition(), velocity, 1, 10, 0, 1);
-	//	ParticlesContainer.push_back(aParticle);
-	//}
-	//for (auto particle : ParticlesContainer) {
-	//	bool stillAlive = particle.update();
-	//	if (!stillAlive) {
-	//
-	//	}
-	//}
-
-	//update texture stuff 
+	//sort particles
 	ParticlesContainer = InsertionSort(ParticlesContainer);
 
 }
@@ -124,7 +107,6 @@ std::vector<Particle> ParticleGenerator::InsertionSort(std::vector<Particle> cop
 			j--;
 		}
 	}
-
 	return copyContainer;
 }
 
@@ -133,7 +115,7 @@ void ParticleGenerator::emitParticle(Entity& entity) {
 	float dirZ = rand() % 12 - 6;
 	glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
 
-	Particle aParticle = Particle(entity.getPosition(), velocity, -1, rand() % 3 + 1, rand() % 100 + 1, rand() % 20 + 1);
+	Particle aParticle = Particle(entity.getPosition(), velocity, -0.1, rand() % 3 + 1, rand() % 100 + 1, rand() % 8 + 1);
 	ParticlesContainer.push_back(aParticle);
 }
 void ParticleGenerator::renderShadow(Entity& entity){}
