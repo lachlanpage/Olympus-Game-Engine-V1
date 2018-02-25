@@ -16,24 +16,30 @@ ParticleGenerator::ParticleGenerator(){
 
 	particleShader = new Shader("src/shaders/particle.vs", "src/shaders/particle.fs");
 
-	ParticlesContainer.push_back(Particle(glm::vec3(5,7,1), glm::vec3(0,30,0), -10,10,0,1));
-	ParticlesContainer.push_back(Particle(glm::vec3(5, 6, 1), glm::vec3(0, 1, 0), 10, 10, 0, 0));
-	ParticlesContainer.push_back(Particle(glm::vec3(3, 6, 1), glm::vec3(0, 1, 0), 10, 10, 0, 0));
-	ParticlesContainer.push_back(Particle(glm::vec3(2, 6, 1), glm::vec3(0, 1, 0), 10, 20, 0, 0));
-	ParticlesContainer.push_back(Particle(glm::vec3(1, 1, 1), glm::vec3(0, 1, 0), 10, 20, 0, 0));
+	//ParticlesContainer.push_back(Particle(glm::vec3(5,7,1), glm::vec3(0,30,0), -10,10,0,1));
+	//ParticlesContainer.push_back(Particle(glm::vec3(5, 6, 1), glm::vec3(0, 1, 0), 10, 10, 0, 0));
+	//ParticlesContainer.push_back(Particle(glm::vec3(3, 6, 1), glm::vec3(0, 1, 0), 10, 10, 0, 0));
+	//ParticlesContainer.push_back(Particle(glm::vec3(2, 6, 1), glm::vec3(0, 1, 0), 10, 20, 0, 0));
+	//ParticlesContainer.push_back(Particle(glm::vec3(1, 1, 1), glm::vec3(0, 1, 0), 10, 20, 0, 0));
 
+	//75fps with 10,000 particles
 	MaxParticles = 100;
+
+	particleTexture = ResourceManager::Instance()->loadTexture("textures/texture.png");
 }
 void ParticleGenerator::update(Entity& entity){
 	glDepthMask(false);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glDepthMask(false);
 	particleShader->use();
 	particleShader->setMat4("view", Camera::Instance()->getViewMatrix());
 	particleShader->setMat4("projection", Settings::Instance()->projection);
-
 	glm::mat4 view = Camera::Instance()->getViewMatrix();
+
+	particleShader->setInt("particleTexture", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, particleTexture);
 
 	for (auto particle : ParticlesContainer) {
 		glm::mat4 model;
@@ -48,8 +54,15 @@ void ParticleGenerator::update(Entity& entity){
 		model[2][0] = view[0][2];
 		model[2][1] = view[1][2];
 		model[2][2] = view[2][2];
-		model = glm::scale(model, entity.getScale());
+		model = glm::scale(model, entity.getScale()+particle.getScale());
+		model = glm::rotate(model, particle.getRotation(), glm::vec3(0, 0, 1));
 		particleShader->setMat4("model", model);
+
+		particleShader->setVec2("texOffset1", particle.texOffset1);
+		particleShader->setVec2("texOffset2", particle.texOffset2);
+		particleShader->setVec2("texCoordInfo", glm::vec2(8, particle.getBlend()));
+
+		particle.updateTextureData();
 
 		glBindVertexArray(quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -67,13 +80,27 @@ void ParticleGenerator::update(Entity& entity){
 	}
 
 	//create new particles
-	std::cout << ParticlesContainer.size() << std::endl;
-	while (ParticlesContainer.size() <= MaxParticles) {
-		//Particle aParticle = Particle(glm::vec3(entity.getPosition().x + rand() % 1 , entity.getPosition().y + rand() % 1, entity.getPosition().z + rand() % 1 ),
-		//	glm::vec3(rand() % 10, rand() % 10, rand() % 10), -1, rand() % 20 + 4, rand() % 100 + 1, 0);
-		Particle aParticle = Particle(glm::vec3(entity.getPosition()), glm::vec3(rand()%30+1 - 15, rand() % 30 + 1 - 15, rand() % 30 + 1 - 15), 1, rand()%10+1, 0, 1);
-		ParticlesContainer.push_back(aParticle);
+	float particlesToCreate = Time::Instance()->getDeltaTime() * 200;
+	int count = (int)floor(particlesToCreate);
+
+	for (int i = 0; i < count; i++) {
+		emitParticle(entity);
 	}
+
+	//while (ParticlesContainer.size() <= MaxParticles) {
+	//	Particle aParticle = Particle(entity.getPosition(),
+	//		glm::vec3(rand() % 2 - 1, 1, rand() % 2 - 1), 1, rand() % 20 + 4, rand() % 100 + 1, 0);
+		//Particle aParticle = Particle(glm::vec3(entity.getPosition()), glm::vec3(rand()%15+1 - 7.5, rand() % 15 + 1, rand() % 15 + 1 - 7.5), 1, rand()%10+1, 0, 1);
+		//Particle aParticle = Particle(glm::vec3(entity.getPosition()), glm::vec3(0, 2, 0), 1, rand() % 100 + 1, 0, 1);
+		//ParticlesContainer.push_back(aParticle);
+		//float dirX = rand() % 2 - 1;
+		//float dirZ = rand() % 2 - 1;
+		//glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
+		//velocity = glm::normalize(velocity);
+
+		//Particle aParticle = Particle(entity.getPosition(), velocity, 1, 10, 0, 1);
+	//	ParticlesContainer.push_back(aParticle);
+	//}
 	//for (auto particle : ParticlesContainer) {
 	//	bool stillAlive = particle.update();
 	//	if (!stillAlive) {
@@ -81,7 +108,33 @@ void ParticleGenerator::update(Entity& entity){
 	//	}
 	//}
 
+	//update texture stuff 
+	ParticlesContainer = InsertionSort(ParticlesContainer);
 
+}
+
+
+std::vector<Particle> ParticleGenerator::InsertionSort(std::vector<Particle> copyContainer) {
+	int j;
+	Particle temp;
+	for (int i = 0; i < copyContainer.size(); i++) {
+		j = i;
+		while (j > 0 && copyContainer[j].getDistance() < copyContainer[j - 1].getDistance()) {
+			std::iter_swap(copyContainer.begin() + j, copyContainer.begin() + j - 1);
+			j--;
+		}
+	}
+
+	return copyContainer;
+}
+
+void ParticleGenerator::emitParticle(Entity& entity) {
+	float dirX = rand() % 12 - 6;
+	float dirZ = rand() % 12 - 6;
+	glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
+
+	Particle aParticle = Particle(entity.getPosition(), velocity, -1, rand() % 3 + 1, rand() % 100 + 1, rand() % 20 + 1);
+	ParticlesContainer.push_back(aParticle);
 }
 void ParticleGenerator::renderShadow(Entity& entity){}
 void ParticleGenerator::postInit(Entity& entity){}
