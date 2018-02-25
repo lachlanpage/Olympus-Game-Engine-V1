@@ -132,6 +132,8 @@
     <ClCompile Include="src\components\Mesh.cpp" />
     <ClCompile Include="src\components\Model.cpp" />
     <ClCompile Include="src\components\ModelComponent.cpp" />
+    <ClCompile Include="src\components\Particle.cpp" />
+    <ClCompile Include="src\components\ParticleGenerator.cpp" />
     <ClCompile Include="src\components\PlaneGraphicsComponent.cpp" />
     <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
@@ -168,6 +170,8 @@
     <ClInclude Include="src\components\Mesh.h" />
     <ClInclude Include="src\components\Model.h" />
     <ClInclude Include="src\components\ModelComponent.h" />
+    <ClInclude Include="src\components\Particle.h" />
+    <ClInclude Include="src\components\ParticleGenerator.h" />
     <ClInclude Include="src\components\PlaneGraphicsComponent.h" />
     <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
@@ -200,13 +204,14 @@
     <None Include="src\shaders\cube.vs" />
     <None Include="src\shaders\directional_light.fs" />
     <None Include="src\shaders\directional_light.vs" />
-    <None Include="src\shaders\godray.fs" />
     <None Include="src\shaders\light.fs" />
     <None Include="src\shaders\light.vs" />
     <None Include="src\shaders\model.fs" />
     <None Include="src\shaders\model.vs" />
     <None Include="src\shaders\model_loading.fs" />
     <None Include="src\shaders\model_loading.vs" />
+    <None Include="src\shaders\particle.fs" />
+    <None Include="src\shaders\particle.vs" />
     <None Include="src\shaders\passThrough.vs" />
     <None Include="src\shaders\pointLight.fs" />
     <None Include="src\shaders\pointLight.vs" />
