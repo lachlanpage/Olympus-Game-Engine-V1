@@ -25,3 +25,13 @@ void Logger::write(std::string message) {
 	}
 }
 
+void Logger::write(std::string file, std::string message) {
+	std::ofstream logFile;
+	logFile.open(file, std::ios::app);
+	if (logFile.is_open()) {
+		logFile << message;
+		logFile << "\n";
+		logFile.close();
+	}
+}
+
