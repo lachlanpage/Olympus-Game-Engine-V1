@@ -22,13 +22,7 @@ uniform int isSelected;
 
 void main()
 {    
-    FragColor = texture(texture_diffuse1, TexCoords);
-	//FragColor = vec4(1.0,1.0,0.0,1.0);
-	if(isSelected == 1){
-		vec4 color1 = vec4(0.0,1.0, 0.0,1.0) ;
-		vec4 color2 = texture(texture_diffuse1, TexCoords);
-		FragColor = mix(color1,color2,0.1);
-	}
+    FragColor = vec4(0.5,0.5,0.5,1);
 	specularData = texture(specular_texture, vs_textureCoordinates);
 	normalData = vec4(vs_normalData, 1.0);
 	positionData = vec4(vs_pos, 1.0);

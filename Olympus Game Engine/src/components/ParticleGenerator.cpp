@@ -58,22 +58,26 @@ ParticleGenerator::ParticleGenerator(){
 	//150 fps with 500 particles per second
 	rowsParticleTexture = 2;
 	additiveBlending = 1;
+	m_pps = 500;
+	lifetime = 10;
+	gravity = 1;
+
+	velocity = glm::vec3(1, 1, 1);
 
 	particleTexture = ResourceManager::Instance()->loadTexture("textures/wick.png");
 }
 void ParticleGenerator::update(Entity& entity){
-	glDepthMask(false);
+	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	if(additiveBlending)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	else
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthMask(false);
 	particleShader->use();
 
 	glm::mat4 view = Camera::Instance()->getViewMatrix();
 	particleShader->setMat4("viewProjection", Settings::Instance()->projection*Camera::Instance()->getViewMatrix());
-
+	particleTexture = ResourceManager::Instance()->loadTexture("textures/wick.png");
 	particleShader->setInt("particleTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, particleTexture);
@@ -97,7 +101,6 @@ void ParticleGenerator::update(Entity& entity){
 		model[2][2] = view[2][2];
 		model = glm::scale(model, entity.getScale()+particle.getScale());
 		model = glm::rotate(model, particle.getRotation(), glm::vec3(0, 0, 1));
-		particleShader->setMat4("model", model);
 
 		//Position Data 
 
@@ -151,15 +154,13 @@ void ParticleGenerator::update(Entity& entity){
 	}
 
 	//create new particles
-	float particlesToCreate = Time::Instance()->getDeltaTime() * 500;
+	float particlesToCreate = Time::Instance()->getDeltaTime() * m_pps;
 	if (ParticlesContainer.size() < MAX_INSTANCES-10) {
 		emitParticle(entity);
 	}
 
-
-
 	//sort particles
-	//ParticlesContainer = InsertionSort(ParticlesContainer);
+	ParticlesContainer = InsertionSort(ParticlesContainer);
 }
 
 
@@ -177,13 +178,33 @@ std::vector<Particle> ParticleGenerator::InsertionSort(std::vector<Particle> cop
 }
 
 void ParticleGenerator::emitParticle(Entity& entity) {
-	float dirX = rand() % 6 - 3;
-	float dirZ = rand() % 6 - 3;
-	glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
 
-	Particle aParticle = Particle(entity.getPosition(), velocity, -0.1, rand() % 3 + 1, rand() % 100 + 1, rand() % 8 + 1);
+	float velX = velocity.x;
+	float velY = velocity.y;
+	float velZ = velocity.z;
+	//float dirX = rand() % velocity.x - 3;
+	//float dirZ = rand() % 6 - 3;
+	//glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
+
+	Particle aParticle = Particle(entity.getPosition(), glm::vec3(velocity.x, velocity.y, velocity.z), gravity, rand() % 3 + 1, lifetime, rand() % 10 + 1);
 	//Particle aParticle = Particle(entity.getPosition(), glm::vec3(0, 0, 0), 0, 100, 0, 0);
 	ParticlesContainer.push_back(aParticle);
 }
 void ParticleGenerator::renderShadow(Entity& entity){}
 void ParticleGenerator::postInit(Entity& entity){}
+
+
+int  ParticleGenerator::getPPS() { return m_pps; }
+void  ParticleGenerator::setPPS(int val) { m_pps = val; }
+
+glm::vec3  ParticleGenerator::getVelocity() { return velocity; }
+void  ParticleGenerator::setVelocity(glm::vec3 vel) { velocity = vel; }
+
+float  ParticleGenerator::getLifetime() { return lifetime; }
+void  ParticleGenerator::setLifetime(float lifespan) { lifetime = lifespan; }
+
+void ParticleGenerator::setGravity(float grav) {
+	gravity = grav;
+}
+
+float ParticleGenerator::getGravity() { return gravity; }
