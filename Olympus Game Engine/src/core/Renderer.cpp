@@ -16,8 +16,8 @@ void Renderer::render(GLenum mode, GLint first, GLsizei count) {
 void Renderer::start() {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

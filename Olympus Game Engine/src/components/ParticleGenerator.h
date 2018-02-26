@@ -17,6 +17,25 @@ public:
 	virtual void postInit(Entity& entity);
 
 	std::vector<Particle> ParticlesContainer;
+
+
+
+	float getNumRows();
+	void setNumRows(float);
+
+	int getPPS();
+	void setPPS(int);
+
+	glm::vec3 getVelocity();
+	void setVelocity(glm::vec3);
+
+	float getLifetime();
+	void setLifetime(float);
+
+	float getGravity();
+	void setGravity(float);
+
+
 private:
 	GLuint billboard_vertex_buffer;
 	GLuint particles_position_buffer;
@@ -33,19 +52,22 @@ private:
 	//	1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 	//};
 
-	GLfloat quadVertices[20] = {
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-		0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	GLfloat quadVertices[12] = {
+		-0.5f,  0.5f, 0.0f, 
+		-0.5f, -0.5f, 0.0f, 
+		0.5f,  0.5f, 0.0f, 
+		0.5f, -0.5f, 0.0f, 
 	};
 
 	Shader* particleShader;
 
 	unsigned int quadVAO;
 	unsigned int quadVBO;
+	unsigned int particleDataVBO;
 
 	int rowsParticleTexture;
+	int additiveBlending;
+	int m_pps;
 
 	unsigned int particleTexture;
 

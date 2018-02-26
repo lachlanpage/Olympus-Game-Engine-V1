@@ -15,6 +15,8 @@ public:
 	virtual void update(Entity& entity);
 	void renderShadow(Entity& entity);
 	virtual void postInit(Entity& entity);
+
+	Model* getModel();
 private:
 	Model *ourModel;
 	Shader *m_shader;

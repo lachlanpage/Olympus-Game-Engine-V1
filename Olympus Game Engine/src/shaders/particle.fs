@@ -10,6 +10,7 @@ in vec2 textureCoord;
 
 uniform sampler2D particleTexture;
 
+
 void main(void){
 	//color = vec4(1.0,1.0,1.0,1.0);
 	//color = texture(particleTexture, textureCoord);

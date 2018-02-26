@@ -18,6 +18,8 @@ public:
 	std::vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
 	std::vector<Mesh> meshes;
 	std::string directory;
+	int mesh_id;
+
 	bool gammaCorrection;
 	Model();
 	void setFilepath(char *path) {
@@ -34,8 +36,13 @@ public:
 			vertCount += mesh.vertices.size();
 		}
 	}
+
+	std::vector<Mesh> getMesh() {
+		return meshes;
+	}
 private:
 	void loadModel(std::string path) {
+		mesh_id = 0;
 		// read file via ASSIMP
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenNormals);
@@ -68,6 +75,8 @@ private:
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		std::vector<Texture> textures;
+
+		mesh_id++;
 
 		//Iterate each of mesh vertices
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -139,7 +148,7 @@ private:
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 		// return a mesh object created from the extracted mesh data
-		return Mesh(vertices, indices, textures);
+		return Mesh(vertices, indices, textures, mesh_id);
 	}
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
 		std::vector<Texture> textures;

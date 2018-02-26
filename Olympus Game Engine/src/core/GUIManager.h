@@ -14,6 +14,9 @@
 #include "../components/CubeGraphicsComponent.h"
 #include "../components/DirectionalLightComponent.h"
 #include "../components/LightComponent.h"
+#include "../components/ParticleGenerator.h"
+
+#include "../components/Mesh.h"
 
 class GUIManager {
 	//Singleton class to hold all global consts across engine {width, height of window etc}
@@ -29,6 +32,9 @@ public:
 	void setDirectionalLightEditor(DirectionalLightComponent*);
 	void setPointLightEditor(LightComponent*);
 
+	void setParticleEditor(ParticleGenerator*);
+	void renderParticleEditor(bool);
+
 
 	void renderSettingsGUI(bool);
 	void renderSceneGraph(bool);
@@ -39,6 +45,7 @@ public:
 private:
 	//generate the gui frames
 	void generateEntityEditor();
+	void generateParticleEditor();
 	void generateSettingsGUI();
 	void generateSceneGraph();
 	void generateDirectionalLightGUI();
@@ -50,6 +57,7 @@ private:
 	bool m_renderSceneGraph;
 	bool m_renderDirectionalLight;
 	bool m_renderPointLight;
+	bool m_renderParticleEditor;
 
 	//keeping track of what scene graph entities to display 
 	bool scenegraph_showLights;
@@ -59,6 +67,7 @@ private:
 	Entity* m_entity;
 	DirectionalLightComponent* m_directionalLight;
 	LightComponent* m_pointLight;
+	ParticleGenerator* m_particleEditor;
 
 	GUIManager(SDL_Window*);
 	static GUIManager* m_Instance;

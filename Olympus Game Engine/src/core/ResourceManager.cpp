@@ -34,6 +34,7 @@ unsigned int ResourceManager::loadImage(std::string filename) {
 	if (!data) {
 		Logger::Instance()->write(stbi_failure_reason() + filename);
 		Logger::Instance()->write("Failed to load Image: " + filename);
+		std::cout << "IMAGE LOAdeD FAILED" << std::endl;
 	}
 	else {
 		unsigned int texture;

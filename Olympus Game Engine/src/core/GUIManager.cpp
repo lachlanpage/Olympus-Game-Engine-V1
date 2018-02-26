@@ -219,6 +219,29 @@ void GUIManager::generateEntityEditor() {
 }
 
 
+void GUIManager::renderParticleEditor(bool flag) {
+	m_renderParticleEditor = flag;
+}
+
+void GUIManager::generateParticleEditor() {
+	ImGui::Begin("Particle Editor");
+	float lifespan = m_particleEditor->getLifetime();
+	int pps = m_particleEditor->getPPS();
+	float gravity = m_particleEditor->getGravity();
+	glm::vec3 velocity = m_particleEditor->getVelocity();
+	ImGui::DragFloat("Lifespan",&lifespan, 0.25f, -10, 10);
+	ImGui::DragFloat3("Velocity", &velocity[0], 1.0F, -30, 30);
+	ImGui::DragInt("PPS", &pps, 1, 0, 5000);
+	ImGui::DragFloat("Gravity", &gravity, 0.25, -10, 10);
+	ImGui::End();
+
+	m_particleEditor->setLifetime(lifespan);
+	m_particleEditor->setPPS(pps);
+	m_particleEditor->setGravity(gravity);
+	m_particleEditor->setVelocity(velocity);
+
+}
+
 void GUIManager::renderSceneGraph(bool flag) {
 	m_renderSceneGraph = flag;
 }
@@ -230,6 +253,10 @@ void GUIManager::setDirectionalLightEditor(DirectionalLightComponent* entity) {
 
 void GUIManager::setPointLightEditor(LightComponent* entity) {
 	m_pointLight = entity;
+}
+
+void GUIManager::setParticleEditor(ParticleGenerator* comp) {
+	m_particleEditor = comp;
 }
 
 void GUIManager::renderDirectionalLightEditor(bool flag) {
@@ -258,6 +285,7 @@ void GUIManager::generateSceneGraph() {
 		LightComponent *entityLightComponent = entity->GetComponent <LightComponent>();
 		PlaneGraphicsComponent *entityPlaneGraphicsComponent = entity->GetComponent <PlaneGraphicsComponent>();
 		ModelComponent *entityModelComponent = entity->GetComponent <ModelComponent>();
+		ParticleGenerator *particleGeneratorComponent = entity->GetComponent <ParticleGenerator>();
 
 		entity->is_selected = false;
 
@@ -280,6 +308,26 @@ void GUIManager::generateSceneGraph() {
 					setEntityEditor(entity);
 					renderEntityEditor(true);
 					entity->is_selected = true;
+					std::vector<Mesh> meshlist = entityModelComponent->getModel()->getMesh();
+					for (auto mesh : meshlist) {
+						if (ImGui::TreeNode(std::to_string(mesh.id).c_str())) {
+							mesh.isSelected = 1;
+							ImGui::TreePop();
+						}
+					}
+					ImGui::TreePop();
+					
+				}
+			}
+
+
+			if (particleGeneratorComponent != nullptr) {
+				std::string name = "Particle: " + entityID;
+				if (ImGui::TreeNode(name.c_str())) {
+					setEntityEditor(entity);
+					renderEntityEditor(true);
+					setParticleEditor(particleGeneratorComponent);
+					renderParticleEditor(true);
 					ImGui::TreePop();
 				}
 			}
@@ -431,6 +479,10 @@ void GUIManager::render() {
 
 	if (m_renderPointLight) {
 		generatePointLightGUI();
+	}
+
+	if (m_renderParticleEditor) {
+		generateParticleEditor();
 	}
 
 	ImGui::Render();

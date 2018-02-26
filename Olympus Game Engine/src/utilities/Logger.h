@@ -7,6 +7,7 @@ class Logger {
 public:
 	static Logger* Instance();
 	void write(std::string message);
+	void write(std::string file, std::string message);
 private:
 	Logger();
 	Logger(Logger const&) {};

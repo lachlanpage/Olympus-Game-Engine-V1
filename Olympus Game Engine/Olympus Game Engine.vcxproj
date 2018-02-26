@@ -210,6 +210,7 @@
     <None Include="src\shaders\model.vs" />
     <None Include="src\shaders\model_loading.fs" />
     <None Include="src\shaders\model_loading.vs" />
+    <None Include="src\shaders\model_loading_grey.fs" />
     <None Include="src\shaders\particle.fs" />
     <None Include="src\shaders\particle.vs" />
     <None Include="src\shaders\passThrough.vs" />

@@ -37,3 +37,4 @@ void ModelComponent::renderShadow(Entity& entity){
 	ourModel->Draw(m_shader);
 }
 void ModelComponent::postInit(Entity& entity){}
+Model* ModelComponent::getModel() { return ourModel; }
