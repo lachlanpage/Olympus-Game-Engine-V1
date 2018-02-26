@@ -1,46 +1,85 @@
 #include "ParticleGenerator.h"
 
+int MAX_INSTANCES = 10000;
+int INSTANCE_DATA_LENGTH = 21;
+
 ParticleGenerator::ParticleGenerator(){
 	// setup plane VAO
 	glGenVertexArrays(1, &quadVAO);
 	glGenBuffers(1, &quadVBO);
 	glBindVertexArray(quadVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	//buffer container vertices
+	glBufferData(GL_ARRAY_BUFFER, 12*sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &particleDataVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, particleDataVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * INSTANCE_DATA_LENGTH * MAX_INSTANCES, NULL, GL_STREAM_DRAW);
+	glBindVertexArray(quadVAO);
+	//col 1 -> 4 of matrix
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, INSTANCE_DATA_LENGTH * sizeof(float), 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribDivisor(1, 1);
+	
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, INSTANCE_DATA_LENGTH * sizeof(float), (void*)(4 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribDivisor(2, 1);
+	
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, INSTANCE_DATA_LENGTH * sizeof(float), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+	glVertexAttribDivisor(3, 1);
+	
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, INSTANCE_DATA_LENGTH * sizeof(float), (void*)(12 * sizeof(float)));
+	glEnableVertexAttribArray(4);
+	glVertexAttribDivisor(4, 1);
+	//texture offsets
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, INSTANCE_DATA_LENGTH * sizeof(float), (void*)(16 * sizeof(float)));
+	glEnableVertexAttribArray(5);
+	glVertexAttribDivisor(5, 1);
+	//blend
+	
+	glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, INSTANCE_DATA_LENGTH * sizeof(float), (void*)(20 * sizeof(float)));
+	glEnableVertexAttribArray(6);
+	glVertexAttribDivisor(6, 1);
+
+	glBindVertexArray(0);
 
 	srand(time(NULL));
 
 	particleShader = new Shader("src/shaders/particle.vs", "src/shaders/particle.fs");
 
-	//ParticlesContainer.push_back(Particle(glm::vec3(5,7,1), glm::vec3(0,30,0), -10,10,0,1));
-	//ParticlesContainer.push_back(Particle(glm::vec3(5, 6, 1), glm::vec3(0, 1, 0), 10, 10, 0, 0));
-	//ParticlesContainer.push_back(Particle(glm::vec3(3, 6, 1), glm::vec3(0, 1, 0), 10, 10, 0, 0));
-	//ParticlesContainer.push_back(Particle(glm::vec3(2, 6, 1), glm::vec3(0, 1, 0), 10, 20, 0, 0));
-	//ParticlesContainer.push_back(Particle(glm::vec3(1, 1, 1), glm::vec3(0, 1, 0), 10, 20, 0, 0));
+	particleShader->use(); 
 
-	//75fps with 10,000 particles
-	MaxParticles = 100;
-	rowsParticleTexture = 8;
 
-	particleTexture = ResourceManager::Instance()->loadTexture("textures/fire.png");
+	//60 fps with 500 particles per second
+	//150 fps with 500 particles per second
+	rowsParticleTexture = 2;
+	additiveBlending = 1;
+
+	particleTexture = ResourceManager::Instance()->loadTexture("textures/wick.png");
 }
 void ParticleGenerator::update(Entity& entity){
 	glDepthMask(false);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	if(additiveBlending)
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	else
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(false);
 	particleShader->use();
-	particleShader->setMat4("view", Camera::Instance()->getViewMatrix());
-	particleShader->setMat4("projection", Settings::Instance()->projection);
+
 	glm::mat4 view = Camera::Instance()->getViewMatrix();
+	particleShader->setMat4("viewProjection", Settings::Instance()->projection*Camera::Instance()->getViewMatrix());
 
 	particleShader->setInt("particleTexture", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, particleTexture);
+	particleShader->setFloat("numRows", rowsParticleTexture);
+
+	std::vector<float> vboDataVec;
 
 	for (auto particle : ParticlesContainer) {
 		particle.updateTextureData(rowsParticleTexture);
@@ -60,15 +99,43 @@ void ParticleGenerator::update(Entity& entity){
 		model = glm::rotate(model, particle.getRotation(), glm::vec3(0, 0, 1));
 		particleShader->setMat4("model", model);
 
-		particleShader->setVec2("texOffset1", particle.texOffset1);
-		particleShader->setVec2("texOffset2", particle.texOffset2);
-		particleShader->setVec2("texCoordInfo", glm::vec2(rowsParticleTexture, particle.getBlend()));
+		//Position Data 
 
-		
+		//model data //1st col 
+		vboDataVec.push_back(model[0][0]);
+		vboDataVec.push_back(model[0][1]);
+		vboDataVec.push_back(model[0][2]);
+		vboDataVec.push_back(model[0][3]);
 
-		glBindVertexArray(quadVAO);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		vboDataVec.push_back(model[1][0]);
+		vboDataVec.push_back(model[1][1]);
+		vboDataVec.push_back(model[1][2]);
+		vboDataVec.push_back(model[1][3]);
+
+		vboDataVec.push_back(model[2][0]);
+		vboDataVec.push_back(model[2][1]);
+		vboDataVec.push_back(model[2][2]);
+		vboDataVec.push_back(model[2][3]);
+
+		vboDataVec.push_back(model[3][0]);
+		vboDataVec.push_back(model[3][1]);
+		vboDataVec.push_back(model[3][2]);
+		vboDataVec.push_back(model[3][3]);
+
+		vboDataVec.push_back(particle.texOffset1.x);
+		vboDataVec.push_back(particle.texOffset1.y);
+		vboDataVec.push_back(particle.texOffset2.x);
+		vboDataVec.push_back(particle.texOffset2.y);
+
+		vboDataVec.push_back(particle.getBlend());
 	}
+
+	
+	glBindVertexArray(quadVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, particleDataVBO);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * vboDataVec.size(), &vboDataVec[0]);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, ParticlesContainer.size());
 	
 
 	glBindVertexArray(0);
@@ -85,15 +152,14 @@ void ParticleGenerator::update(Entity& entity){
 
 	//create new particles
 	float particlesToCreate = Time::Instance()->getDeltaTime() * 500;
-	int count = (int)floor(particlesToCreate);
-
-	for (int i = 0; i < count; i++) {
+	if (ParticlesContainer.size() < MAX_INSTANCES-10) {
 		emitParticle(entity);
 	}
 
-	//sort particles
-	ParticlesContainer = InsertionSort(ParticlesContainer);
 
+
+	//sort particles
+	//ParticlesContainer = InsertionSort(ParticlesContainer);
 }
 
 
@@ -111,11 +177,12 @@ std::vector<Particle> ParticleGenerator::InsertionSort(std::vector<Particle> cop
 }
 
 void ParticleGenerator::emitParticle(Entity& entity) {
-	float dirX = rand() % 12 - 6;
-	float dirZ = rand() % 12 - 6;
+	float dirX = rand() % 6 - 3;
+	float dirZ = rand() % 6 - 3;
 	glm::vec3 velocity = glm::vec3(dirX, 1, dirZ);
 
 	Particle aParticle = Particle(entity.getPosition(), velocity, -0.1, rand() % 3 + 1, rand() % 100 + 1, rand() % 8 + 1);
+	//Particle aParticle = Particle(entity.getPosition(), glm::vec3(0, 0, 0), 0, 100, 0, 0);
 	ParticlesContainer.push_back(aParticle);
 }
 void ParticleGenerator::renderShadow(Entity& entity){}

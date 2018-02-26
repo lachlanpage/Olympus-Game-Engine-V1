@@ -33,19 +33,21 @@ private:
 	//	1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 	//};
 
-	GLfloat quadVertices[20] = {
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-		0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	GLfloat quadVertices[12] = {
+		-0.5f,  0.5f, 0.0f, 
+		-0.5f, -0.5f, 0.0f, 
+		0.5f,  0.5f, 0.0f, 
+		0.5f, -0.5f, 0.0f, 
 	};
 
 	Shader* particleShader;
 
 	unsigned int quadVAO;
 	unsigned int quadVBO;
+	unsigned int particleDataVBO;
 
 	int rowsParticleTexture;
+	int additiveBlending;
 
 	unsigned int particleTexture;
 
