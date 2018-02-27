@@ -10,17 +10,22 @@
 #include <SDL/SDL_main.h>
 #include <iostream>
 #include "GUIManager.h"
+#include <bullet/btBulletDynamicsCommon.h>
 class Mouse : public BusNode {
 public:
 	static Mouse* Instance();
 	static Mouse* Instance(MessageBus* messageBus);
-	void update(std::vector<Entity*>);
+	void update(std::vector<Entity*>, btDiscreteDynamicsWorld* dynamicsWorld);
 	void checkIntersection(glm::vec3 position);
 	glm::vec3 getCurrentPoint();
 	glm::vec3 m_currentPoint;
 
 	int m_blockIntersectionID;
 	int blockClickID;
+	bool isLeftClick;
+	bool leftClickedReturned;
+
+	bool getLeftClickState();
 
 protected:
 private:

@@ -108,7 +108,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;lua.5.3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;assimp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2.lib;SDL2main.lib;lua.5.3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -126,6 +126,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\BillboardComponent.cpp" />
     <ClCompile Include="src\components\CubeGraphicsComponent.cpp" />
     <ClCompile Include="src\components\DirectionalLightComponent.cpp" />
     <ClCompile Include="src\components\LightComponent.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="src\components\ModelComponent.cpp" />
     <ClCompile Include="src\components\Particle.cpp" />
     <ClCompile Include="src\components\ParticleGenerator.cpp" />
+    <ClCompile Include="src\components\PhysicsComponent.cpp" />
     <ClCompile Include="src\components\PlaneGraphicsComponent.cpp" />
     <ClCompile Include="src\components\PointLightGraphicsComponent.cpp" />
     <ClCompile Include="src\components\QuadGraphicsComponent.cpp" />
@@ -142,6 +144,7 @@
     <ClCompile Include="src\core\EntityManager.cpp" />
     <ClCompile Include="src\core\GUIManager.cpp" />
     <ClCompile Include="src\core\Mouse.cpp" />
+    <ClCompile Include="src\core\PhysicsEngine.cpp" />
     <ClCompile Include="src\core\Renderer.cpp" />
     <ClCompile Include="src\core\ResourceManager.cpp" />
     <ClCompile Include="src\core\Shader.cpp" />
@@ -154,6 +157,7 @@
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\utilities\Camera.cpp" />
+    <ClCompile Include="src\utilities\GLDebugDrawer.cpp" />
     <ClCompile Include="src\utilities\Logger.cpp" />
     <ClCompile Include="src\utilities\MessageBus.cpp" />
     <ClCompile Include="src\utilities\ScriptManager.cpp" />
@@ -162,6 +166,7 @@
     <ClCompile Include="src\utilities\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\components\BillboardComponent.h" />
     <ClInclude Include="src\components\Component.h" />
     <ClInclude Include="src\components\CubeGraphicsComponent.h" />
     <ClInclude Include="src\components\DirectionalLightComponent.h" />
@@ -172,6 +177,7 @@
     <ClInclude Include="src\components\ModelComponent.h" />
     <ClInclude Include="src\components\Particle.h" />
     <ClInclude Include="src\components\ParticleGenerator.h" />
+    <ClInclude Include="src\components\PhysicsComponent.h" />
     <ClInclude Include="src\components\PlaneGraphicsComponent.h" />
     <ClInclude Include="src\components\PointLightGraphicsComponent.h" />
     <ClInclude Include="src\components\QuadGraphicsComponent.h" />
@@ -180,6 +186,7 @@
     <ClInclude Include="src\core\EntityManager.h" />
     <ClInclude Include="src\core\GUIManager.h" />
     <ClInclude Include="src\core\Mouse.h" />
+    <ClInclude Include="src\core\PhysicsEngine.h" />
     <ClInclude Include="src\core\Renderer.h" />
     <ClInclude Include="src\core\ResourceManager.h" />
     <ClInclude Include="src\core\Shader.h" />
@@ -187,6 +194,7 @@
     <ClInclude Include="src\tiny_obj_loader.h" />
     <ClInclude Include="src\utilities\BusNode.h" />
     <ClInclude Include="src\utilities\Camera.h" />
+    <ClInclude Include="src\utilities\GLDebugDrawer.h" />
     <ClInclude Include="src\utilities\Logger.h" />
     <ClInclude Include="src\utilities\Message.h" />
     <ClInclude Include="src\utilities\MessageBus.h" />
