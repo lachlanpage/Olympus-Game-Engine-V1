@@ -33,6 +33,10 @@
 #include "components/ModelComponent.h"
 #include "components/ParticleGenerator.h"
 
+#include <bullet/btBulletDynamicsCommon.h>
+
+#include "core/PhysicsEngine.h"
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -49,7 +53,7 @@ int main(int argc, char* argv[]) {
 
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
-	Camera::Instance(glm::vec3(2.0f, 2.0f,2.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
+	Camera::Instance(glm::vec3(-11.0f, 8.0f,0.7f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
 	Mouse *raycast = Mouse::Instance(MessageBus::Instance());
 
 	GUIManager::Instance(mainWindow->getWindow());
@@ -76,24 +80,85 @@ int main(int argc, char* argv[]) {
 
 	GUIManager::Instance()->renderSceneGraph(true);
 
-	Entity *model2 = new Entity(glm::vec3(0, 0, 0));
-	model2->addComponent(new ModelComponent("models/sponza/sponza.obj"));
-	model2->setPosition(glm::vec3(1.0, 1.0, 1.0));
-	model2->setScale(glm::vec3(0.01, 0.01, 0.01));
+	Entity *model2 = new Entity(glm::vec3(0, 50, 0));
+	model2->addComponent(new ModelComponent("models/cube/cube.obj"));
+	model2->addComponent(new PhysicsComponent(model2->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	model2->setScale(glm::vec3(1, 1, 1));
+	//model2->setRotation(glm::vec3(100, 100, 100));
 	entityManager->addEntity(model2);
 
+
+	Entity *model3 = new Entity(glm::vec3(1, 0, 0));
+	model3->addComponent(new ModelComponent("models/cube/cube.obj"));
+	model3->setScale(glm::vec3(25, 0.1, 25));
+	entityManager->addEntity(model3);
+
+	Entity *model4 = new Entity(glm::vec3(0.5, 230, 0));
+	model4->addComponent(new ModelComponent("models/cube/cube.obj"));
+	model4->addComponent(new PhysicsComponent(model4->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	model4->setScale(glm::vec3(1, 1, 1));
+	entityManager->addEntity(model4);
+
+
+	Entity *acube = new Entity(glm::vec3(1, 300, 0));
+	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	acube->setScale(glm::vec3(1, 1, 1));
+	entityManager->addEntity(acube);
+
+	acube = new Entity(glm::vec3(0, 1, 0));
+	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	acube->setScale(glm::vec3(1, 1, 1));
+	entityManager->addEntity(acube);
+
+
+	acube = new Entity(glm::vec3(0, 20, 0));
+	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	acube->setScale(glm::vec3(1, 1, 1));
+	entityManager->addEntity(acube);
+
+	acube = new Entity(glm::vec3(0, 22, 0));
+	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	acube->setScale(glm::vec3(1, 1, 1));
+	entityManager->addEntity(acube);
+
+	acube = new Entity(glm::vec3(0, 50, 0));
+	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	acube->setScale(glm::vec3(1, 1, 1));
+	entityManager->addEntity(acube);
+
+
+
+
+
+
+
 	//add particles last for depth testing stuff
-	Entity *particle = new Entity(glm::vec3(-0.4, 2,-0.2));
-	particle->setScale(glm::vec3(1.2,1.2,1.2));
-	particle->addComponent(new ParticleGenerator());
-	entityManager->addEntity(particle);
+	//Entity *particle = new Entity(glm::vec3(-0.4, 2,-0.2));
+	//particle->setScale(glm::vec3(1.2,1.2,1.2));
+	//particle->addComponent(new ParticleGenerator());
+	//entityManager->addEntity(particle);
 
-
+	PhysicsEngine *physicsEngine = new PhysicsEngine();
+	physicsEngine->addBodies(entityManager->getEntityList());
 
 	while (mainWindow->isRunning()){
+
+		physicsEngine->addBodies(entityManager->getEntityList());
 		//comment to disable mouse picking
 		//scene graph entity clicking will not work if raycasting is on
-		//raycast->update(entityManager->getEntityList());
+		raycast->update(entityManager->getEntityList(), physicsEngine->getDynamicsWorld());
+		if (raycast->getLeftClickState()) {
+			acube = new Entity(Camera::Instance()->getPosition());
+			acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+			acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+			acube->setScale(glm::vec3(1, 1, 1));
+			entityManager->addEntity(acube);
+		}
 		//light->setPosition(raycast->getCurrentPoint());
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -143,6 +208,9 @@ int main(int argc, char* argv[]) {
 
 		//render GUI 
 		GUIManager::Instance()->render();
+
+		//update physics engine
+		physicsEngine->Update();
 
 		//update all messages via bus
 		MessageBus::Instance()->notify();
