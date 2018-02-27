@@ -10,12 +10,14 @@
 #include "../components/PlaneGraphicsComponent.h"
 #include "../components/ModelComponent.h"
 #include "../components/ParticleGenerator.h"
+#include "../components/PhysicsComponent.h"
 
 class EntityManager {
 public:
 	EntityManager();
 	void addEntity(Entity*);
 	Entity* getEntity(int ID);
+	void initPhysics();
 	void render();
 	void renderShadow();
 	void renderLight();
