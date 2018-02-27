@@ -25,15 +25,30 @@ void Mouse::checkIntersection(glm::vec3 position) {
 
 void Mouse::onNotify(Message message) {
 	if (message.getEvent() == "MOUSE_LEFT_CLICK") {
-		std::cout << "THIS IS CALLED" << std::endl;
+		std::cout << "HELLO" << std::endl;
 		blockClickID = m_blockIntersectionID;
+		isLeftClick = true;
+		leftClickedReturned = false;
+	}
+	else {
+		isLeftClick = false;
+		leftClickedReturned = true;
 	}
 }
 
-void Mouse::update(std::vector<Entity*> entityList) {
-	m_entityList = entityList;
+bool Mouse::getLeftClickState() {
+	if (!leftClickedReturned) {
+		leftClickedReturned = true;
+		return isLeftClick;
+	}
+	else {
+		return false;
+	}
+		
+}
 
-	viewMatrix = Camera::Instance()->getViewMatrix();
+void Mouse::update(std::vector<Entity*> entityList, btDiscreteDynamicsWorld* dynamicsWorld) {
+
 	currentRay = calculateMouseRay();
 
 	glm::vec3 camPos = Camera::Instance()->getPosition();
@@ -44,49 +59,17 @@ void Mouse::update(std::vector<Entity*> entityList) {
 	glm::vec3 startOfRay = getPointOnRay(currentRay, 0);
 	glm::vec3 endOfRay = getPointOnRay(currentRay, 10);
 
-	bool blockIntersection = false;
-	float rayLength = 0;
-	float step_size = 1;
-	while (rayLength < RANGE && blockIntersection == false) {
-		glm::vec3 testRayPoint = getPointOnRay(currentRay, rayLength);
-		testRayPoint = glm::vec3(floor(testRayPoint.x), floor(testRayPoint.y), floor(testRayPoint.z));
-		for (auto entity : entityList) {
-			//is slected could cause problems if loops exists early before setting state for all entitys back to not selected
-			//maybe update each entity to is selected is false each update?
-			glm::vec3 entityPosition = entity->getPosition();
-			entity->is_selected = false;
-			if (testRayPoint.x == entityPosition.x && testRayPoint.y == entityPosition.y && testRayPoint.z == entityPosition.z) {
-				m_currentPoint = glm::vec3(entityPosition);
-				entity->is_selected = true;
-				blockIntersection = true;
-				m_blockIntersectionID = entity->m_ID;
-				break;
-			}
-			else {
-				m_blockIntersectionID = -1;
-			}
-		}
-		rayLength = rayLength + step_size;
-	}
 
+	//std::cout << startOfRay.x << " " << startOfRay.y << " " << startOfRay.z << std::endl;
 
-	//update is selected
-	for (auto entity : m_entityList) {
-		if (entity->m_ID == blockClickID) {
-			entity->is_selected = true;
-			GUIManager::Instance()->setEntityEditor(entity);
-		}
-		else {
-			//entity->is_selected = false;
-		}
-	}
+	btVector3 rayFromWorld = btVector3(endOfRay.x, endOfRay.y, endOfRay.z);
+	btVector3 rayToWorld = btVector3(startOfRay.x, startOfRay.y,startOfRay.z);
 
-	//render gui accordingly 
-	if (blockClickID == -1) {
-		GUIManager::Instance()->renderEntityEditor(false);
-	}
-	else {
-		GUIManager::Instance()->renderEntityEditor(true);
+	btCollisionWorld::ClosestRayResultCallback rayCallback(rayFromWorld, rayToWorld);
+	dynamicsWorld->rayTest(rayFromWorld, rayToWorld, rayCallback);
+	if (rayCallback.hasHit()) {
+		btVector3 pickPos = rayCallback.m_hitPointWorld;
+		//std::cout << pickPos.getX() << " " << pickPos.getY() << " " << pickPos.getZ() << std::endl;
 	}
 }
 
