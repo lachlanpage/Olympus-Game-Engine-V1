@@ -12,6 +12,8 @@ public:
 	void addBodies(std::vector<Entity*>);
 	btDiscreteDynamicsWorld* getDynamicsWorld();
 private:
+
+	GLDebugDrawer debugDrawer;
 	btBroadphaseInterface* broadphase;
 	btDefaultCollisionConfiguration* collisionConfiguration;
 	btCollisionDispatcher* dispatcher;
