@@ -208,6 +208,7 @@
     <None Include="src\scripts\test.lua" />
     <None Include="src\shaders\basic.fs" />
     <None Include="src\shaders\basic.vs" />
+    <None Include="src\shaders\crosshair.fs" />
     <None Include="src\shaders\cube.fs" />
     <None Include="src\shaders\cube.vs" />
     <None Include="src\shaders\directional_light.fs" />

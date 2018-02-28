@@ -33,6 +33,7 @@ public:
 
 	glm::mat4 Camera::getViewMatrix();
 	glm::vec3 getPosition();
+	glm::vec3 getDirection();
 	void onNotify(Message message);
 	void handleInput(std::string movement);
 
