@@ -40,6 +40,8 @@ glm::mat4 Camera::getViewMatrix() {
 	return glm::lookAt(m_position,m_position + m_front, m_up);
 }
 
+glm::vec3 Camera::getDirection() { return m_front; }
+
 glm::vec3 Camera::getPosition() { return m_position; }
 
 void Camera::onNotify(Message message) {
@@ -92,7 +94,7 @@ void Camera::processMouseMovement() {
 
 		int window_height = Settings::Instance()->window_height;
 		int window_width = Settings::Instance()->window_width;
-		SDL_ShowCursor(SDL_DISABLE);
+		//SDL_ShowCursor(SDL_DISABLE);
 
 		int x, y;
 		SDL_GetMouseState(&x, &y);
@@ -111,11 +113,13 @@ void Camera::processMouseMovement() {
 
 		update();
 		SDL_WarpMouseGlobal(window_width / 2, window_height / 2);
+		//std::cout << SDL_ShowCursor(SDL_QUERY) << std::endl;
 		SDL_ShowCursor(SDL_DISABLE);
 	}
 	else {
 		//Implement to hide cursor
-		//SDL_ShowCursor(SDL_TRUE);
+		SDL_ShowCursor(SDL_ENABLE);
+
 	}
 }
 
