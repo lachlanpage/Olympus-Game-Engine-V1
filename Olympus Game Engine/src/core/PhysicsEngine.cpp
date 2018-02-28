@@ -5,7 +5,6 @@
 float RAD2DEG = 180.0 / 3.141592653589793238463;
 
 PhysicsEngine::PhysicsEngine() {
-
 	broadphase = new btDbvtBroadphase();
 	// Set up the collision configuration and dispatcher
 	collisionConfiguration = new btDefaultCollisionConfiguration();
