@@ -64,6 +64,12 @@ public:
 				shader->setInt("specular_texture", 1);
 				glBindTexture(GL_TEXTURE_2D, textures[1].id);
 			}
+
+			else if (i == 2) {
+				glActiveTexture(GL_TEXTURE2);
+				shader->setInt("normal_texture", 2);
+				glBindTexture(GL_TEXTURE_2D, textures[2].id);
+			}
 			//std::string number;
 			//std::string name = textures[i].type;
 			//if (name == "texture_diffuse")
@@ -82,8 +88,6 @@ public:
 			//glBindTexture(GL_TEXTURE_2D, textures[i].id);
 			//need to look into ordering of textures because they may not be in order of diffuse, spec etc. 
 		}
-
-		shader->setInt("isSelected", isSelected);
 		
 		// draw mesh
 		glBindVertexArray(VAO);

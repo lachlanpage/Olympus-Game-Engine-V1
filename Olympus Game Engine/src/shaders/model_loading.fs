@@ -14,23 +14,24 @@ in vec3 vs_pos;
 
 in vec3 eyePos;
 in vec3 eyeNormal;
+in mat3 TBN;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D specular_texture;
+uniform sampler2D normal_texture;
 
 uniform int isSelected;
 
 void main()
 {    
     FragColor = texture(texture_diffuse1, TexCoords);
-	//FragColor = vec4(1.0,1.0,0.0,1.0);
-	if(isSelected == 1){
-		vec4 color1 = vec4(0.0,1.0, 0.0,1.0) ;
-		vec4 color2 = texture(texture_diffuse1, TexCoords);
-		FragColor = mix(color1,color2,0.1);
-	}
+
 	specularData = texture(specular_texture, vs_textureCoordinates);
-	normalData = vec4(vs_normalData, 1.0);
+	
+	vec3 normal = texture(normal_texture, TexCoords).rgb;
+	normal = normalize(normal * 2.0 - 1.0);
+	normalData = vec4(normalize(normal),1.0);
+
 	positionData = vec4(vs_pos, 1.0);
 
 	eyePositionData = vec4(eyePos,1.0);
