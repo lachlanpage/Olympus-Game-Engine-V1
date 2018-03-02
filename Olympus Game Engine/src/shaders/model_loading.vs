@@ -10,10 +10,14 @@ out vec2 TexCoords;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform vec3 viewPos;
 
 out vec2 vs_textureCoordinates;
 out vec3 vs_normalData;
 out vec3 vs_pos;
+
+out vec3 tangentViewPos;
+out vec3 tangentFragPos;
 
 out vec3 eyePos;
 out vec3 eyeNormal;
@@ -23,7 +27,7 @@ mat3 calculate_TBN(vec3 tangent, vec3 bitangent, vec3 normal){
 	vec3 T = normalize(vec3(model* vec4(tangent,0.0)));
 	vec3 B = normalize(vec3(model * vec4(bitangent, 0.0)));
 	vec3 N = normalize(vec3(model * vec4(normal, 0.0)));
-	mat3 TBN = mat3(T,B,N);
+	mat3 TBN = transpose(mat3(T,B,N));
 	return TBN;
 }
 
@@ -37,4 +41,7 @@ void main()
 	eyePos = vec3(view*model*vec4(aPos,1.0));
 	vs_textureCoordinates = aTexCoords;
 	vs_pos = vec3(model*vec4(aPos,1.0));
+
+	tangentViewPos = TBN * viewPos;
+	tangentFragPos = TBN * vec3(model*vec4(aPos, 1.0));
 }
