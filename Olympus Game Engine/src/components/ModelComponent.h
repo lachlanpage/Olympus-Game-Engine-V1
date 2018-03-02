@@ -12,6 +12,7 @@ class ModelComponent : public Component{
 public:
 
 	ModelComponent(char* filepath);
+	ModelComponent(char* filepath, std::string colourFlag);
 	virtual void update(Entity& entity);
 	void renderShadow(Entity& entity);
 	virtual void postInit(Entity& entity);

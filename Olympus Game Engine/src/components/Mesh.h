@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 #include "../core/Shader.h"
+#include "../utilities/Camera.h"
 
 struct Vertex {
 	//used to store data about vertex in mesh
@@ -29,6 +30,11 @@ public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
+
+	std::vector<unsigned int> diffuseTextures;
+	std::vector<unsigned int> specularTextures;
+	std::vector<unsigned int> normalTextures;
+	std::vector<unsigned int> displacementTextures;
 	int id;
 	int isSelected;
 
@@ -40,13 +46,85 @@ public:
 		isSelected = 0;
 		setupMesh();
 	}
-	void Draw(Shader* shader) {
-		// bind appropriate textures
-		unsigned int diffuseNr = 1;
-		unsigned int specularNr = 1;
-		unsigned int normalNr = 1;
-		unsigned int heightNr = 1;
 
+	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> diffuseTex, std::vector<unsigned int> specularTex, std::vector<unsigned int> normalTex, std::vector<unsigned int> dispTex, int id) {
+		this->vertices = vertices;
+		this->indices = indices;
+		this->diffuseTextures = diffuseTex;
+		this->specularTextures = specularTex;
+		this->normalTextures = normalTex;
+		this->displacementTextures = dispTex;
+		this->id = id;
+		isSelected = 0;
+		setupMesh();
+	}
+
+
+
+	void Draw(Shader* shader) {
+		
+		int totalTextureCount = 0;
+		//diffuse texture
+		shader->setVec3("viewPos", Camera::Instance()->getPosition());
+		if (diffuseTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE0);
+			shader->setInt("texture_diffuse0", 0);
+			glBindTexture(GL_TEXTURE_2D, diffuseTextures.at(0));
+		}
+
+
+		if (specularTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE1);
+			shader->setInt("texture_specular0", 1);
+			glBindTexture(GL_TEXTURE_2D, specularTextures.at(0));
+		}
+
+
+		if (normalTextures.size() > 0) {
+			shader->setInt("normalMapPresent", 1);
+			glActiveTexture(GL_TEXTURE2);
+			shader->setInt("texture_normal0", 2);
+			glBindTexture(GL_TEXTURE_2D, normalTextures.at(0));
+		}
+		else {
+			shader->setInt("normalMapPresent", 0);
+		}
+
+		if (displacementTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE3);
+			shader->setInt("displacementMapPresent", 1);
+			shader->setInt("texture_displacement0", 3);
+			glBindTexture(GL_TEXTURE_2D, displacementTextures.at(0));
+		}
+		else {
+			shader->setInt("displacementMapPresent", 0);
+		}
+		/*
+		for (unsigned int i = 0; i < diffuseTextures.size(); i++) {
+			glActiveTexture(GL_TEXTURE0 + totalTextureCount);
+			shader->setInt("texture_diffuse" + i, totalTextureCount);
+			std::cout << "texture_diffuse" << i << " " << totalTextureCount<< std::endl;
+			glBindTexture(GL_TEXTURE_2D, diffuseTextures.at(i));
+			totalTextureCount += 1;
+		}
+
+		for (unsigned int i = 0; i < specularTextures.size(); i++) {
+			glActiveTexture(GL_TEXTURE0 + totalTextureCount);
+			shader->setInt("texture_specular" + i, totalTextureCount);
+			std::cout << "texture_specular" << i << " " << totalTextureCount << std::endl;
+			glBindTexture(GL_TEXTURE_2D, specularTextures.at(i));
+			totalTextureCount += 1;
+		}
+
+		for (unsigned int i = 0; i < normalTextures.size(); i++) {
+			glActiveTexture(GL_TEXTURE0 + totalTextureCount);
+			shader->setInt("texture_normal" + i, totalTextureCount);
+			glBindTexture(GL_TEXTURE_2D, normalTextures.at(i));
+			totalTextureCount += 1;
+		}
+		*/
+
+		/*
 		//only have diffuse texture at the moment. 		
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
@@ -63,6 +141,12 @@ public:
 				glActiveTexture(GL_TEXTURE1);
 				shader->setInt("specular_texture", 1);
 				glBindTexture(GL_TEXTURE_2D, textures[1].id);
+			}
+
+			else if (i == 2) {
+				glActiveTexture(GL_TEXTURE2);
+				shader->setInt("normal_texture", 2);
+				glBindTexture(GL_TEXTURE_2D, textures[2].id);
 			}
 			//std::string number;
 			//std::string name = textures[i].type;
@@ -83,7 +167,7 @@ public:
 			//need to look into ordering of textures because they may not be in order of diffuse, spec etc. 
 		}
 
-		shader->setInt("isSelected", isSelected);
+		*/
 		
 		// draw mesh
 		glBindVertexArray(VAO);

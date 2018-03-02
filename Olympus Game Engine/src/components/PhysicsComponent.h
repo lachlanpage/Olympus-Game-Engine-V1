@@ -7,6 +7,7 @@ public:
 	PhysicsComponent(glm::vec3 pos, btCollisionShape* colType, int mass);
 	//used to apply initial force to a body
 	PhysicsComponent(glm::vec3 pos, btCollisionShape* colType, int mass, float force);
+	PhysicsComponent(glm::vec3 positionBody, btCollisionShape* collisionShapeType);
 	btRigidBody* getBody();
 	virtual void update(Entity& entity);
 	void renderShadow(Entity& entity);

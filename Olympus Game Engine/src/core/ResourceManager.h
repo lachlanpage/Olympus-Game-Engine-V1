@@ -17,6 +17,8 @@ public:
 	unsigned int loadTexture(std::string);
 	Shader* loadShader(std::string, std::string);
 
+	void printTextures();
+
 private:
 	ResourceManager();
 	unsigned int loadImage(std::string filename);

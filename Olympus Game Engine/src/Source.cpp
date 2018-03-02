@@ -51,6 +51,8 @@
 
 int main(int argc, char* argv[]) {
 
+	SDL_ShowCursor(SDL_DISABLE);
+
 	Window *mainWindow = new Window("Olympus Game Engine", Settings::Instance()->window_width, Settings::Instance()->window_height, MessageBus::Instance());
 
 	Camera::Instance(glm::vec3(-11.0f, 8.0f,0.7f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), MessageBus::Instance());
@@ -64,10 +66,30 @@ int main(int argc, char* argv[]) {
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	entityManager->addEntity(light6);
 
+	light6 = new Entity(glm::vec3(10, 1, 5));
+	light6->addComponent(new LightComponent(10, glm::vec3(1.0, 0.0, 0.0)));
+	entityManager->addEntity(light6);
+
+	light6 = new Entity(glm::vec3(6, 2, 6));
+	light6->addComponent(new LightComponent(4, glm::vec3(0.0, 1.0, 0.0)));
+	entityManager->addEntity(light6);
+
+	light6 = new Entity(glm::vec3(9, 4, 9));
+	light6->addComponent(new LightComponent(7, glm::vec3(0.0, 0.0, 1.0)));
+	entityManager->addEntity(light6);
+
+	light6 = new Entity(glm::vec3(-5, 4, -4));
+	light6->addComponent(new LightComponent(10, glm::vec3(0.45, 0.0, 1.0)));
+	entityManager->addEntity(light6);
+
+	light6 = new Entity(glm::vec3(7.2, 4, -6.3));
+	light6->addComponent(new LightComponent(12, glm::vec3(0.0, 1.0, 1.0)));
+	entityManager->addEntity(light6);
+
 	
 
 	//Entity *model = new Entity(glm::vec3(0, 0, 0));
-	//model->addComponent(new ModelComponent("models/shaderBall/shaderBall.obj"));
+	//model->addComponent(new ModelComponent("models/sponza/sponza.obj"));
 	//model->setPosition(glm::vec3(1.0, 1.0, 1.0));
 	//model->setScale(glm::vec3(0.01, 0.01, 0.01));
 	//entityManager->addEntity(model);
@@ -77,9 +99,9 @@ int main(int argc, char* argv[]) {
 	entityManager->addEntity(sun);
 
 
-
 	GUIManager::Instance()->renderSceneGraph(true);
 
+	/*
 	Entity *model2 = new Entity(glm::vec3(0, 50, 0));
 	model2->addComponent(new ModelComponent("models/cube/cube.obj"));
 	model2->addComponent(new PhysicsComponent(model2->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
@@ -118,30 +140,48 @@ int main(int argc, char* argv[]) {
 	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
 	acube->setScale(glm::vec3(1, 1, 1));
 	entityManager->addEntity(acube);
+	*/
 
-	acube = new Entity(glm::vec3(0, 22, 0));
-	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
-	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
-	acube->setScale(glm::vec3(1, 1, 1));
-	entityManager->addEntity(acube);
+	//Entity *model3 = new Entity(glm::vec3(1, 0, 0));
+	//model3->addComponent(new ModelComponent("models/cube/cube.obj"));
+	//model3->setScale(glm::vec3(25, 0.1, 25));
+	//entityManager->addEntity(model3);
 
-	acube = new Entity(glm::vec3(0, 50, 0));
-	acube->addComponent(new ModelComponent("models/cube/cube.obj"));
-	acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
-	acube->setScale(glm::vec3(1, 1, 1));
-	entityManager->addEntity(acube);
-
-
+	//Entity *acube = new Entity(glm::vec3(0, 50, 0));
+	//acube->addComponent(new ModelComponent("models/cube/cube.obj"));
+	//acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	//acube->setScale(glm::vec3(1, 1, 1));
+	//entityManager->addEntity(acube);
 
 
-
-
+	Entity *ground = new Entity(glm::vec3(0, 0, 0));
+	ground->addComponent(new PhysicsComponent(ground->getPosition(), new btBoxShape(btVector3(100, 0, 100))));
+	entityManager->addEntity(ground);
 
 	//add particles last for depth testing stuff
-	//Entity *particle = new Entity(glm::vec3(-0.4, 2,-0.2));
-	//particle->setScale(glm::vec3(1.2,1.2,1.2));
+
+	//acube = new Entity(glm::vec3(20, 0, 0));
+	//acube->addComponent(new ModelComponent("models/test.obj"));
+	//acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
+	//acube->setScale(glm::vec3(1, 1, 1));
+	//entityManager->addEntity(acube);
+
+
+	//Entity *particle = new Entity(glm::vec3(5, 20, 1));
+	//particle->setScale(glm::vec3(1.2, 1.2, 1.2));
 	//particle->addComponent(new ParticleGenerator());
 	//entityManager->addEntity(particle);
+
+	Entity *sponza = new Entity(glm::vec3(0, 0, 0));
+	sponza->setScale(glm::vec3(20,20,20));
+	sponza->addComponent(new ModelComponent("models/test/test.obj", "grey"));
+	entityManager->addEntity(sponza);
+
+	Entity *shaderboy = new Entity(glm::vec3(-1, 1, -0.2));
+	shaderboy->setScale(glm::vec3(1, 1, 1));
+	shaderboy->addComponent(new ModelComponent("models/cube/cube.obj"));
+	entityManager->addEntity(shaderboy);
+
 
 	PhysicsEngine *physicsEngine = new PhysicsEngine();
 	physicsEngine->addBodies(entityManager->getEntityList());
@@ -153,10 +193,10 @@ int main(int argc, char* argv[]) {
 		//scene graph entity clicking will not work if raycasting is on
 		raycast->update(entityManager->getEntityList(), physicsEngine->getDynamicsWorld());
 		if (raycast->getLeftClickState()) {
-			acube = new Entity(Camera::Instance()->getPosition());
+			Entity *acube = new Entity(Camera::Instance()->getPosition());
 			acube->addComponent(new ModelComponent("models/cube/cube.obj"));
-			acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 1));
-			acube->setScale(glm::vec3(1, 1, 1));
+			acube->addComponent(new PhysicsComponent(acube->getPosition(), new btBoxShape(btVector3(0.5, 0.5, 0.5)), 3, 50));
+			acube->setScale(glm::vec3(1,1,1));
 			entityManager->addEntity(acube);
 		}
 		//light->setPosition(raycast->getCurrentPoint());
@@ -207,14 +247,17 @@ int main(int argc, char* argv[]) {
 		Renderer::Instance()->Flush();
 
 		//render GUI 
+		//SDL_ShowCursor(SDL_DISABLE);
 		GUIManager::Instance()->render();
 
 		//update physics engine
 		physicsEngine->Update();
 
+
 		//update all messages via bus
 		MessageBus::Instance()->notify();
 		Time::Instance()->update();
+
 		SDL_GL_SwapWindow(mainWindow->getWindow());
 	}
 

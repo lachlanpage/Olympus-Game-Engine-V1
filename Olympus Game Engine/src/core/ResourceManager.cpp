@@ -10,6 +10,17 @@ ResourceManager* ResourceManager::Instance() {
 
 ResourceManager::ResourceManager() {}
 
+
+void ResourceManager::printTextures() {
+
+	m_texturesIterator = m_texturesLoaded.begin();
+	while (m_texturesIterator != m_texturesLoaded.end()) {
+		std::cout << m_texturesIterator->first << " " << m_texturesIterator->second << std::endl;
+		std::cout << m_texturesIterator->first << " " << &m_texturesIterator->second << std::endl;
+		m_texturesIterator++;
+	}
+}
+
 unsigned int ResourceManager::loadTexture(std::string filename) {
 	//check if texture has already been loaded, if it has not - load image and then store in loaded texture otherwise return image
 	m_texturesIterator = m_texturesLoaded.find(filename);
@@ -20,33 +31,50 @@ unsigned int ResourceManager::loadTexture(std::string filename) {
 	}
 	else {
 		//texture not found, create texture and insert it into textures loaded
-		unsigned int textureFile = loadImage(filename);
-		m_texturesLoaded.insert(std::pair<std::string, unsigned int>(filename, textureFile));
+		unsigned int texture = loadImage(filename);
+		m_texturesLoaded.insert(std::pair<std::string, unsigned int>(filename, texture));
+		return texture;
 	}
 }
 
 unsigned int ResourceManager::loadImage(std::string filename) {
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrChannels;
-	
+
+	unsigned int texture;
+	glGenTextures(1, &texture);
+
 	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
 
 	if (!data) {
 		Logger::Instance()->write(stbi_failure_reason() + filename);
 		Logger::Instance()->write("Failed to load Image: " + filename);
-		std::cout << "IMAGE LOAdeD FAILED" << std::endl;
+		std::cout << "Image failed to load: " << filename<< std::endl;
+		stbi_image_free(data);
 	}
 	else {
-		unsigned int texture;
-		glGenTextures(1, &texture);
+		GLenum format;
+		if (nrChannels == 1)
+			format = GL_RED;
+		else if (nrChannels == 3)
+			format = GL_RGB;
+		else if (nrChannels == 4)
+			format = GL_RGBA;
 		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0,format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		Logger::Instance()->write("LOADED IMAGE: " + filename);
+		std::cout << "LOADED IMAGE: " << filename << std::endl;
 		stbi_image_free(data);
-		return texture;
+		//return texture;
 	}
-	return -1;
+	return texture;
 }
 
 Shader* ResourceManager::loadShader(std::string vert, std::string frag) {

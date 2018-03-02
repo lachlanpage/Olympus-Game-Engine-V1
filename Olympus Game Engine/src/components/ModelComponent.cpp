@@ -6,6 +6,12 @@ ModelComponent::ModelComponent(char* filepath) {
 	ourModel = new Model(filepath);
 }
 
+ModelComponent::ModelComponent(char* filepath, std::string colourFlag) {
+	m_shader = ResourceManager::Instance()->loadShader("src/shaders/model_loading.vs", "src/shaders/model_loading_grey.fs");
+	m_shadowShader = ResourceManager::Instance()->loadShader("src/shaders/shadow.vs", "src/shaders/shadow.fs");
+	ourModel = new Model(filepath);
+}
+
 void ModelComponent::update(Entity& entity) {
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
