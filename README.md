@@ -4,6 +4,8 @@ A 3D game engine written in C++ exploring openGL - Created by Lachlan Page
 Aims (rough) : Creating a game engine to experiment with openGL :) 
 
 ## Screenshots
+![parallax and normal mapping](https://raw.githubusercontent.com/lachlanpage/Olympus-Game-Engine-V1/master/Olympus%20Game%20Engine/screenshots/parallax%20and%20normal%20mapping.png)
+![SSAO and HDR](https://raw.githubusercontent.com/lachlanpage/Olympus-Game-Engine-V1/master/Olympus%20Game%20Engine/screenshots/ssao.png)
 ![directional light](https://raw.githubusercontent.com/lachlanpage/Olympus-Game-Engine-V1/master/Olympus%20Game%20Engine/screenshots/directional%20light.png)
 ![normal mapping](https://raw.githubusercontent.com/lachlanpage/Olympus-Game-Engine-V1/master/Olympus%20Game%20Engine/screenshots/normal%20map.png)
 ## Videos
