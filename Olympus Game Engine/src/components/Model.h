@@ -9,6 +9,8 @@
 #include <assimp/postprocess.h>
 #include "../utilities/stb_image.h"
 
+#include "../core/ResourceManager.h"
+
 
 unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 
@@ -135,21 +137,46 @@ private:
 		// normal: texture_normalN
 
 		// 1. diffuse maps
-		std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		//std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		//textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		// 2. specular maps
-		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		//std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		//textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		// 3. normal maps
-		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+		//std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+		//textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		// 4. height maps
-		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		//std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+		//textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+		std::vector<unsigned int> diffuseTextures = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		std::vector<unsigned int> specularTextures = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		std::vector<unsigned int> normalTextures = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+		std::vector<unsigned int> displacementTextures = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_displacement");
+
+		std::cout << displacementTextures.size() << std::endl;
+		//ResourceManager::Instance()->printTextures(); 
 		// return a mesh object created from the extracted mesh data
-		return Mesh(vertices, indices, textures, mesh_id);
+		//return Mesh(vertices, indices, textures, mesh_id);
+		return Mesh(vertices, indices, diffuseTextures, specularTextures, normalTextures, displacementTextures, mesh_id);
 	}
+
+
+	std::vector<unsigned int> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
+		std::vector<unsigned int> textures;
+		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+		{
+			aiString str;
+			mat->GetTexture(type, i, &str);
+
+			std::string filename = std::string(str.C_Str());
+			filename = this->directory + '/' + filename;
+
+			textures.push_back(ResourceManager::Instance()->loadTexture(filename));
+		}	
+		return textures;
+	}
+	/*
 	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
 		std::vector<Texture> textures;
 		
@@ -157,6 +184,21 @@ private:
 		{
 			aiString str;
 			mat->GetTexture(type, i, &str);
+
+			std::string filename = std::string(str.C_Str());
+			filename = this->directory + '/' + filename;
+
+			//unsigned int texture = ResourceManager::Instance()->loadTexture(filename);
+			if (typeName == "texture_diffuse") {
+
+			}
+			else if (typeName == "texture_normal") {
+				
+			}
+			else if (typeName == "texture_specular") {
+
+			}
+
 			// check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 			bool skip = false;
 			for (unsigned int j = 0; j < textures_loaded.size(); j++)
@@ -180,6 +222,8 @@ private:
 		}
 		return textures;
 	}
+
+	*/
 
 	unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma)
 	{
