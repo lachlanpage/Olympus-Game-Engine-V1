@@ -126,7 +126,7 @@
     <ClCompile Include="src\components\PhysicsComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utilities\GLDebugDrawer.cpp">
+    <ClCompile Include="src\core\FPSCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,7 +236,7 @@
     <ClInclude Include="src\components\PhysicsComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utilities\GLDebugDrawer.h">
+    <ClInclude Include="src\core\FPSCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -268,5 +268,7 @@
     <None Include="src\shaders\particle.vs" />
     <None Include="src\shaders\model_loading_grey.fs" />
     <None Include="src\shaders\crosshair.fs" />
+    <None Include="src\shaders\billboard.vs" />
+    <None Include="src\shaders\billboard.fs" />
   </ItemGroup>
 </Project>
