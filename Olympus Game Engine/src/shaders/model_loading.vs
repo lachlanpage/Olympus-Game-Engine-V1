@@ -23,11 +23,19 @@ out vec3 eyePos;
 out vec3 eyeNormal;
 out mat3 TBN;
 
+out vec3 aTan;
+out vec3 aBitan;
+out vec3 aNorm;
+
 mat3 calculate_TBN(vec3 tangent, vec3 bitangent, vec3 normal){
 	vec3 T = normalize(vec3(model* vec4(tangent,0.0)));
 	vec3 B = normalize(vec3(model * vec4(bitangent, 0.0)));
 	vec3 N = normalize(vec3(model * vec4(normal, 0.0)));
 	mat3 TBN = transpose(mat3(T,B,N));
+
+	aTan = T;
+	aBitan = B;
+	aNorm = N;
 	return TBN;
 }
 

@@ -39,7 +39,9 @@ uniform sampler2D texture_displacement0;
 in vec3 tangentViewPos;
 in vec3 tangentFragPos;
 
-
+in vec3 aTan;
+in vec3 aBitan;
+in vec3 aNorm;
 
 uniform sampler2D specular_texture;
 uniform sampler2D normal_texture;
@@ -49,7 +51,7 @@ uniform int displacementMapPresent;
 
 uniform int isSelected;
 
-float height_scale = 0.05;
+float height_scale = 0.1;
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 {
@@ -85,25 +87,31 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 } 
 
 
+vec2 ParallaxMappingBasic(vec2 texCoords, vec3 viewDir){
+	float height =  texture(texture_displacement0, texCoords).r;    
+	vec2 p = viewDir.xy / viewDir.z * (height * height_scale);
+	return texCoords - p; 
+}
+
 void main()
 {    
 	vec3 viewDir = normalize(tangentViewPos - tangentFragPos);
 	vec2 coordinates = vs_textureCoordinates;
 	if(displacementMapPresent == 1){
 		coordinates = ParallaxMapping(TexCoords,  viewDir);
-		if(coordinates.x > 1.0 || coordinates.y > 1.0 || coordinates.x < 0.0 || coordinates.y < 0.0)
+		if(coordinates.x > 1.0 || coordinates.y > 1.0 || coordinates.x < -1.0 || coordinates.y < -1.0){
 			discard;
+		}
 	}
 
 
 	//replace coordinates with TexCoords to get back to non parralax mapping
-
     FragColor = texture(texture_diffuse0, coordinates);
 
 	specularData = texture(texture_specular0, coordinates);
 	if(normalMapPresent == 1){
 		vec3 normal = texture(texture_normal0, coordinates).rgb;
-		normal = normalize(normal * 2.0 - 1.0);
+		normal = normal * 2.0 - 1.0;
 		normalData = vec4(normalize(normal),1.0);
 	}
 	else{
