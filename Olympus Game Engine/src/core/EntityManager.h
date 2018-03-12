@@ -11,6 +11,8 @@
 #include "../components/ModelComponent.h"
 #include "../components/ParticleGenerator.h"
 #include "../components/PhysicsComponent.h"
+#include "../components/BillboardComponent.h"
+#include "../components/SphereGraphicsComponent.h"
 
 class EntityManager {
 public:

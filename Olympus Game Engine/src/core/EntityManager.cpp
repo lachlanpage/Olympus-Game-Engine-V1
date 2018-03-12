@@ -24,7 +24,7 @@ void EntityManager::initPhysics() {
 
 void EntityManager::render() {
 	for (auto entity : m_entityList) {
-		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<PlaneGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr || entity->GetComponent<ParticleGenerator>() != nullptr) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<PlaneGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr || entity->GetComponent<BillboardComponent>() != nullptr||  entity->GetComponent<ParticleGenerator>() != nullptr || entity->GetComponent<SphereGraphicsComponent>() != nullptr) {
 			entity->update();
 		}
 	}
@@ -32,7 +32,7 @@ void EntityManager::render() {
 
 void EntityManager::renderShadow() {
 	for (auto entity : m_entityList) {
-		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr || entity->GetComponent<SphereGraphicsComponent>() != nullptr) {
 			entity->updateShadow();
 		}
 	}

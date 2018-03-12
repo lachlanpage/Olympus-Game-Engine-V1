@@ -50,14 +50,11 @@ void Entity::setScale(glm::vec3 scale)       { m_scale = scale; }
 void Entity::setRotation(glm::vec3 rotation) { m_rotation = rotation; }
 
 void Entity::update(){
-	if (m_graphics != nullptr) {
+	if (m_graphics != nullptr)
 		m_graphics->update(*this);
-	}
 
 	for (auto component : m_components)
 		component->update(*this);
-
-	//is_selected = false;
 }
 
 void Entity::updateShadow() {
