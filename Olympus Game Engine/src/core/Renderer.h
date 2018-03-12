@@ -31,14 +31,19 @@ private:
 	Shader *shaderSSAO;
 	Shader *shaderSSAOBlur;
 	Shader *shaderFinalPass;
+	Shader *crosshairShader;
 	std::vector<glm::vec3> ssaoNoise;
 	std::default_random_engine generator;
 	std::vector<glm::vec3> ssaoKernel;
 
 	Renderer();
 	void renderQuad();
+	void renderCube();
 	unsigned int quadVAO = 0; 
 	unsigned int quadVBO;
+
+	unsigned int cubeVAO = 0; 
+	unsigned int cubeVBO = 0;
 
 	//normal, diffuse, position, tex
 	GLuint m_textures[4];
