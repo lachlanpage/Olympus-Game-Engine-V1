@@ -37,6 +37,60 @@ unsigned int ResourceManager::loadTexture(std::string filename) {
 	}
 }
 
+void ResourceManager::storeTexture(std::string filename, unsigned int texture) {
+	//stores a texture that has already been loaded via opengl fbo from renderer
+	m_texturesIterator = m_texturesLoaded.find(filename);
+	if (m_texturesIterator != m_texturesLoaded.end()) {
+		//texture already exists
+		Logger::Instance()->write("Texture: " + filename + " already exists");
+	}
+	else {
+		m_texturesLoaded.insert(std::pair<std::string, unsigned int>(filename, texture));
+		Logger::Instance()->write("Texture: " + filename + " added");
+	}
+
+}
+
+unsigned int ResourceManager::loadTextureHDR(std::string filename) {
+	//this is to load a hdr texture. 
+	m_texturesIterator = m_texturesLoaded.find(filename);
+	if (m_texturesIterator != m_texturesLoaded.end()) {
+		//texture already exists
+		Logger::Instance()->write("Texture: " + filename + " already exists");
+		return m_texturesIterator->second;
+	}
+	else {
+		//texture not found, create texture and insert it into textures loaded
+		//load hdr texture now 
+		//will move to independent hdr image load func
+		stbi_set_flip_vertically_on_load(true);
+		int width, height, nrComponents; 
+		float *data = stbi_loadf(filename.c_str(), &width, &height, &nrComponents, 0);
+		
+		unsigned int hdrTexture; 
+		if (data) {
+			glGenTextures(1, &hdrTexture);
+			glBindTexture(GL_TEXTURE_2D, hdrTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			stbi_image_free(data);
+		}
+		else {
+			std::cout << "FAILE DTO LOAD HDR IMAGE" << std::endl;
+		}
+		
+		m_texturesLoaded.insert(std::pair<std::string, unsigned int>(filename, hdrTexture));
+		return hdrTexture;
+	}
+	
+
+}
+
 unsigned int ResourceManager::loadImage(std::string filename) {
 	stbi_set_flip_vertically_on_load(true);
 	int width, height, nrChannels;
