@@ -24,13 +24,18 @@ void Renderer::start() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
+	//render skybox first --- hacky !!!!
+	renderSkybox();
+}
 
+
+void Renderer::renderSkybox() {
 	//render skybox first --- hacky !!!!
 	backgroundShader->use();
 	backgroundShader->setMat4("view", Camera::Instance()->getViewMatrix());
 	backgroundShader->setMat4("projection", Settings::Instance()->projection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, irradMap);
 	glDepthFunc(GL_LEQUAL);
 	renderCube();
 }
@@ -212,6 +217,7 @@ Renderer::Renderer() {
 
 	cubemapShader = ResourceManager::Instance()->loadShader("src/shaders/cubemap.vs", "src/shaders/cubemap.fs");
 	backgroundShader = ResourceManager::Instance()->loadShader("src/shaders/background.vs", "src/shaders/background.fs");
+	irradianceShader = ResourceManager::Instance()->loadShader("src/shaders/cubemap.vs", "src/shaders/irradiance_convolution.fs");
 
 
 	//load HDR environment map 
@@ -262,6 +268,48 @@ Renderer::Renderer() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
 
+	////////////////////////////////////////////
+
+
+	glGenTextures(1, &irradMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, irradMap);
+	for (unsigned int i = 0; i < 6; i++) {
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+	//use convolution shader to generate the environment map {solving integral by convolution}
+	irradianceShader->use();
+	irradianceShader->setInt("environmentMap", 0);
+	irradianceShader->setMat4("projection", Settings::Instance()->projection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
+
+	glViewport(0, 0, 32, 32);
+	glBindFramebuffer(GL_FRAMEBUFFER, cubemapBuffer);
+
+	for (unsigned int i = 0; i < 6; i++) {
+		irradianceShader->setMat4("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradMap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		renderCube();
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
+
+
+	//store texture in resourcemanger 
+	ResourceManager::Instance()->storeTexture("irradianceMap", irradMap);
+
+
+	////////////////////////// main framebuffer code ///////////////////
 
 	//Initializes the G Buffer for MRT
 	//Create FBO

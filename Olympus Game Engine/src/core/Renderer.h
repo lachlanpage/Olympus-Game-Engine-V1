@@ -27,6 +27,8 @@ public:
 private:
 	unsigned int m_fbo;
 
+	void renderSkybox();
+
 	//shaders used for post-processing effects
 	Shader *shaderSSAO;
 	Shader *shaderSSAOBlur;
@@ -34,6 +36,7 @@ private:
 	Shader *crosshairShader;
 	Shader *cubemapShader;
 	Shader *backgroundShader;
+	Shader *irradianceShader;
 	std::vector<glm::vec3> ssaoNoise;
 	std::default_random_engine generator;
 	std::vector<glm::vec3> ssaoKernel;
@@ -74,6 +77,8 @@ private:
 	unsigned int eyePositionTexture;
 	unsigned int eyeNormalTexture;
 	unsigned int noiseTexture;
+
+	unsigned int irradMap;
 
 	unsigned int shadowDepthTexture;
 

@@ -101,9 +101,14 @@ void SphereGraphicsComponent::update(Entity& entity) {
 	m_shader->setFloat("m_metallic", m_metallic);
 	m_shader->setFloat("m_roughness", m_roughness);
 	m_shader->setVec3("camPos", Camera::Instance()->getPosition());
+
+
+	m_shader->setInt("irradianceMap", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE0, ResourceManager::Instance()->loadTexture("irradianceMap"));
+
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
-	std::cout << m_roughness << " Mmet: " << m_metallic << std::endl;
 	//sendToRenderer(GL_POINTS, 0, m_stacks*m_slices);
 }
 
