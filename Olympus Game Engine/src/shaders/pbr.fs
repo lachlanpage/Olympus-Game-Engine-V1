@@ -116,7 +116,7 @@ void main()
 	vec3 albedo = vec3(0.5,0.0,0.0);
 	float metallic = m_metallic; 
 	float roughness = m_roughness;
-	float ao = 0.5;
+	float ao = 1.0;
 
     //vec3 N = normalize(vs_normalData);
     //vec3 N = texture(texture_normal0, vs_textureCoordinates).rgb;

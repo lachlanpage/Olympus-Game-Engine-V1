@@ -105,7 +105,7 @@ void SphereGraphicsComponent::update(Entity& entity) {
 
 	m_shader->setInt("irradianceMap", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE0, ResourceManager::Instance()->loadTexture("irradianceMap"));
+	glBindTexture(GL_TEXTURE_CUBE_MAP, ResourceManager::Instance()->loadTexture("irradianceMap"));
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);

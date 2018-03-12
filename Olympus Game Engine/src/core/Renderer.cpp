@@ -35,7 +35,7 @@ void Renderer::renderSkybox() {
 	backgroundShader->setMat4("view", Camera::Instance()->getViewMatrix());
 	backgroundShader->setMat4("projection", Settings::Instance()->projection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, irradMap);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
 	glDepthFunc(GL_LEQUAL);
 	renderCube();
 }
@@ -297,7 +297,6 @@ Renderer::Renderer() {
 		irradianceShader->setMat4("view", captureViews[i]);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradMap, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		renderCube();
 	}
 
