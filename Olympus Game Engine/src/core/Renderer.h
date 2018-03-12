@@ -32,6 +32,8 @@ private:
 	Shader *shaderSSAOBlur;
 	Shader *shaderFinalPass;
 	Shader *crosshairShader;
+	Shader *cubemapShader;
+	Shader *backgroundShader;
 	std::vector<glm::vec3> ssaoNoise;
 	std::default_random_engine generator;
 	std::vector<glm::vec3> ssaoKernel;
@@ -44,6 +46,9 @@ private:
 
 	unsigned int cubeVAO = 0; 
 	unsigned int cubeVBO = 0;
+
+	unsigned int hdrTexture;
+	unsigned int cubemapEnvironment;
 
 	//normal, diffuse, position, tex
 	GLuint m_textures[4];
@@ -59,6 +64,7 @@ private:
 	GLuint shadowBuffer;
 	GLuint ssaoBuffer, ssaoBlurBuffer;
 	GLuint ssaoColorBuffer, ssaoColorBufferBlur;
+	GLuint cubemapBuffer;
 
 	unsigned int lightingTexture;
 	unsigned int colorTexture;

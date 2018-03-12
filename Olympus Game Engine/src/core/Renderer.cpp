@@ -23,6 +23,16 @@ void Renderer::start() {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glGenerateMipmap(GL_TEXTURE_2D);
+
+
+	//render skybox first --- hacky !!!!
+	backgroundShader->use();
+	backgroundShader->setMat4("view", Camera::Instance()->getViewMatrix());
+	backgroundShader->setMat4("projection", Settings::Instance()->projection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
+	glDepthFunc(GL_LEQUAL);
+	renderCube();
 }
 
 void Renderer::stop() {
@@ -199,6 +209,59 @@ Renderer::Renderer() {
 	shaderSSAOBlur = new Shader("src/shaders/ssao.vs", "src/shaders/ssao_blur.fs");
 	shaderFinalPass = ResourceManager::Instance()->loadShader("src/shaders/passthrough.vs", "src/shaders/simpleTexture.fs");
 	crosshairShader = ResourceManager::Instance()->loadShader("src/shaders/passthrough.vs", "src/shaders/crosshair.fs");
+
+	cubemapShader = ResourceManager::Instance()->loadShader("src/shaders/cubemap.vs", "src/shaders/cubemap.fs");
+	backgroundShader = ResourceManager::Instance()->loadShader("src/shaders/background.vs", "src/shaders/background.fs");
+
+
+	//load HDR environment map 
+	hdrTexture = ResourceManager::Instance()->loadTextureHDR("textures/ibl_hdr_radiance.png");
+
+	//setup cubemap and render to fbo & texture
+	glGenTextures(1, &cubemapEnvironment);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
+	for (unsigned int i = 0; i < 6; i++) {
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//projection and view matrices for 6 cubemap directions 
+	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 captureViews[] =
+	{
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+	};
+
+	//convert HDR equirectangular to cubemap
+	cubemapShader->use();
+	cubemapShader->setInt("equirectangularMap", 0);
+	cubemapShader->setMat4("projection", captureProjection);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, hdrTexture);
+
+	glViewport(0, 0, 512, 512);
+	glGenFramebuffers(1, &cubemapBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, cubemapBuffer);
+	for (unsigned int i = 0; i < 6; i++) {
+		cubemapShader->setMat4("view", captureViews[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, cubemapEnvironment, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		renderCube();
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
+
 
 	//Initializes the G Buffer for MRT
 	//Create FBO
@@ -385,9 +448,17 @@ Renderer::Renderer() {
 }
 
 void Renderer::Flush() {
+	//render skybox and then final quad shader
+	
+
 	shaderFinalPass->use();
 	updateQuadShader(shaderFinalPass);
 	renderQuad();
+
+
+	
+
+	
 
 }
 
@@ -481,8 +552,8 @@ void Renderer::renderCube() {
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 		}
-		// render Cube
-		glBindVertexArray(cubeVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
+	// render Cube
+	glBindVertexArray(cubeVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
 }
