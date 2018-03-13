@@ -226,7 +226,7 @@ Renderer::Renderer() {
 
 
 	//load HDR environment map 
-	hdrTexture = ResourceManager::Instance()->loadTextureHDR("textures/ibl_hdr_radiance.png");
+	hdrTexture = ResourceManager::Instance()->loadTextureHDR("textures/nature_hdr.jpg");
 
 	//setup cubemap and render to fbo & texture
 	glGenTextures(1, &cubemapEnvironment);
@@ -301,7 +301,7 @@ Renderer::Renderer() {
 	//use convolution shader to generate the environment map {solving integral by convolution}
 	irradianceShader->use();
 	irradianceShader->setInt("environmentMap", 0);
-	irradianceShader->setMat4("projection", Settings::Instance()->projection);
+	irradianceShader->setMat4("projection", captureProjection);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
 
@@ -342,7 +342,7 @@ Renderer::Renderer() {
 	///////// monte-carlo simulation on env lighting to generate a prefilter cube map
 	prefilterShader->use();
 	prefilterShader->setInt("environmentMap", 0);
-	prefilterShader->setMat4("projection", Settings::Instance()->projection);
+	prefilterShader->setMat4("projection", captureProjection);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapEnvironment);
 
