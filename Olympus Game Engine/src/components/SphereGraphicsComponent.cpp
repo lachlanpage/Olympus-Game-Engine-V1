@@ -90,8 +90,22 @@ SphereGraphicsComponent::SphereGraphicsComponent(float metallic, float roughness
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
 
-	}
+
+	//set required pbr textures for IBL 
+	irradianceMap = ResourceManager::Instance()->loadTexture("irradianceMap");
+	prefilterMap = ResourceManager::Instance()->loadTexture("prefilterMap");
+	brdfMap = ResourceManager::Instance()->loadTexture("brdfTexture");
+}
+
 void SphereGraphicsComponent::update(Entity& entity) {
+
+	glm::vec3 lightPositions[] = {
+		glm::vec3(-10.0f,  10.0f, 10.0f),
+		glm::vec3(10.0f,  10.0f, 10.0f),
+		glm::vec3(-10.0f, -10.0f, 10.0f),
+		glm::vec3(10.0f, -10.0f, 10.0f),
+	};
+
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
@@ -102,22 +116,27 @@ void SphereGraphicsComponent::update(Entity& entity) {
 	m_shader->setFloat("m_roughness", m_roughness);
 	m_shader->setVec3("camPos", Camera::Instance()->getPosition());
 
+	m_shader->setVec3("lightPositions[0]", lightPositions[0]);
+	m_shader->setVec3("lightPositions[1]", lightPositions[1]);
+	m_shader->setVec3("lightPositions[2]", lightPositions[2]);
+	m_shader->setVec3("lightPositions[3]", lightPositions[3]);
+
 
 	m_shader->setInt("irradianceMap", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, ResourceManager::Instance()->loadTexture("irradianceMap"));
+	glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
 
 	m_shader->setInt("prefilterMap", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, ResourceManager::Instance()->loadTexture("prefilterMap"));
+	glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
 
 	m_shader->setInt("brdfLUT", 2);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, ResourceManager::Instance()->loadTexture("brdfTexture"));
+	glBindTexture(GL_TEXTURE_2D, brdfMap);
+	
 
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
-	//sendToRenderer(GL_POINTS, 0, m_stacks*m_slices);
 }
 
 void SphereGraphicsComponent::renderShadow(Entity& entity){}

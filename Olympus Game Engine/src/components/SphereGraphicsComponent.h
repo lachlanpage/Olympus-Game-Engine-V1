@@ -25,6 +25,12 @@ private:
 	std::vector<unsigned int> indices;
 	unsigned int indexCount;
 
+	//required pbr textures for IBL 
+	unsigned int irradianceMap; 
+	unsigned int prefilterMap;
+	unsigned int brdfMap;
+
+
 	float m_roughness;
 	float m_metallic;
 
