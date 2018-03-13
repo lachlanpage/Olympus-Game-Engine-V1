@@ -87,6 +87,14 @@ private:
 
 	unsigned int shadowDepthTexture;
 
+	//pbr textures 
+	unsigned int albedoTexture; 
+	unsigned int metallicTexture;
+	unsigned int roughnessTexture; 
+	unsigned int aoTexture;
+	unsigned int metallicRoughnessAOTexture;
+
+
 	unsigned int texture, texture2;
 
 	enum GBUFFER_TEXTURE_TYPE {

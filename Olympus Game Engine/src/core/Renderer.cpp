@@ -202,6 +202,15 @@ void Renderer::updateQuadShader(Shader* shader) {
 	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
 
+	shader->setInt("albedoTexture", 8); 
+	glActiveTexture(GL_TEXTURE8);
+	glBindTexture(GL_TEXTURE_2D, albedoTexture);
+
+	shader->setInt("metallicRoughnessAO", 9);
+	glActiveTexture(GL_TEXTURE9);
+	glBindTexture(GL_TEXTURE_2D, metallicRoughnessAOTexture);
+
+
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 
 	shader->setFloat("exposure", Settings::Instance()->exposure);
@@ -461,6 +470,26 @@ Renderer::Renderer() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D,eyePositionTexture, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+
+	//PBR output textures 
+	// normal txture
+	glGenTextures(1, &albedoTexture);
+	glBindTexture(GL_TEXTURE_2D, albedoTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, albedoTexture, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glGenTextures(1, &metallicRoughnessAOTexture);
+	glBindTexture(GL_TEXTURE_2D, metallicRoughnessAOTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT7, GL_TEXTURE_2D, metallicRoughnessAOTexture, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
 	//Depth buffer for framebuffer
 	glGenRenderbuffers(1, &renderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
@@ -470,8 +499,8 @@ Renderer::Renderer() {
 
 
 	//attach texture and depth buffer to framebuffer
-	GLuint attachments[7] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6 };
-	glDrawBuffers(7, attachments);
+	GLuint attachments[8] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 , GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7};
+	glDrawBuffers(8, attachments);
 	glEnable(GL_DEPTH_TEST);
 
 	//check for errors 
