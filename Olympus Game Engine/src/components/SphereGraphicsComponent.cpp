@@ -107,6 +107,14 @@ void SphereGraphicsComponent::update(Entity& entity) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, ResourceManager::Instance()->loadTexture("irradianceMap"));
 
+	m_shader->setInt("prefilterMap", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, ResourceManager::Instance()->loadTexture("prefilterMap"));
+
+	m_shader->setInt("brdfLUT", 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, ResourceManager::Instance()->loadTexture("brdfTexture"));
+
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
 	//sendToRenderer(GL_POINTS, 0, m_stacks*m_slices);
