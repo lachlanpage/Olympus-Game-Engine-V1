@@ -56,6 +56,9 @@ uniform float ao2;
 
 uniform samplerCube irradianceMap;
 
+uniform samplerCube prefilterMap;
+uniform sampler2D   brdfLUT;  
+
 // lights
 
 uniform vec3 camPos;
@@ -124,6 +127,9 @@ void main()
 	//N = N * 2.0 - 1.0; 
 	//N = normalize(N);
 	vec3 V = normalize(camPos - vs_pos);
+
+	vec3 R = reflect(V, N);
+
 	vec3 lightPosition = vec3(5.0,10.0,2.0);
 	vec3 lightColor = vec3(300.0,300.0,300.0);
 
@@ -147,7 +153,7 @@ void main()
     vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
            
     vec3 nominator    = NDF * G * F; 
-    float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+    float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
     vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or NdotL=0.0
         
     // kS is equal to Fresnel
@@ -173,12 +179,22 @@ void main()
 	
 
 	//ambient lighting use IBL as ambient term 
-	vec3 ks = fresnelSchlickRoughness(max(dot(N,V), 0.0), F0, roughness);
+	vec3 F2 = fresnelSchlickRoughness(max(dot(N,V), 0.0), F0, roughness);
+	vec3 ks = F2;
 	vec3 kd = 1.0 - ks; 
 	kd *= 1.0 - metallic; 
 	vec3 irradiance = texture(irradianceMap, N).rgb;
 	vec3 diffuse = irradiance * albedo; 
-	vec3 ambient = (kd * diffuse)*ao;
+
+	//calculate specular IBL 
+	const float MAX_REFLECTION_LOD = 4.0; 
+	vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb; 
+	vec2 brdf = texture(brdfLUT, vec2(max(dot(N,V), 0.0), roughness)).rg; 
+	vec3 specular2 = prefilteredColor * (F2 * brdf.x + brdf.y);
+
+	vec3 ambient = (kd * diffuse + specular2) * ao;
+
+	//vec3 ambient = (kd * diffuse)*ao;
 
     vec3 color = ambient + Lo;
 
