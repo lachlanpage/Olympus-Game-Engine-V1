@@ -13,6 +13,9 @@ uniform sampler2D shadowTexture;
 uniform sampler2D specularTexture;
 uniform sampler2D ssaoTexture;
 uniform sampler2D ssaoTextureBlur;
+uniform sampler2D albedoTexture; 
+uniform sampler2D metallicRoughnessAO; 
+
 
 uniform float textureSelector;
 
@@ -40,7 +43,8 @@ void main(){
 		//ambient line 
 		float ambientOcclusion = texture(ssaoTexture, UV).r; 
 		//vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
-		vec4 hdrCol = texture(lightTexture, UV) + 0.3*ambientOcclusion*texture(colorTexture, UV);
+		//vec4 hdrCol = texture(lightTexture, UV);// + 0.3*ambientOcclusion*texture(colorTexture, UV);
+		vec4 hdrCol = texture(lightTexture, UV) + 0.5*texture(colorTexture, UV);
 		//exposure tone mapping
 		vec3 mapped = (vec4(1.0,1.0,1.0,1.0) - exp(-hdrCol * exposure)).rgb;
 		mapped = pow(mapped, vec3(1.0 / gamma));
@@ -140,6 +144,14 @@ void main(){
 
 	if(textureSelector == 9){
 		color = texture(ssaoTextureBlur, UV);
+	}
+
+	if(textureSelector == 10){
+		color = texture(albedoTexture, UV);
+	}
+
+	if(textureSelector == 11){
+		color = texture(metallicRoughnessAO, UV);
 	}
 
 

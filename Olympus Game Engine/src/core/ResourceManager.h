@@ -14,7 +14,10 @@ public:
 	static ResourceManager* m_Instance;
 	static ResourceManager* Instance();
 
+	void storeTexture(std::string filename,  unsigned int texture);
+
 	unsigned int loadTexture(std::string);
+	unsigned int loadTextureHDR(std::string);
 	Shader* loadShader(std::string, std::string);
 
 	void printTextures();

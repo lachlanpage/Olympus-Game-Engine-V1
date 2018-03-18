@@ -142,6 +142,7 @@
     <ClCompile Include="src\components\SphereGraphicsComponent.cpp" />
     <ClCompile Include="src\core\Entity.cpp" />
     <ClCompile Include="src\core\EntityManager.cpp" />
+    <ClCompile Include="src\core\FPSCamera.cpp" />
     <ClCompile Include="src\core\GUIManager.cpp" />
     <ClCompile Include="src\core\Mouse.cpp" />
     <ClCompile Include="src\core\PhysicsEngine.cpp" />
@@ -157,7 +158,6 @@
     <ClCompile Include="src\scene.cpp" />
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\utilities\Camera.cpp" />
-    <ClCompile Include="src\utilities\GLDebugDrawer.cpp" />
     <ClCompile Include="src\utilities\Logger.cpp" />
     <ClCompile Include="src\utilities\MessageBus.cpp" />
     <ClCompile Include="src\utilities\ScriptManager.cpp" />
@@ -184,6 +184,7 @@
     <ClInclude Include="src\components\SphereGraphicsComponent.h" />
     <ClInclude Include="src\core\Entity.h" />
     <ClInclude Include="src\core\EntityManager.h" />
+    <ClInclude Include="src\core\FPSCamera.h" />
     <ClInclude Include="src\core\GUIManager.h" />
     <ClInclude Include="src\core\Mouse.h" />
     <ClInclude Include="src\core\PhysicsEngine.h" />
@@ -194,7 +195,6 @@
     <ClInclude Include="src\tiny_obj_loader.h" />
     <ClInclude Include="src\utilities\BusNode.h" />
     <ClInclude Include="src\utilities\Camera.h" />
-    <ClInclude Include="src\utilities\GLDebugDrawer.h" />
     <ClInclude Include="src\utilities\Logger.h" />
     <ClInclude Include="src\utilities\Message.h" />
     <ClInclude Include="src\utilities\MessageBus.h" />
@@ -208,6 +208,8 @@
     <None Include="src\scripts\test.lua" />
     <None Include="src\shaders\basic.fs" />
     <None Include="src\shaders\basic.vs" />
+    <None Include="src\shaders\billboard.fs" />
+    <None Include="src\shaders\billboard.vs" />
     <None Include="src\shaders\crosshair.fs" />
     <None Include="src\shaders\cube.fs" />
     <None Include="src\shaders\cube.vs" />

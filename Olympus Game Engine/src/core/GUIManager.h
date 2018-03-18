@@ -31,6 +31,7 @@ public:
 	void setEntityManager(EntityManager*);
 	void setDirectionalLightEditor(DirectionalLightComponent*);
 	void setPointLightEditor(LightComponent*);
+	void setCubeGraphics(CubeGraphicsComponent*);
 
 	void setParticleEditor(ParticleGenerator*);
 	void renderParticleEditor(bool);
@@ -40,6 +41,7 @@ public:
 	void renderSceneGraph(bool);
 	void renderDirectionalLightEditor(bool);
 	void renderPointLightEditor(bool);
+	void renderCubeGraphics(bool);
 
 	void render();
 private:
@@ -50,6 +52,8 @@ private:
 	void generateSceneGraph();
 	void generateDirectionalLightGUI();
 	void generatePointLightGUI();
+	void generateCubeGraphicsEditor();
+
 
 	SDL_Window* m_window;
 	bool m_renderEntityEditor;
@@ -58,6 +62,7 @@ private:
 	bool m_renderDirectionalLight;
 	bool m_renderPointLight;
 	bool m_renderParticleEditor;
+	bool m_renderCubeGraphicsEditor;
 
 	//keeping track of what scene graph entities to display 
 	bool scenegraph_showLights;
@@ -68,6 +73,7 @@ private:
 	DirectionalLightComponent* m_directionalLight;
 	LightComponent* m_pointLight;
 	ParticleGenerator* m_particleEditor;
+	CubeGraphicsComponent* cubeGraphics;
 
 	GUIManager(SDL_Window*);
 	static GUIManager* m_Instance;

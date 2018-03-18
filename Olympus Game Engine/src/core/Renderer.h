@@ -27,18 +27,33 @@ public:
 private:
 	unsigned int m_fbo;
 
+	void renderSkybox();
+
 	//shaders used for post-processing effects
 	Shader *shaderSSAO;
 	Shader *shaderSSAOBlur;
 	Shader *shaderFinalPass;
+	Shader *crosshairShader;
+	Shader *cubemapShader;
+	Shader *backgroundShader;
+	Shader *irradianceShader;
+	Shader *prefilterShader;
+	Shader *brdfShader;
 	std::vector<glm::vec3> ssaoNoise;
 	std::default_random_engine generator;
 	std::vector<glm::vec3> ssaoKernel;
 
 	Renderer();
 	void renderQuad();
+	void renderCube();
 	unsigned int quadVAO = 0; 
 	unsigned int quadVBO;
+
+	unsigned int cubeVAO = 0; 
+	unsigned int cubeVBO = 0;
+
+	unsigned int hdrTexture;
+	unsigned int cubemapEnvironment;
 
 	//normal, diffuse, position, tex
 	GLuint m_textures[4];
@@ -54,6 +69,7 @@ private:
 	GLuint shadowBuffer;
 	GLuint ssaoBuffer, ssaoBlurBuffer;
 	GLuint ssaoColorBuffer, ssaoColorBufferBlur;
+	GLuint cubemapBuffer, cubemapRenderBuffer;
 
 	unsigned int lightingTexture;
 	unsigned int colorTexture;
@@ -64,7 +80,20 @@ private:
 	unsigned int eyeNormalTexture;
 	unsigned int noiseTexture;
 
+	unsigned int brdfTexture;
+
+	unsigned int irradMap;
+	unsigned int prefilterMap;
+
 	unsigned int shadowDepthTexture;
+
+	//pbr textures 
+	unsigned int albedoTexture; 
+	unsigned int metallicTexture;
+	unsigned int roughnessTexture; 
+	unsigned int aoTexture;
+	unsigned int metallicRoughnessAOTexture;
+
 
 	unsigned int texture, texture2;
 

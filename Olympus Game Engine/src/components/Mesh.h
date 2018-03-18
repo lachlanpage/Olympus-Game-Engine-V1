@@ -35,6 +35,9 @@ public:
 	std::vector<unsigned int> specularTextures;
 	std::vector<unsigned int> normalTextures;
 	std::vector<unsigned int> displacementTextures;
+	std::vector<unsigned int> aoTextures;
+	std::vector<unsigned int> metallicTextures;
+	std::vector<unsigned int> roughnessTextures;
 	int id;
 	int isSelected;
 
@@ -54,6 +57,18 @@ public:
 		this->specularTextures = specularTex;
 		this->normalTextures = normalTex;
 		this->displacementTextures = dispTex;
+	}
+
+
+	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<unsigned int> base, std::vector<unsigned int> disp, std::vector<unsigned int> ao, std::vector<unsigned int> metallic, std::vector<unsigned int> normal, std::vector<unsigned int> roughness) {
+		this->vertices = vertices; 
+		this->indices = indices;
+		this->diffuseTextures = base;
+		this->displacementTextures= disp; 
+		this->aoTextures = ao; 
+		this->metallicTextures = metallic;
+		this->normalTextures = normal;
+		this->roughnessTextures = roughness;
 		this->id = id;
 		isSelected = 0;
 		setupMesh();
@@ -68,11 +83,41 @@ public:
 		shader->setVec3("viewPos", Camera::Instance()->getPosition());
 		if (diffuseTextures.size() > 0) {
 			glActiveTexture(GL_TEXTURE0);
-			shader->setInt("texture_diffuse0", 0);
+			shader->setInt("texture_diffuse", 0);
 			glBindTexture(GL_TEXTURE_2D, diffuseTextures.at(0));
 		}
 
+		if (displacementTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE1);
+			shader->setInt("texture_displacement", 1);
+			glBindTexture(GL_TEXTURE_2D, displacementTextures.at(0));
+		}
 
+		if (aoTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE2);
+			shader->setInt("texture_ao", 2);
+			glBindTexture(GL_TEXTURE_2D, aoTextures.at(0));
+		}
+
+		if (metallicTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE3);
+			shader->setInt("texture_metallic", 3);
+			glBindTexture(GL_TEXTURE_2D, metallicTextures.at(0));
+		}
+
+		if (normalTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE4);
+			shader->setInt("texture_normal", 4);
+			glBindTexture(GL_TEXTURE_2D, normalTextures.at(0));
+		}
+
+		if (roughnessTextures.size() > 0) {
+			glActiveTexture(GL_TEXTURE5);
+			shader->setInt("texture_roughness", 5);
+			glBindTexture(GL_TEXTURE_2D, roughnessTextures.at(0));
+		}
+
+		/*
 		if (specularTextures.size() > 0) {
 			glActiveTexture(GL_TEXTURE1);
 			shader->setInt("texture_specular0", 1);
@@ -99,6 +144,7 @@ public:
 		else {
 			shader->setInt("displacementMapPresent", 0);
 		}
+		*/
 		/*
 		for (unsigned int i = 0; i < diffuseTextures.size(); i++) {
 			glActiveTexture(GL_TEXTURE0 + totalTextureCount);
@@ -173,6 +219,8 @@ public:
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
+
 
 		// always good practice to set everything back to defaults once configured.
 		//glActiveTexture(GL_TEXTURE0);

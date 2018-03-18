@@ -218,6 +218,152 @@ void GUIManager::generateEntityEditor() {
 	ImGui::End();
 }
 
+void GUIManager::setCubeGraphics(CubeGraphicsComponent* comp) {
+	cubeGraphics = comp;
+}
+
+void GUIManager::renderCubeGraphics(bool val) {
+	m_renderCubeGraphicsEditor = val;
+}
+
+void GUIManager::generateCubeGraphicsEditor() {
+	ImGui::Begin("Cube Editor");
+	if (ImGui::CollapsingHeader("Textures")) {
+		ImGui::Text("Albedo");
+		ImGui::PushID(100);
+		if (ImGui::ImageButton((void*)cubeGraphics->getAlbedoTexture(), ImVec2(100, 100))) {
+			TCHAR*DefaultExtension = 0;
+			TCHAR*FileName = new TCHAR[MAX_PATH];
+			TCHAR*Filter = 0;
+			int FilterIndex = 0;
+			int Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+			TCHAR*InitialDir = 0;
+			HWND Owner = 0;
+			TCHAR*Title = 0;
+
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = Owner;
+
+			ofn.lpstrDefExt = DefaultExtension;
+			ofn.lpstrFile = FileName;
+			ofn.lpstrFile[0] = '\0';
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = Filter;
+			ofn.nFilterIndex = FilterIndex;
+			ofn.lpstrInitialDir = InitialDir;
+			ofn.lpstrTitle = Title;
+			ofn.Flags = Flags;
+
+			GetOpenFileName(&ofn);
+			//need to fix this hacky way and figure out how to use relative paths
+			std::string filename = FileName;
+			if (filename.size() != 0) {
+				std::string textureFile = filename.substr(77);
+				textureFile[8] = '/';
+				cubeGraphics->setAlbedoTexture(textureFile);
+			}
+		}
+		ImGui::PopID();
+		ImGui::TextColored(ImVec4(1, 0, 0, 1), cubeGraphics->getAlbedoTextureFilename().c_str());
+
+	}
+
+	ImGui::End();
+
+	/*
+
+	if (ImGui::CollapsingHeader("Textures")) {
+		ImGui::Text("Albedo");
+		ImGui::PushID(100);
+		if (ImGui::ImageButton((void*)cubeGraphics->getAlbedoTexture(), ImVec2(100, 100))) {
+			TCHAR*DefaultExtension = 0;
+			TCHAR*FileName = new TCHAR[MAX_PATH];
+			TCHAR*Filter = 0;
+			int FilterIndex = 0;
+			int Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+			TCHAR*InitialDir = 0;
+			HWND Owner = 0;
+			TCHAR*Title = 0;
+
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = Owner;
+
+			ofn.lpstrDefExt = DefaultExtension;
+			ofn.lpstrFile = FileName;
+			ofn.lpstrFile[0] = '\0';
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = Filter;
+			ofn.nFilterIndex = FilterIndex;
+			ofn.lpstrInitialDir = InitialDir;
+			ofn.lpstrTitle = Title;
+			ofn.Flags = Flags;
+
+			GetOpenFileName(&ofn);
+			//need to fix this hacky way and figure out how to use relative paths
+			std::string filename = FileName;
+			if (filename.size() != 0) {
+				std::string textureFile = filename.substr(77);
+				textureFile[8] = '/';
+				cubeGraphics->setAlbedoTexture(textureFile);
+			}
+		}
+		ImGui::PopID();
+		ImGui::TextColored(ImVec4(1, 0, 0, 1), cubeGraphics->getAlbedoTextureFilename().c_str());
+
+		ImGui::NewLine();
+
+		ImGui::Text("Specular");
+		ImGui::PushID(101);
+		if (ImGui::ImageButton((void*)cubeGraphics->getSpecularTexture(), ImVec2(100, 100))) {
+			TCHAR*DefaultExtension = 0;
+			TCHAR*FileName = new TCHAR[MAX_PATH];
+			TCHAR*Filter = 0;
+			int FilterIndex = 0;
+			int Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+			TCHAR*InitialDir = 0;
+			HWND Owner = 0;
+			TCHAR*Title = 0;
+
+			OPENFILENAME ofn;
+			ZeroMemory(&ofn, sizeof(ofn));
+
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = Owner;
+
+			ofn.lpstrDefExt = DefaultExtension;
+			ofn.lpstrFile = FileName;
+			ofn.lpstrFile[0] = '\0';
+			ofn.nMaxFile = MAX_PATH;
+			ofn.lpstrFilter = Filter;
+			ofn.nFilterIndex = FilterIndex;
+			ofn.lpstrInitialDir = InitialDir;
+			ofn.lpstrTitle = Title;
+			ofn.Flags = Flags;
+
+			GetOpenFileName(&ofn);
+			//need to fix this hacky way and figure out how to use relative paths
+			std::string filename = FileName;
+			if (filename.size() != 0) {
+				std::string textureFile = filename.substr(77);
+				textureFile[8] = '/';
+
+				cubeGraphics->setSpecularTexture(textureFile);
+			}
+		}
+		ImGui::PopID();
+		ImGui::TextColored(ImVec4(1, 0, 0, 1), cubeGraphics->getSpecularTextureFilename().c_str());
+
+		ImGui::NewLine();
+
+		*/
+}
+
 
 void GUIManager::renderParticleEditor(bool flag) {
 	m_renderParticleEditor = flag;
@@ -296,6 +442,8 @@ void GUIManager::generateSceneGraph() {
 					//stuff specific to cube graphics component
 					setEntityEditor(entity);
 					renderEntityEditor(true);
+					setCubeGraphics(entityCubeGraphicsComponent);
+					renderCubeGraphics(true);
 					entity->is_selected = true;
 					ImGui::TreePop();
 				}
@@ -398,6 +546,8 @@ void GUIManager::generateSettingsGUI() {
 		ImGui::RadioButton("SSAO Blurred", &Settings::Instance()->m_textureSelector, 8);
 		ImGui::RadioButton("SSAO", &Settings::Instance()->m_textureSelector, 9);
 		ImGui::RadioButton("Combined", &Settings::Instance()->m_textureSelector, 5);
+		ImGui::RadioButton("Albedo Texture", &Settings::Instance()->m_textureSelector, 10);
+		ImGui::RadioButton("Metallic/Roughness/AO", &Settings::Instance()->m_textureSelector, 11);
 
 	}
 
@@ -483,6 +633,10 @@ void GUIManager::render() {
 
 	if (m_renderParticleEditor) {
 		generateParticleEditor();
+	}
+
+	if (m_renderCubeGraphicsEditor) {
+		generateCubeGraphicsEditor();
 	}
 
 	ImGui::Render();
