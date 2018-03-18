@@ -55,6 +55,7 @@ float height_scale = 0.1;
 
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 {
+	//steep parallax mapping implementation
 	int minLayers = 8;
 	int maxLayers = 32;
 	float numLayers = mix(maxLayers, minLayers, abs(dot(vec3(0.0,0.0,1.0), viewDir)));
@@ -75,7 +76,6 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 		currentLayerDepth += layerDepth;
 	}
 
-
 	vec2 prevTexCoords = currentTexCoords + deltaTexCoords;
 
 	float afterDepth = currentDepthMapValue - currentLayerDepth;
@@ -88,6 +88,7 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 
 
 vec2 ParallaxMappingBasic(vec2 texCoords, vec3 viewDir){
+	//simple and basic parallax mapping implementation
 	float height =  texture(texture_displacement0, texCoords).r;    
 	vec2 p = viewDir.xy / viewDir.z * (height * height_scale);
 	return texCoords - p; 
@@ -104,8 +105,6 @@ void main()
 		}
 	}
 
-
-	//replace coordinates with TexCoords to get back to non parralax mapping
     FragColor = texture(texture_diffuse0, coordinates);
 
 	specularData = texture(texture_specular0, coordinates);

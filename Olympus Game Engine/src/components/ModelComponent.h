@@ -22,6 +22,11 @@ private:
 	Model *ourModel;
 	Shader *m_shader;
 	Shader *m_shadowShader;
+
+	//required pbr textures for IBL 
+	unsigned int irradianceMap;
+	unsigned int prefilterMap;
+	unsigned int brdfMap;
 };
 
 #endif

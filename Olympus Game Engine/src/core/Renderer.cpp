@@ -62,6 +62,10 @@ void Renderer::getBufferTextures(Shader *shader) {
 	shader->setInt("shadowTexture", 3);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, shadowDepthTexture);
+
+	shader->setInt("metallicRoughnessAoOut", 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, metallicRoughnessAOTexture);
 }
 
 void Renderer::updateLightShader(Shader* shader) {
@@ -614,17 +618,9 @@ Renderer::Renderer() {
 
 void Renderer::Flush() {
 	//render skybox and then final quad shader
-	
-
 	shaderFinalPass->use();
 	updateQuadShader(shaderFinalPass);
 	renderQuad();
-
-
-	
-
-	
-
 }
 
 void Renderer::renderQuad() {

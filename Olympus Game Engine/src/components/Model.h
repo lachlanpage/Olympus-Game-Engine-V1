@@ -47,7 +47,7 @@ private:
 		mesh_id = 0;
 		// read file via ASSIMP
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace |aiProcess_GenNormals );
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace |aiProcess_GenNormals);
 		//error checking {if root node and scene are null then we got problems}
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 			std::cout << "ASSIMP:: ERROR" << std::endl;
@@ -103,7 +103,6 @@ private:
 				// use models where a vertex can have multiple texture coordinates so we always take the first set (0).
 				vec.x = mesh->mTextureCoords[0][i].x;
 				vec.y = mesh->mTextureCoords[0][i].y;
-				//std::cout << vec.x << " " << vec.y << std::endl;
 
 				vertex.TexCoords = vec;
 			}
@@ -134,12 +133,45 @@ private:
 		// process materials
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		std::vector<unsigned int> diffuseTextures = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		std::vector<unsigned int> specularTextures = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		std::vector<unsigned int> normalTextures = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-		std::vector<unsigned int> displacementTextures = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_displacement");
+		//std::vector<unsigned int> diffuseTextures = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		//std::vector<unsigned int> specularTextures = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		//std::vector<unsigned int> normalTextures = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+		//std::vector<unsigned int> displacementTextures = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_displacement");
+		//std::vector<unsigned int> textu = loadMaterialTextures(material, aiTextureType_EMISSIVE, "map_ab");
 
-		return Mesh(vertices, indices, diffuseTextures, specularTextures, normalTextures, displacementTextures, mesh_id);
+		std::vector<unsigned int> baseColour = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		std::vector<unsigned int> displacementMap = loadMaterialTextures(material, aiTextureType_OPACITY, "texture_displacement");
+		std::vector<unsigned int> aoMap = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ao");
+		std::vector<unsigned int> metallicMap = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_metallic");
+		std::vector<unsigned int> normalMap = loadMaterialTextures(material, aiTextureType_HEIGHT,  "texture_normal");
+		std::vector<unsigned int> roughnessMap = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_roughness");
+
+		//diffuse texture = 
+		//specular texture = 
+		//normal texture = normal map 
+		
+		//opacity: map_d 
+		//diffuse: map_Kd
+		//ambient: map_Ka
+		//specular: map_Ks
+		//height (normal): map_bump
+		//shininess: map_Ns 
+
+
+		//opacity: map_d -> heightmap/displacement map 
+		//diffuse: map_Kd -> basecolor
+		//ambient: map_ka -> ao 
+		//specular: map_ks -> metallic 
+		//height: map_bump -> normal 
+		//shininess: map_ns -> roughness 
+
+		//albedo 
+		//metallicness
+		//roughness
+		//ao 
+		//normal 
+		return Mesh(vertices, indices, baseColour, displacementMap, aoMap, metallicMap, normalMap, roughnessMap);
+		//return Mesh(vertices, indices, diffuseTextures, specularTextures, normalTextures, displacementTextures, mesh_id);
 	}
 
 

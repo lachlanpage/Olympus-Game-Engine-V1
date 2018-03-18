@@ -43,7 +43,8 @@ void main(){
 		//ambient line 
 		float ambientOcclusion = texture(ssaoTexture, UV).r; 
 		//vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
-		vec4 hdrCol = texture(lightTexture, UV) + 0.3*ambientOcclusion*texture(colorTexture, UV);
+		//vec4 hdrCol = texture(lightTexture, UV);// + 0.3*ambientOcclusion*texture(colorTexture, UV);
+		vec4 hdrCol = texture(lightTexture, UV) + 0.5*texture(colorTexture, UV);
 		//exposure tone mapping
 		vec3 mapped = (vec4(1.0,1.0,1.0,1.0) - exp(-hdrCol * exposure)).rgb;
 		mapped = pow(mapped, vec3(1.0 / gamma));
