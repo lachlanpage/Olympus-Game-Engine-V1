@@ -28,6 +28,50 @@ void Renderer::start() {
 	renderSkybox();
 }
 
+void Renderer::SSR() {
+	//screen space reflections pass
+	ssrShader->use();
+	ssrShader->setInt("gFinalImage", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,colorTexture);
+
+	ssrShader->setInt("gNormal", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, normalTexture);
+
+	ssrShader->setInt("gPosition", 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, positionTexture);
+
+	ssrShader->setInt("gMetallicRoughnessAO", 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, metallicRoughnessAOTexture);
+
+	ssrShader->setInt("gSpecular", 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
+
+	ssrShader->setInt("gDepth", 5);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, gbufferDepthTexture);
+
+	ssrShader->setMat4("projection", Settings::Instance()->projection);
+	ssrShader->setMat4("invProjection", glm::inverse(Settings::Instance()->projection));
+	ssrShader->setMat4("view", Camera::Instance()->getViewMatrix());
+	ssrShader->setMat4("invView", glm::inverse(Camera::Instance()->getViewMatrix()));
+	
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, ssrBuffer);
+	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	renderQuad();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	
+
+	
+}
+
 
 void Renderer::renderSkybox() {
 	//render skybox first --- hacky !!!!
@@ -180,7 +224,7 @@ void Renderer::updateQuadShader(Shader* shader) {
 
 	shader->setInt("normalTexture", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, normalTexture);
+	glBindTexture(GL_TEXTURE_2D, ssrTexture);
 
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);
@@ -214,6 +258,10 @@ void Renderer::updateQuadShader(Shader* shader) {
 	glActiveTexture(GL_TEXTURE9);
 	glBindTexture(GL_TEXTURE_2D, metallicRoughnessAOTexture);
 
+	shader->setInt("reflectionTexture", 10); 
+	glActiveTexture(GL_TEXTURE10);
+	glBindTexture(GL_TEXTURE_2D, ssrTexture);
+
 
 	shader->setVec3("cameraPosition", Camera::Instance()->getPosition());
 
@@ -237,6 +285,12 @@ Renderer::Renderer() {
 
 	brdfShader = ResourceManager::Instance()->loadShader("src/shaders/brdf.vs", "src/shaders/brdf.fs");
 
+	ssrShader = ResourceManager::Instance()->loadShader("src/shaders/ssr.vs", "src/shaders/ssr.fs");
+
+	finalRenderShader = ResourceManager::Instance()->loadShader("src/shaders/passthrough.vs", "src/shaders/finalRender.fs");
+
+	//stop upon initial run from prev frame being undefined 
+	previousFrame = 0;
 
 	//load HDR environment map 
 	hdrTexture = ResourceManager::Instance()->loadTextureHDR("textures/nature_hdr.jpg");
@@ -493,13 +547,23 @@ Renderer::Renderer() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT7, GL_TEXTURE_2D, metallicRoughnessAOTexture, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glGenTextures(1, &gbufferDepthTexture);
+	glBindTexture(GL_TEXTURE_2D, gbufferDepthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, gbufferDepthTexture, 0);
+
 
 	//Depth buffer for framebuffer
-	glGenRenderbuffers(1, &renderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, Settings::Instance()->window_width, Settings::Instance()->window_height);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER, renderbuffer);
+	//glGenRenderbuffers(1, &renderbuffer);
+	//glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, Settings::Instance()->window_width, Settings::Instance()->window_height);
+	//glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER, renderbuffer);
 
 
 	//attach texture and depth buffer to framebuffer
@@ -612,15 +676,54 @@ Renderer::Renderer() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+
+	//Screen space reflections buffer and texture generation  
+	glGenFramebuffers(1, &ssrBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, ssrBuffer);
+	glGenTextures(1, &ssrTexture);
+	glBindTexture(GL_TEXTURE_2D, ssrTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssrTexture, 0);
+	
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+	//Screen space reflections buffer and texture generation  
+	glGenFramebuffers(1, &finalRenderBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, finalRenderBuffer);
+	glGenTextures(1, &finalRenderTexture);
+	glBindTexture(GL_TEXTURE_2D, finalRenderTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::Instance()->window_width, Settings::Instance()->window_height, 0, GL_RGBA, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, finalRenderTexture, 0);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
 
 }
 
 void Renderer::Flush() {
 	//render skybox and then final quad shader
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, finalRenderBuffer);
+	glViewport(0, 0, Settings::Instance()->window_width, Settings::Instance()->window_height);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderFinalPass->use();
 	updateQuadShader(shaderFinalPass);
 	renderQuad();
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	finalRenderShader->use();
+	finalRenderShader->setInt("renderedImage", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, finalRenderTexture);
+	renderQuad();
+
+	previousFrame = finalRenderTexture;
+
+
 }
 
 void Renderer::renderQuad() {

@@ -16,6 +16,7 @@ public:
 	void Flush();
 	void lightingPassStart();
 	void lightingPassStop();
+	void SSR();
 
 	void startShadowMap();
 	void stopShadowMap();
@@ -39,6 +40,8 @@ private:
 	Shader *irradianceShader;
 	Shader *prefilterShader;
 	Shader *brdfShader;
+	Shader *ssrShader;
+	Shader *finalRenderShader;
 	std::vector<glm::vec3> ssaoNoise;
 	std::default_random_engine generator;
 	std::vector<glm::vec3> ssaoKernel;
@@ -70,6 +73,8 @@ private:
 	GLuint ssaoBuffer, ssaoBlurBuffer;
 	GLuint ssaoColorBuffer, ssaoColorBufferBlur;
 	GLuint cubemapBuffer, cubemapRenderBuffer;
+	GLuint ssrBuffer;
+	GLuint finalRenderBuffer;
 
 	unsigned int lightingTexture;
 	unsigned int colorTexture;
@@ -80,12 +85,20 @@ private:
 	unsigned int eyeNormalTexture;
 	unsigned int noiseTexture;
 
+	unsigned int gbufferDepthTexture;
+
+	unsigned int ssrTexture;
+
 	unsigned int brdfTexture;
 
 	unsigned int irradMap;
 	unsigned int prefilterMap;
 
 	unsigned int shadowDepthTexture;
+
+	unsigned int finalRenderTexture;
+
+	unsigned int previousFrame;
 
 	//pbr textures 
 	unsigned int albedoTexture; 

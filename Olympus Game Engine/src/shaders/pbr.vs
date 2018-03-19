@@ -6,6 +6,8 @@ layout (location = 2) in vec3 aNormal;
 out vec2 TexCoords;
 out vec3 WorldPos;
 out vec3 Normal;
+out vec3 eyePos;
+out vec3 eyeNormal;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -16,6 +18,9 @@ void main()
     TexCoords = aTexCoords;
     WorldPos = vec3(model * vec4(aPos, 1.0));
     Normal = mat3(model) * aNormal;   
+	//Normal = (model * vec4(aNormal,1.0)).xyz;
+	eyeNormal = (view * model * vec4(aNormal,1.0)).xyz;
+	eyePos = vec3(view*model*vec4(aPos,1.0));
 
     gl_Position =  projection * view * vec4(WorldPos, 1.0);
 }
