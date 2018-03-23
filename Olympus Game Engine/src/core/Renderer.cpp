@@ -33,15 +33,15 @@ void Renderer::SSR() {
 	ssrShader->use();
 	ssrShader->setInt("gFinalImage", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D,colorTexture);
+	glBindTexture(GL_TEXTURE_2D,previousFrame);
 
 	ssrShader->setInt("gNormal", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, normalTexture);
+	glBindTexture(GL_TEXTURE_2D,eyeNormalTexture);
 
 	ssrShader->setInt("gPosition", 2);
 	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, positionTexture);
+	glBindTexture(GL_TEXTURE_2D, eyePositionTexture);
 
 	ssrShader->setInt("gMetallicRoughnessAO", 3);
 	glActiveTexture(GL_TEXTURE3);
@@ -189,10 +189,13 @@ void Renderer::SSAO() {
 	//change uniforms
 	shaderSSAO->setFloat("radius", Settings::Instance()->ssaoRadius);
 	shaderSSAO->setFloat("bias", Settings::Instance()->ssaoBias);
+	shaderSSAO->setInt("gPosition", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, eyePositionTexture);
+	shaderSSAO->setInt("gNormal", 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, eyeNormalTexture);
+	shaderSSAO->setInt("texNoise", 2);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, noiseTexture);
 	renderQuad();
@@ -224,7 +227,7 @@ void Renderer::updateQuadShader(Shader* shader) {
 
 	shader->setInt("normalTexture", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, ssrTexture);
+	glBindTexture(GL_TEXTURE_2D, eyeNormalTexture);
 
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);
