@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Scene>
+	<Entity>
+		<Position>
+			<X>1.696969</X>
+			<Y>1</Y>
+			<Z>1</Z>
+		</Position>
+
+		<Scale>
+			<X>2</X>
+			<Y>2</Y>
+			<Z>2</Z>
+		</Scale>
+
+		<Rotation>
+			<X>3</X>
+			<Y>3</Y>
+			<Z>3</Z>
+		</Rotation>
+		<Components>
+			<ModelComponent>models/cube/cube2.obj</ModelComponent> 
+		</Components> 
+	</Entity> 
+
+	<Entity>
+		<Position>
+			<X>11</X>
+			<Y>2</Y>
+			<Z>3</Z>
+		</Position>
+
+		<Scale>
+			<X>3</X>
+			<Y>3</Y>
+			<Z>3</Z>
+		</Scale>
+
+		<Rotation>
+			<X>23</X>
+			<Y>3</Y>
+			<Z>3</Z>
+		</Rotation>
+		<Components>
+			<ModelComponent>models/cube/cube2.obj</ModelComponent> 
+		</Components> 
+	</Entity> 
+
+	<Entity>
+		<Position>
+			<X>20</X>
+			<Y>0</Y>
+			<Z>0</Z>
+		</Position>
+
+		<Scale>
+			<X>30</X>
+			<Y>30</Y>
+			<Z>30</Z>
+		</Scale>
+
+		<Rotation>
+			<X>23</X>
+			<Y>3</Y>
+			<Z>3</Z>
+		</Rotation>
+		<Components>
+			<ModelComponent>models/cube/cube2.obj</ModelComponent> 
+		</Components> 
+	</Entity> 
+</Scene>

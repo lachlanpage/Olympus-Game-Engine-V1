@@ -15,6 +15,7 @@ uniform sampler2D ssaoTexture;
 uniform sampler2D ssaoTextureBlur;
 uniform sampler2D albedoTexture; 
 uniform sampler2D metallicRoughnessAO; 
+uniform sampler2D reflectionTexture;
 
 
 uniform float textureSelector;
@@ -44,7 +45,7 @@ void main(){
 		float ambientOcclusion = texture(ssaoTexture, UV).r; 
 		//vec4 hdrCol = texture(lightTexture, UV) + 0.1 * texture(colorTexture, UV);
 		//vec4 hdrCol = texture(lightTexture, UV);// + 0.3*ambientOcclusion*texture(colorTexture, UV);
-		vec4 hdrCol = texture(lightTexture, UV) + 0.5*texture(colorTexture, UV);
+		vec4 hdrCol = texture(lightTexture, UV) + 0.5*texture(colorTexture, UV) + 2*texture(reflectionTexture, UV);
 		//exposure tone mapping
 		vec3 mapped = (vec4(1.0,1.0,1.0,1.0) - exp(-hdrCol * exposure)).rgb;
 		mapped = pow(mapped, vec3(1.0 / gamma));

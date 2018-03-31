@@ -44,7 +44,7 @@ void main()
     TexCoords = aTexCoords;
     WorldPos = vec3(model * vec4(aPos, 1.0));
     Normal = mat3(model) * aNormal;   
-
+	//Normal = (model * vec4(aNormal,1.0)).xyz;
 	mat3 TBN = calculate_TBN(aTangent, biTangent, aNormal);
 	
     gl_Position = projection * view * model * vec4(aPos, 1.0);

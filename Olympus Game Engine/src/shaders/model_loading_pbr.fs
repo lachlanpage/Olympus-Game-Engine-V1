@@ -119,22 +119,38 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness){
 // ----------------------------------------------------------------------------
 void main()
 {	
-	//vec3 albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
-	//float metallic = texture(texture_metallic, TexCoords).r;
-	//float roughness = texture(texture_roughness, TexCoords).r;
+	vec3 albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
+	float metallic = texture(texture_metallic, TexCoords).r;
+	float roughness = texture(texture_roughness, TexCoords).r;
 	//float ao = texture(texture_ao, TexCoords).r;
-
-	vec3 albedo = vec3(0.5,0.0,0.0);
-	float metallic = 0.9;
-	float roughness = 0.1; 
 	float ao = 1.0;
+	//vec3 albedo = vec3(0.5,0.0,0.0);
+	//float metallic = 0.8;
+	//float roughness = 0.2; 
+	//float ao = 1.0;
 
-	vec3 N = texture(texture_normal, TexCoords).rgb; 
-	N = N * 2.0 - 1.0; 
-	N = normalize(N); 
+	vec3 tangentNormal = texture(texture_normal, TexCoords).xyz * 2.0 - 1.0; 
+
+	vec3 Q1  = dFdx(WorldPos);
+    vec3 Q2  = dFdy(WorldPos);
+    vec2 st1 = dFdx(TexCoords);
+    vec2 st2 = dFdy(TexCoords);
+
+    vec3 N   = normalize(Normal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+	N = normalize(TBN * tangentNormal);
+
+	//vec3 N = texture(texture_normal, TexCoords).rgb; 
+	//N = N * 2.0 - 1.0; 
+	//N = normalize(N); 
+
+	//N = vec3(Normal);
 
 	vec3 V = normalize(camPos - WorldPos);
-	vec3 R = reflect(-V, N);
+	vec3 R = reflect(-V, -N);
 
 	vec3 F0 = vec3(0.04);
 	F0 = mix(F0, albedo, metallic);
@@ -209,7 +225,9 @@ void main()
 
 	FragColor = vec4(color, 1.0);
 
-	//other params
+	specularData = vec4(specular, 1.0);
+
+	//Output params 
 	positionData = vec4(WorldPos, 1.0);
 
 	eyePositionData = vec4(eyePos,1.0);
@@ -218,71 +236,5 @@ void main()
 
 	albedoTextureOut = vec4(albedo,1.0); 
 	metallicRoughnessAoOut = vec4(metallic, roughness, ao, 1);
-
-   // vec3 color = ambient + Lo;
-
-	//vec3 albedo = vec3(0.5,0.0,0.0);
-	//vec3 albedo = pow(texture(albedoTex, TexCoords).rgb, vec3(2.2));
-	//float metallic = m_metallic; 
-	//float roughness = m_roughness;
-	//float ao = 1.0;
-
-    //vec3 N = normalize(vs_normalData);
-    //vec3 N = texture(normalTex, TexCoords).rgb;
-	//vec3 N = normalize(Normal);
-	//N = N * 2.0 - 1.0; 
-	//N = normalize(N);
-	//vec3 V = normalize(camPos - WorldPos);
-
-	//vec3 R = reflect(-V, N);
-
-	//vec3 lightPosition = vec3(5.0,10.0,2.0);
-	//vec3 lightColor = vec3(300.0,300.0,300.0);
-
-    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
-    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    //vec3 F0 = vec3(0.04); 
-    //F0 = mix(F0, albedo, metallic);
-
-    // reflectance equation
-    //vec3 Lo = vec3(0.0);
-	
-	// ambient lighting (note that the next IBL tutorial will replace 
-    // this ambient lighting with environment lighting).
-    //vec3 ambient = vec3(0.03) * albedo * ao;
-	
-
-	//ambient lighting use IBL as ambient term 
-	//vec3 F2 = fresnelSchlickRoughness(max(dot(N,V), 0.0), F0, roughness);
-	//vec3 ks = F2;
-	//vec3 kd = 1.0 - ks; 
-	//kd *= 1.0 - metallic; 
-	//vec3 irradiance = texture(irradianceMap, N).rgb;
-	//vec3 diffuse = irradiance * albedo; 
-
-	//calculate specular IBL 
-	//const float MAX_REFLECTION_LOD = 4.0; 
-	//vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb; 
-	//vec2 brdf = texture(brdfLUT, vec2(max(dot(N,V), 0.0), roughness)).rg; 
-	//vec3 specular2 = prefilteredColor * (F2 * brdf.x + brdf.y);
-
-	//vec3 ambient = (kd * diffuse + specular2) * ao;
-
-	//vec3 ambient = (kd * diffuse)*ao;
-
-   // vec3 color = ambient + Lo;
-
-	//ambient 
-    //FragColor = vec4(color,1.0);//texture(texture_diffuse0, vs_textureCoordinates);//vec4(color, 1.0);
-	//FragColor = texture(texture_diffuse, TexCoords);
-	//other params
-	//positionData = vec4(WorldPos, 1.0);
-
-	//eyePositionData = vec4(eyePos,1.0);
-	//eyeNormalData = vec4(eyeNormal,1.0);
-	//normalData = normalize(vec4(N,1.0));
-
-	//albedoTextureOut = vec4(1.0,1.0,1.0,1.0);
-	//metallicRoughnessAoOut = vec4(metallic, roughness, ao, 1);
 }
 

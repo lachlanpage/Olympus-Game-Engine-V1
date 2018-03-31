@@ -139,7 +139,7 @@ void main()
 	//N = normalize(N);
 	vec3 V = normalize(camPos - WorldPos);
 
-	vec3 R = reflect(-V, N);
+	vec3 R = reflect(-V, -N);
 
 	vec3 lightPosition = vec3(5.0,10.0,2.0);
 	vec3 lightColor = vec3(300.0,300.0,300.0);
@@ -211,6 +211,7 @@ void main()
 	//vec3 ambient = (kd * diffuse)*ao;
 
     vec3 color = ambient + Lo;
+	specularData = vec4(specular2, 1.0);
 
     // HDR tonemapping
     //color = color / (color + vec3(1.0));
