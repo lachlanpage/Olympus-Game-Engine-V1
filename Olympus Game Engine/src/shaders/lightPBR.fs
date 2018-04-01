@@ -1,26 +1,18 @@
 #version 430 core 
 
-
 in vec4 vs_pos;
 
 layout (location = 0) out vec4 fragColor;
-
 
 uniform sampler2D colorTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D positionTexture;
 uniform sampler2D metallicRoughnessAOTexture;
 
-
-uniform float textureSelector;
-
 uniform vec3 camPos;
-
 uniform vec3 Position;
 uniform vec3 lightColor;
 uniform float Radius;
-
-in vec4 fsPos;
 
 const float PI = 3.14159265359;
 
@@ -81,23 +73,15 @@ void main(){
 	vec3 F0 = vec3(0.04);
 	F0 = mix(F0, albedo, metallic);
 
+	//fake z test {used in last step of calculation} 
 	vec3 lightToPositionVector = pos.xyz - Position;
 	float lightDist = length(lightToPositionVector);
-	vec3 l = -lightToPositionVector / (lightDist);
-
-	//fake z test 
 	float ztest = step(0.0, Radius-lightDist);
 
-	//light attenuation 
-	vec3 V = normalize(camPos - pos); 
-
-	//vec3 lightToPosVector
-	//color = vec4(1.0,1.0,1.0, 1.0);
-
-	//fake z test 
 	// calculate per-light radiance
 	vec3 Lo = vec3(0.0);
     vec3 L = normalize(Position - pos);
+	vec3 V = normalize(camPos - pos); 
     vec3 H = normalize(V + L);
     float distance = length(Position - pos);
     float attenuation = 1.0 / (distance * distance);
@@ -107,31 +91,19 @@ void main(){
     float NDF = DistributionGGX(N, H, roughness);   
     float G   = GeometrySmith(N, V, L, roughness);    
     vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);        
-        
+    
     vec3 nominator    = NDF * G * F;
     float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
     vec3 specular = nominator / denominator;
         
-        // kS is equal to Fresnel
     vec3 kS = F;
-    // for energy conservation, the diffuse and specular light can't
-    // be above 1.0 (unless the surface emits light); to preserve this
-    // relationship the diffuse component (kD) should equal 1.0 - kS.
     vec3 kD = vec3(1.0) - kS;
-    // multiply kD by the inverse metalness such that only non-metals 
-    // have diffuse lighting, or a linear blend if partly metal (pure metals
-    // have no diffuse light).
     kD *= 1.0 - metallic;	                
-            
-    // scale light by NdotL
     float NdotL = max(dot(N, L), 0.0);        
 
-    // add to outgoing radiance Lo
+    // add to outgoing radiance
     Lo += (kD * albedo / PI + specular) * radiance * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
 	
-	fragColor = vec4(Lo, 1.0) + vec4(lightColor * albedo.xyz * max(0.0, dot(N.xyz, vec3(1.0,1.0,1.0)))  + lightColor * 0.4 * pow(max(0.0, dot(H,N)), 12.0),1.0);// + lightColor * 0.4 * pow(max(0.0, dot(H,N)), 12.0);
+	fragColor = vec4(Lo, 1.0) + vec4(lightColor * albedo.xyz * max(0.0, dot(N.xyz, vec3(1.0,1.0,1.0)))  + lightColor * 0.4 * pow(max(0.0, dot(H,N)), 12.0),1.0);
 	fragColor *= ztest * attenuation;
-	//fragColor = vec4(metallic, 1.0,1.0,1.0);
-	//fragColor*= ztest*attenuation;
-	//color *= ztest * attenuation;
 }
