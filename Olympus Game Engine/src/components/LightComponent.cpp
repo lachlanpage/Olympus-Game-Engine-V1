@@ -4,7 +4,7 @@ LightComponent::LightComponent(float radius, glm::vec3 color) {
 	m_radius = radius;
 	m_color = color;
 
-	m_shader = ResourceManager::Instance()->loadShader("src/shaders/light.vs", "src/shaders/light.fs");
+	m_shader = ResourceManager::Instance()->loadShader("src/shaders/light.vs", "src/shaders/lightPBR.fs");
 
 	generateLightVolume();
 
@@ -35,6 +35,7 @@ void LightComponent::update(Entity& entity) {
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
+	m_shader->setVec3("camPos", Camera::Instance()->getPosition());
 
 	glm::mat4 model;
 	model = glm::translate(model, entity.getPosition());
@@ -42,7 +43,7 @@ void LightComponent::update(Entity& entity) {
 	m_shader->setVec3("Position", entity.getPosition());
 
 	m_shader->setFloat("Radius", m_radius);
-	m_shader->setVec3("Color", m_color);
+	m_shader->setVec3("lightColor", m_color);
 	updateLightShader();
 
 	glBindVertexArray(VAO);

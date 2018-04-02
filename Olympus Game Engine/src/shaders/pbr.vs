@@ -18,7 +18,7 @@ void main()
     TexCoords = aTexCoords;
     WorldPos = vec3(model * vec4(aPos, 1.0));
     Normal = mat3(model) * aNormal;   
-	//Normal = (model * vec4(aNormal,1.0)).xyz;
+	
 	eyeNormal = (view * model * vec4(aNormal,1.0)).xyz;
 	eyePos = vec3(view*model*vec4(aPos,1.0));
 

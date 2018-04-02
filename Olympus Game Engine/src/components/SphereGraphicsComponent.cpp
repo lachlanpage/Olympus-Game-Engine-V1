@@ -3,7 +3,7 @@
 
 SphereGraphicsComponent::SphereGraphicsComponent(float metallic, float roughness) {
 	m_shader = ResourceManager::Instance()->loadShader("src/shaders/pbr.vs", "src/shaders/pbr.fs");
-	//m_shadowShader = ResourceManager::Instance()->loadShader("src/shaders/shadow.vs", "src/shaders/shadow.fs");
+	m_shadowShader = ResourceManager::Instance()->loadShader("src/shaders/shadow.vs", "src/shaders/shadow.fs");
 
 	//std::cout << metallic << " " << roughness << std::endl;
 	m_roughness = roughness;
@@ -106,6 +106,12 @@ void SphereGraphicsComponent::update(Entity& entity) {
 		glm::vec3(10.0f, -10.0f, 10.0f),
 	};
 
+	std::cout << Time::Instance()->getRuntimeMilliseconds() << std::endl;
+	
+	float xrot = cos(0.001)*(entity.getPosition().x - 0) - sin(0.001)*(entity.getPosition().y - 0) + 0;
+	float yrot = sin(0.001)*(entity.getPosition().x - 0) + cos(0.001)*(entity.getPosition().y - 0) + 0;
+	entity.setPosition(glm::vec3(xrot, yrot, entity.getPosition().z));
+
 	m_shader->use();
 	m_shader->setMat4("view", Camera::Instance()->getViewMatrix());
 	m_shader->setMat4("projection", Settings::Instance()->projection);
@@ -139,6 +145,26 @@ void SphereGraphicsComponent::update(Entity& entity) {
 	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
 }
 
-void SphereGraphicsComponent::renderShadow(Entity& entity){}
+void SphereGraphicsComponent::renderShadow(Entity& entity){
+
+	m_shadowShader->use();
+	m_shadowShader->setMat4("view", Settings::Instance()->depthViewMatrix);
+	m_shadowShader->setMat4("projection", Settings::Instance()->projectionMatrix);
+	glm::mat4 model;
+	model = glm::translate(model, entity.getPosition());
+	model = glm::scale(model, entity.getScale());
+	//x rotation
+	model = glm::rotate(model, glm::radians(entity.getRotation().x), glm::vec3(1, 0, 0));
+	//y rotation 
+	model = glm::rotate(model, glm::radians(entity.getRotation().y), glm::vec3(0, 1, 0));
+	//z rotation
+	model = glm::rotate(model, glm::radians(entity.getRotation().z), glm::vec3(0, 0, 1));
+	m_shadowShader->setMat4("model", model);
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
+
+
+
+}
 void SphereGraphicsComponent::postInit(Entity& entity){}
 
