@@ -54,14 +54,45 @@ void SceneManager::parseScene() {
 		float rotY = std::stof(rotationY);
 		float rotZ = std::stof(rotationZ);
 
-
+		//Create entity and now add any components neccessary
 		Entity *newEntity = new Entity(glm::vec3(posX, posY, posZ));
 		newEntity->setScale(glm::vec3(scX, scY, scZ));
 		newEntity->setRotation(glm::vec3(rotX, rotY, rotZ));
-		newEntity->addComponent(new ModelComponent("models/cube/cube.obj"));
-		entityManager->addEntity(newEntity);
 
-		//std::cout << scaleX.c_str() << std::endl;
+		tinyxml2::XMLNode* componentsNode = entity->FirstChildElement("Components");
+
+		tinyxml2::XMLElement* modelComponent = componentsNode->FirstChildElement("ModelComponent");
+		if (modelComponent != nullptr) {
+			//model component exists 
+			std::string filepath = modelComponent->GetText();
+			newEntity->addComponent(new ModelComponent(&filepath[0]));
+		}
+
+		tinyxml2::XMLElement* sphereGraphicsComponent = componentsNode->FirstChildElement("SphereGraphicsComponent");
+		if (sphereGraphicsComponent != nullptr) {
+			std::string metallic = sphereGraphicsComponent->FirstChildElement("Metallic")->GetText();
+			std::string roughness = sphereGraphicsComponent->FirstChildElement("Roughness")->GetText();
+
+			float r = std::stof(roughness);
+			float m = std::stof(metallic);
+
+			newEntity->addComponent(new SphereGraphicsComponent(m, r));
+		}
+
+		tinyxml2::XMLElement* pointLightComponent = componentsNode->FirstChildElement("PointLightComponent");
+		if (pointLightComponent != nullptr) {
+			std::string radius = pointLightComponent->FirstChildElement("Radius")->GetText();
+			std::string redColor = pointLightComponent->FirstChildElement("Color")->FirstChildElement("R")->GetText();
+			std::string greenColor = pointLightComponent->FirstChildElement("Color")->FirstChildElement("G")->GetText();
+			std::string blueColor = pointLightComponent->FirstChildElement("Color")->FirstChildElement("B")->GetText();
+
+			float rad = std::stof(radius);
+			glm::vec3 lightColor = glm::vec3(std::stof(redColor), std::stof(greenColor), std::stof(blueColor));
+
+			newEntity->addComponent(new LightComponent(rad, lightColor));
+		}
+
+		entityManager->addEntity(newEntity);
 
 	}
 	
