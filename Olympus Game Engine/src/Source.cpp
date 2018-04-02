@@ -74,16 +74,16 @@ int main(int argc, char* argv[]) {
 	SceneManager("scenes/scene1.xml", entityManager);
 	GUIManager::Instance()->setEntityManager(entityManager);
 
-	
-	Entity *light6 = new Entity(glm::vec3(5, 5, 5));
+	/*
+	Entity *light6 = new Entity(glm::vec3(1.4, 3.4, 6));
 	light6->addComponent(new LightComponent(7, glm::vec3(1.0, 0.1, 0.8)));
 	entityManager->addEntity(light6);
 
-	light6 = new Entity(glm::vec3(-0.5, 1, 0));
+	light6 = new Entity(glm::vec3(13.3, 14.4, 7.4));
 	light6->addComponent(new LightComponent(10, glm::vec3(1.0, 0.0, 0.0)));
 	entityManager->addEntity(light6);
 
-	light6 = new Entity(glm::vec3(3.3,2,2));
+	light6 = new Entity(glm::vec3(21,22,0.8));
 	light6->addComponent(new LightComponent(4, glm::vec3(0.0, 1.0, 0.0)));
 	entityManager->addEntity(light6);
 
@@ -99,6 +99,7 @@ int main(int argc, char* argv[]) {
 	light6->addComponent(new LightComponent(12, glm::vec3(0.0, 1.0, 1.0)));
 	entityManager->addEntity(light6);
 
+	*/
 	//Entity *model = new Entity(glm::vec3(0, 0, 0));
 	//model->addComponent(new ModelComponent("models/sponzacopy/sponza.obj"));
 	//model->setPosition(glm::vec3(1.0, 1.0, 1.0));
@@ -113,16 +114,16 @@ int main(int argc, char* argv[]) {
 
 	GUIManager::Instance()->renderSceneGraph(true);
 
-	Entity *model2 = new Entity(glm::vec3(5, -3, 5));
-	model2->addComponent(new ModelComponent("models/cube/cube2.obj"));
-	model2->setScale(glm::vec3(10, 1, 10));
+	//Entity *model2 = new Entity(glm::vec3(5, -3, 5));
+	//model2->addComponent(new ModelComponent("models/cube/cube2.obj"));
+	//model2->setScale(glm::vec3(10, 1, 10));
 	//model2->setRotation(glm::vec3(100, 100, 100));
-	entityManager->addEntity(model2);
+	//entityManager->addEntity(model2);
 
-	model2 = new Entity(glm::vec3(0, 0, 0));
-	model2->addComponent(new ModelComponent("models/cube/cube.obj"));
-	model2->setScale(glm::vec3(10, 10, 1));
-	entityManager->addEntity(model2);
+	//model2 = new Entity(glm::vec3(0, 0, 0));
+	//model2->addComponent(new ModelComponent("models/tester/wall.obj"));
+	//model2->setScale(glm::vec3(1, 1, 1));
+	//entityManager->addEntity(model2);
 
 	//for (int i = 0; i < 10; i++) {
 	//	for (int j = 0; j < 10; j++) {
@@ -133,7 +134,7 @@ int main(int argc, char* argv[]) {
 	//		entityManager->addEntity(model2);
 	//	}
 	//}
-
+	/*
 	for (int i = 0; i < 10; i++) {
 		for (int j = 0; j <10; j++) {
 			model2 = new Entity(glm::vec3(i*2.5, j*2.5, 0));
@@ -141,9 +142,10 @@ int main(int argc, char* argv[]) {
 			model2->addComponent(new SphereGraphicsComponent((float) i / 10.0, glm::clamp((float)j / 10.0, 0.05, 1.0)));
 			//model2->addComponent(new CubeGraphicsComponent());
 			model2->setScale(glm::vec3(1, 1, 1));
-			entityManager->addEntity(model2);
+			//entityManager->addEntity(model2);
 		}
 	}
+	*/
 
 
 	/*

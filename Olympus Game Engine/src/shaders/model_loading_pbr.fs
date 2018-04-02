@@ -59,6 +59,9 @@ uniform sampler2D roughnessTex;
 uniform float m_roughness;
 uniform float m_metallic;
 
+uniform int aoPresent;
+uniform int roughnessPresent;
+
 uniform sampler2D atexture;
 
 
@@ -121,9 +124,18 @@ void main()
 {	
 	vec3 albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
 	float metallic = texture(texture_metallic, TexCoords).r;
-	float roughness = texture(texture_roughness, TexCoords).r;
-	//float ao = texture(texture_ao, TexCoords).r;
+	
+	float roughness = 0.5;
+	if(roughnessPresent){
+		roughness = texture(texture_roughness, TexCoords).r;
+	}
+
 	float ao = 1.0;
+	if(aoPresent){
+		ao = texture(texture_ao, TexCoords).r;
+	}
+	//float ao = texture(texture_ao, TexCoords).r;
+	//float ao = 1.0;
 	//vec3 albedo = vec3(0.5,0.0,0.0);
 	//float metallic = 0.8;
 	//float roughness = 0.2; 
@@ -136,38 +148,25 @@ void main()
     vec2 st1 = dFdx(TexCoords);
     vec2 st2 = dFdy(TexCoords);
 
-    vec3 N   = normalize(Normal);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-    vec3 B  = -normalize(cross(N, T));
-    mat3 TBN = mat3(T, B, N);
+    //vec3 N   = normalize(Normal);
+    //vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    //vec3 B  = -normalize(cross(N, T));
+    //mat3 TBN = mat3(T, B, N);
 
-	N = normalize(TBN * tangentNormal);
+	//N = normalize(TBN * tangentNormal);
 
 
-	//vec3 N = texture(texture_normal, TexCoords).rgb; 
-	//N = N * 2.0 - 1.0; 
-	//N = normalize(N); 
+	vec3 N = texture(texture_normal, TexCoords).rgb; 
+	N = N * 2.0 - 1.0; 
+	N = normalize(N); 
 
 	//N = vec3(Normal);
 
 	vec3 V = normalize(camPos - WorldPos);
-	vec3 R = reflect(-V, -N);
+	vec3 R = reflect(V, -N);
 
 	vec3 F0 = vec3(0.04);
 	F0 = mix(F0, albedo, metallic);
-
-	vec3 lightPositions[4] = vec3[](
-	vec3(10,10,10), 
-	vec3(10,10,10),
-	vec3(10,10,10),
-	vec3(10,10,10));
-
-	vec3 lightColors[4] = vec3[](
-	vec3(100,100,100), 
-	vec3(200,200,200),
-	vec3(200,400,300),
-	vec3(100,400,300));
-
 
 	vec3 Lo = vec3(0.0);
 

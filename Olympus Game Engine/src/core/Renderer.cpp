@@ -37,7 +37,7 @@ void Renderer::SSR() {
 
 	ssrShader->setInt("gNormal", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D,eyeNormalTexture);
+	glBindTexture(GL_TEXTURE_2D,normalTexture);
 
 	ssrShader->setInt("gPosition", 2);
 	glActiveTexture(GL_TEXTURE2);
@@ -72,6 +72,9 @@ void Renderer::SSR() {
 	
 }
 
+unsigned int Renderer::getFinalTexture() {
+	return finalRenderTexture;
+}
 
 void Renderer::renderSkybox() {
 	//render skybox first --- hacky !!!!
@@ -137,6 +140,10 @@ void Renderer::updateLightShader(Shader* shader) {
 	shader->setInt("ssaoTexture", 5);
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
+
+	shader->setInt("metallicRoughnessAOTexture", 6);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, metallicRoughnessAOTexture);
 }
 
 void Renderer::lightingPassStart() {
@@ -227,7 +234,7 @@ void Renderer::updateQuadShader(Shader* shader) {
 
 	shader->setInt("normalTexture", 1);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, eyeNormalTexture);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
 
 	shader->setInt("positionTexture", 2);
 	glActiveTexture(GL_TEXTURE2);

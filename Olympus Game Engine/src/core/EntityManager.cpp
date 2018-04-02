@@ -32,7 +32,7 @@ void EntityManager::render() {
 
 void EntityManager::renderShadow() {
 	for (auto entity : m_entityList) {
-		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr || entity->GetComponent<SphereGraphicsComponent>() != nullptr) {
+		if (entity->GetComponent<CubeGraphicsComponent>() != nullptr || entity->GetComponent<ModelComponent>() != nullptr || entity->GetComponent<SphereGraphicsComponent>() != nullptr || entity->GetComponent<SphereGraphicsComponent>() != nullptr) {
 			entity->updateShadow();
 		}
 	}

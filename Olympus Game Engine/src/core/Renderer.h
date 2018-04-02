@@ -24,6 +24,8 @@ public:
 	void updateQuadShader(Shader *);
 	void updateLightShader(Shader *);
 	void getBufferTextures(Shader *);
+
+	unsigned int getFinalTexture();
 	
 private:
 	unsigned int m_fbo;
